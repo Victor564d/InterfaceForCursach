@@ -29,5 +29,8 @@
     <ClInclude Include="VicMenuDLL.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="MenuStruct.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,8 +7,7 @@
 #include <Windows.h>
 #include "ThreeStruct.h"
 
-#define clear() system("cls");
-
+#define clearf() system("cls");
 
 
 const char* Menu[] = { "Добавить новый элемент",
@@ -25,10 +24,11 @@ const char* Menu[] = { "Добавить новый элемент",
     "Отображение всех записей в которых нет ниодной тройки",
     "Среднее арифметическое по всем предметам",
     "Уровень элемента по ид",
+    "Тест",
     "Выход" };
 
 const int SizeStudent = sizeof(STudent);
-const int MenuSize = 15;
+const int MenuSize = 16;
 HANDLE hConsole;
 //------------------------------------------------------------------- Область функций ----------------------------------------------------------------
 //-----------------------------------функции создания дерева----------------------------------------------
@@ -202,16 +202,32 @@ void printINFO(STudent* d, int index);
 /// </summary>
 /// <param name="root">Корень дерева/текущая нода</param>
 /// <returns>В случае успеха - значение > 1 </returns>
+/// 
+/// 
+/// 
+/// 
+/// 
+/// 
+int* _get_window_size();
+/// 
+/// 
+/// 
+/// 
+/// 
 //------------------------------------------------------------------- Конец области функций ---------------------------------------------------------
 Person* st = NULL;
 Person* root = NULL;
 int position[] = { 1,1 };
+int* size;
 
 int main(void) {
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleCP(1251); // Задаем таблицу символов для консоли.
-    SetConsoleOutputCP(1251);
+    SetConsoleCP(65001); // Задаем таблицу символов для консоли.
+    SetConsoleOutputCP(65001);
+    clearf();
     // system("color F0");
+    size = _get_window_size();
+    _print_bakground(size[0], size[1]);
     FILE* f = fopen("data.dat", "rb+");//Открытие существующего файла для чтения и записи в конец
     if (!f) {
         f = fopen("data.dat", "wb+"); //Создание нового файла для обновления
@@ -318,6 +334,12 @@ void MenuSelect(int selector, FILE* f)
         getch();
         break;
     case 15:
+
+        size = _get_window_size();
+        _print_bakground(size[0],size[1]);
+        getch();
+        break;
+    case 16:
         if (getResponse()) {
             if (!st) {
                 deleteThree(st);
@@ -861,4 +883,23 @@ int GetLeafLevel(Person* root, int n, int serchID) {
         return n = GetLeafLevel(root->left, n, serchID);
     }
 
+}
+
+
+
+int* _get_window_size() {
+    HANDLE hWndConsole;
+    int size[]={ 0,0 };
+    if (hWndConsole = GetStdHandle(-12))
+    {
+        CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+        if (GetConsoleScreenBufferInfo(hWndConsole, &consoleInfo))
+        {
+            size[0] = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
+            size[1] = consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1;
+        }
+        else
+            printf("Error: %d\n", GetLastError());
+    }
+    return size;
 }

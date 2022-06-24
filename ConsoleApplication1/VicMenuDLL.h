@@ -55,6 +55,16 @@ void animatedNeko();
 /// </summary>
 /// <param name="Password">Пароль для вывода</param>
 void neko(int Password);
+
+
+
+
+void _print_bakground(int _window_w, int _window_h);
+void clear();
+void _print_border(int _window_w, int _window_h);
+
+
+
 #endif
 
 
