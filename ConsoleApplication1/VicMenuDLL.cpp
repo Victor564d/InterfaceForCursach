@@ -411,12 +411,92 @@ int* _get_window_size(int* size) {
     return size;
 }
 
+int _confirm_window(int _window_w,int _window_h) 
+{
+    int height = _window_h/4; int width = _window_w/4;
+    COORD positionCur = { _otstup,_interval }; //позиция x и y
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int _center_x, _center_y;
+    _center_x = _window_w / 2;
+    _center_y = _window_h / 2;
+    positionCur.X = _center_x - width/2;
+    positionCur.Y = _center_y - height/2;  
+    for (int y = 0; y < height; y++) {  
+        SetConsoleCursorPosition(hConsole, positionCur);
+        for (int x = 0; x < width; x++) {           
+            if (y == 0) {
+                if (x == 0) {
+                    printf("┌");
+                }
+                else if (x == width - 1) { printf("┐"); }
+                else   printf("─");
 
-
-int _lenght(char** items, int count) {
-
-}
+            } else
+                if (y == height - 1)
+                {
+                    if (x == 0) {
+                        printf("└");
+                    }
+                    else if(x == width-1) {
+                        printf("┘");
+                    }
+                    else printf("─");
+                } 
+                else {
+                    if (x == 0) {
+                        printf("│");
+                    }
+                    else if (x == width - 1) { printf("│"); }
+                    else printf(" ");
+                }
+        }
+        positionCur.Y++;
+    }
+    positionCur.Y = _center_y - height / 2+ height/4;
+    //positionCur.X += 2;
+    int margin = width - 21;
+    margin = margin/2;
+    positionCur.X += margin;
+    SetConsoleCursorPosition(hConsole, positionCur);
+    printf("Выполнить операцию ?");
+    int _selection = 1;
+    positionCur.Y = _center_y - height / 2 + height / 4 + height / 3;
+    positionCur.X -= margin-8;
     
+    while (1) {
+        SetConsoleCursorPosition(hConsole, positionCur);
+        if (_selection) {
+            printf("\x1b[43mДА\x1b[0m");
+            for (int i = positionCur.X; i < positionCur.X+width - 20; i++)
+                printf(" ");
+            printf("НЕТ");
+        }
+        else {
+            printf("ДА");
+            for (int i = positionCur.X; i < positionCur.X+width - 20; i++)
+                printf(" ");
+            printf("\x1b[43mНЕТ\x1b[0m");
+        }
+        char c = getch();
+        switch(c) {
+                case 75://лево
+                    if (_selection != 1) _selection++;
+                    break;
+                case 77://право
+                    if (_selection == 1) _selection--;
+                    break;
+                case 13://лево
+                    return _selection;
+                    break;
+                case 27://право
+                    return 0;
+                    break;
+                    }
+    }
+    
+}
+
+
 //
 //puts("┌──────┬─────┬────────────────────┬────────────┬───────────────┬──────┬──────────┬───────────┬───────┐");
 //puts("│Индекс│Номер│ ФИО                │Год рождения│Год поступления│Физика│Математика│Информатика│История│");

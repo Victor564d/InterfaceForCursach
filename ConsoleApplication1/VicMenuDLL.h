@@ -64,6 +64,7 @@ void _print_bakground(int _window_w, int _window_h);
 void clear();
 void _print_border(int _window_w, int _window_h);
 int* _get_window_size();
+int _confirm_window(int _window_h, int _window_w);
 
 
 #endif

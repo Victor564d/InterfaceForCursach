@@ -326,7 +326,8 @@ void MenuSelect(int selector, FILE* f)
         getch();
         break;
     case 16:
-        if (getResponse()) {
+        size = _get_window_size();
+        if (_confirm_window(size[0],size[1])) {
             if (!st) {
                 deleteThree(st);
             }
