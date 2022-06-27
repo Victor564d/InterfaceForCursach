@@ -185,28 +185,28 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
             if (_menu[position[0] - 1]._menu_size > 0) {
                 position[1] = 1;
                 while (1) {
-                    positionCur.X = _menu[position[0] - 1]._menu_name_lenght+2;
+                    positionCur.X = _menu[position[0] - 1]._menu_name_lenght + 2;
                     positionCur.Y = _interval + 2;
                     SetConsoleCursorPosition(hConsole, positionCur);
                     for (int i = 0; i <= _menu[position[0] - 1]._menu_size; i++) {
-                        for (int j = 0; j <= _menu[position[0] - 1]._max_sub_lenght+2; j++) {
+                        for (int j = 0; j <= _menu[position[0] - 1]._max_sub_lenght + 2; j++) {
                             if (j == 0) {
                                 if (i == 0) {
                                     printf("┌");
                                 }
                                 else
-                                    if (i == _menu[position[0] - 1]._menu_size ) {
+                                    if (i == _menu[position[0] - 1]._menu_size) {
                                         printf("└");
                                     }
                                     else printf("├");
                             }
                             else
-                                if (j == _menu[position[0] - 1]._max_sub_lenght+2) {
+                                if (j == _menu[position[0] - 1]._max_sub_lenght + 2) {
                                     if (i == 0) {
                                         printf("┐");
                                     }
                                     else
-                                        if (i == _menu[position[0] - 1]._menu_size ) {
+                                        if (i == _menu[position[0] - 1]._menu_size) {
                                             printf("┘");
                                             GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
                                             positionCur.X = info_x.dwCursorPosition.X;
@@ -214,19 +214,20 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                                             positionCur.Y--; positionCur.X--;
                                             SetConsoleCursorPosition(hConsole, positionCur);
                                             printf("│");
-                                            positionCur.Y++; 
+                                            positionCur.Y++;
                                             SetConsoleCursorPosition(hConsole, positionCur);
                                         }
-                                        else { printf("┤"); 
-                                    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+                                        else {
+                                            printf("┤");
+                                            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
                                             positionCur.X = info_x.dwCursorPosition.X;
                                             positionCur.Y = info_x.dwCursorPosition.Y;
                                             positionCur.Y--; positionCur.X--;
-                                    SetConsoleCursorPosition(hConsole, positionCur);
-                                    printf("│");
-                                    positionCur.Y++;
-                                    SetConsoleCursorPosition(hConsole, positionCur);
-                                    }
+                                            SetConsoleCursorPosition(hConsole, positionCur);
+                                            printf("│");
+                                            positionCur.Y++;
+                                            SetConsoleCursorPosition(hConsole, positionCur);
+                                        }
                                 }
                                 else (printf("─"));
 
@@ -234,8 +235,8 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                         positionCur.Y++; positionCur.X = _menu[position[0] - 1]._menu_name_lenght + 2;
                         SetConsoleCursorPosition(hConsole, positionCur);
                         if (i == _menu[position[0] - 1]._menu_size) break;
-                        int _margin = _menu[position[0] - 1]._max_sub_lenght +2 - _menu[position[0] - 1]._sub_menu_lenght[i];
-                        _margin = _margin / 2; 
+                        int _margin = _menu[position[0] - 1]._max_sub_lenght + 2 - _menu[position[0] - 1]._sub_menu_lenght[i];
+                        _margin = _margin / 2;
                         printf("│");
                         for (int l = 0; l < _margin; l++) { printf(" "); }
                         if (position[1] - 1 == i) {
@@ -247,11 +248,12 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                     }
                     c = getch();
                     if (c == 13) return 16;
-                    if (c == 27) {   clear(); break; }
-                    position = _get_curent_selection(c, position, _menu[position[0] -1]._menu_size, _menu_buttons, 1);
+                    if (c == 27) { clear(); break; }
+                    position = _get_curent_selection(c, position, _menu[position[0] - 1]._menu_size, _menu_buttons, 1);
                 }
 
             }
+            else return 16;
             
             }
         else {

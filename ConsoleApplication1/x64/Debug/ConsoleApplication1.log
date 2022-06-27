@@ -1,5 +1,50 @@
-﻿  VicMenuDLL.cpp
-E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(1,32): warning C4081: требуется "newline"; обнаружен ";"
-E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(358,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
-E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(416): warning C4716: _lenght: должна возвращать значение
-  ConsoleApplication1.vcxproj -> E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\x64\Debug\InterfaceForCursach.exe
+﻿  InterfaceForCursach.cpp
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(1,32): warning C4081: требуется "newline"; обнаружен ";"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(2,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x108, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x10a, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x10e, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x112, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x115, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x117, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x11a, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(304,34): warning C4047: функция: "float *" отличается по уровням косвенного обращения от "float (*)[4]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(304,29): warning C4024: getSerArefm: различные типы для формального и фактического параметров 2
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(411,27): warning C4047: =: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(411,48): warning C4047: =: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(418,48): warning C4047: функция: "_menu_item *" отличается по уровням косвенного обращения от "char **[2]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(418,44): warning C4024: _print_menu_with_table: различные типы для формального и фактического параметров 1
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(418,75): warning C4133: функция: несовместимые типы - из "void (__cdecl *)(STudent *,int)" в "int (__cdecl *)(void *,int)"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(421,28): warning C4047: =: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(421,49): warning C4047: =: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(432,37): warning C4047: функция: "_menu_item *" отличается по уровням косвенного обращения от "char **[2]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(432,33): warning C4024: _print_menu: различные типы для формального и фактического параметров 1
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(412,1): warning C4047: инициализация: "char **" отличается по уровням косвенного обращения от "char [30]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(412,1): warning C4047: инициализация: "char **" отличается по уровням косвенного обращения от "char [11]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(567,22): warning C4047: !=: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(567,48): warning C4047: !=: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(793,33): warning C4047: =: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(793,54): warning C4047: =: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(797,26): warning C4047: !=: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(797,51): warning C4047: !=: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(799,50): warning C4047: функция: "_menu_item *" отличается по уровням косвенного обращения от "char **[4]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(799,45): warning C4024: _print_menu_with_table: различные типы для формального и фактического параметров 1
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(799,77): warning C4133: функция: несовместимые типы - из "void (__cdecl *)(STudent *,int)" в "int (__cdecl *)(void *,int)"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(801,40): warning C4047: функция: "_menu_item *" отличается по уровням косвенного обращения от "char **[2]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(801,35): warning C4024: _print_menu: различные типы для формального и фактического параметров 1
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(835,28): warning C4047: =: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(835,49): warning C4047: =: "int" отличается по уровням косвенного обращения от "void *"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(790,1): warning C4047: инициализация: "char **" отличается по уровням косвенного обращения от "char [29]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(790,1): warning C4047: инициализация: "char **" отличается по уровням косвенного обращения от "char [38]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(790,1): warning C4047: инициализация: "char **" отличается по уровням косвенного обращения от "char [27]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(790,1): warning C4047: инициализация: "char **" отличается по уровням косвенного обращения от "char [19]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(791,1): warning C4047: инициализация: "char **" отличается по уровням косвенного обращения от "char [29]"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(791,1): warning C4047: инициализация: "char **" отличается по уровням косвенного обращения от "char [38]"
+  VicMenuDLL.cpp
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(1,32): warning C4081: требуется "newline"; обнаружен ";"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(358,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
+  Создание кода...
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(416): warning C4716: _lenght: должна возвращать значение
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(768): warning C4716: printBorder: должна возвращать значение
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\InterfaceForCursach.cpp(776): warning C4716: printTable: должна возвращать значение
+  ConsoleApplication1.vcxproj -> E:\University\A and P\Test_Menu\InterfaceForCursach\x64\Debug\InterfaceForCursach.exe
