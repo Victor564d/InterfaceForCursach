@@ -1,5 +1,6 @@
 ﻿#pragma warning(disable : 4996);
 #include "VicMenuDLL.h"
+#include "MenuStruct.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -9,15 +10,22 @@
 
 const int _otstup = 3;
 const int _interval = 3;
-
-
+int* _window_size;
+int _first_start = 1;
 int x, y; 
+COORD positionCur = {4,4};
 
 #define clearf() system("cls");
+
 void clear() {
-    COORD positionCur = { 10,10 }; //позиция x и y
-   HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    positionCur.X = _otstup + 1;  positionCur.Y = _interval + 1;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int* temp_window_size = NULL;
+    temp_window_size = _get_window_size(temp_window_size);
     SetConsoleCursorPosition(hConsole, positionCur);
+    _print_border(temp_window_size[0], temp_window_size[1]);
+    positionCur.X = _otstup + 1;  positionCur.Y = _interval + 1;
+        SetConsoleCursorPosition(hConsole, positionCur);
 }
 
 /// <summary>
@@ -28,10 +36,11 @@ void clear() {
 /// <param name="MaxY">Максимальная высота(глубина) списка(Макс смещение по вертикали)</param>
 /// <param name="Colums">Ширина(максимальное смещение указателя по горизонтали)</param>
 /// <returns>Указатель на двумерный массив, с измененными параметрами</returns>
-int* GetCurentSelector(char  c // Символ клавиатуры
+int* _get_curent_selection(char  c // Символ клавиатуры
     ,int * position // Массив в котором хранятся x и y
     ,int MaxY // Максимальный количество строк 
     , int Colums  // Количество столбцов, по умолчанию - 1
+    ,int _flag_x_readonly
 ) 
 {
     int x = position[0]; int y = position[1];
@@ -50,7 +59,8 @@ int* GetCurentSelector(char  c // Символ клавиатуры
         if (x < Colums) x++;
         break;
     }
-    position[0] = x; //запоминаем позицию по столбцу
+    if (!_flag_x_readonly)
+     position[0] = x; //запоминаем позицию по столбцу
     position[1] = y;//позиция по строке
     return position;
 }
@@ -62,9 +72,9 @@ int* GetCurentSelector(char  c // Символ клавиатуры
 /// <param name="MenuSize">Колличество элементов в массиве наименований</param>
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int PrintMenu(char** Menu, int* position, int MenuSize, int Colums)
+int _print_menu(_menu_item * _menu, int* position, int _menu_size, int Colums)
 {
-    return PrintMenuWithTable (Menu, position, MenuSize, Colums, NULL, NULL, -1);
+    return _print_menu_with_table (_menu, position, _menu_size, Colums, NULL, NULL, -1);
 }
 
 /// <summary>
@@ -78,126 +88,178 @@ int PrintMenu(char** Menu, int* position, int MenuSize, int Colums)
 /// <param name="Dataptr">Указатель на информационное поле</param>
 /// <param name="num">Указатель на номер элемента при выводе</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int PrintMenuWithTable(char** Menu //Массив меню 
+int _print_menu_with_table(_menu_item* _menu //Массив объектов  меню
     , int* position //Массив текущей позиции x и y
-    , int MenuSize  //Колличество элементов меню
-    ,int Colums,//Количество столбцов 
-    int (* funcptr ) (void*, int),
-    void * Dataptr,
-    int num
-)  
+    , int _menu_size  //Колличество элементов в массиве объектов меню
+    , int _menu_buttons,//Количество кнопок меню  
+    int (*funcptr) (void*, int), //резерв
+    void* Dataptr, //резерв
+    int num //резерв
+)
 {
-    int Rows = MenuSize; int Override = 0;  int Console_Width = 180; 
-    if (Colums > 3) Colums = 3; //Если ввели неверное значение строк (больше 3-х) то ставим 3
-    if (Colums < 1) Colums = 1;// если строк меньше одной - ставим одну
-    if (Colums > 1) { Rows = MenuSize / Colums; Override = MenuSize % Colums; if (Override > 0) Rows++; } //Если строк больше одной , вычисляем количество не полных строк 
+    int _padding;
+    int _new_padding;
+    int* _size_now = NULL;
+    if (_first_start) {
+        _window_size = _get_window_size(_window_size);
+        _print_bakground(_window_size[0], _window_size[1]);
+        _first_start = 0;
+    }
+    COORD positionCur = { _otstup + 1, _interval + 1 }; //позиция x и y
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleCursorPosition(hConsole, positionCur);
+    CONSOLE_SCREEN_BUFFER_INFO info_x;
+    int _max_subm_lenght = 0; 
+    for (int i = 0; i < _menu_size; i++) {
+        if (_menu[i]._menu_size > 0) {
+            _max_subm_lenght = _menu[i]._sub_menu_lenght[0];
+            for (int j = 1; j < _menu[i]._menu_size; j++) {
+                if (_menu[i]._sub_menu_lenght[j] > _max_subm_lenght) {
+                    _max_subm_lenght = _menu[i]._sub_menu_lenght[j];
+                }
+                _menu[i]._max_sub_lenght = _max_subm_lenght;
+            }
+        }
+      }
+
+
+    //printf("\x1b[43mHello\x1b[0m");
     while (1) //цикл отрисовки меню 
-     {
-       int flag = 0; //флаг является показателем того что вывод строки окончен
+    {
+        _size_now = _get_window_size(_size_now);
+        if ((_size_now[0] != _window_size[0]) || (_size_now[1] != _window_size[1]))
+        {
+            _window_size[0] = _size_now[0];  _window_size[1] = _size_now[1];
+            clearf();
+            _print_bakground(_window_size[0], _window_size[1]);
+            positionCur.X = _otstup + 1; positionCur.Y = _interval + 1;
+            SetConsoleCursorPosition(hConsole, positionCur);
+        }
+        positionCur.X = _otstup + 1; positionCur.Y = _interval + 1;
+        SetConsoleCursorPosition(hConsole, positionCur);
+        for (int i = 0; i < _menu_size; i++) {
+            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+            _padding = info_x.dwCursorPosition.X - 1;
+            if (position[0] == i + 1) {
+                printf("\x1b[43m %s \x1b[0m", _menu[i]._name);
+            }
+            else printf(" %s ", _menu[i]._name);
+            printf("│");
+            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+            positionCur.X = info_x.dwCursorPosition.X - 1;
+            _new_padding = info_x.dwCursorPosition.X - 1;
+            positionCur.Y -= 1;
+            SetConsoleCursorPosition(hConsole, positionCur);
+            printf("┬");
+            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+            positionCur.Y += 2; positionCur.X = _padding;
+            SetConsoleCursorPosition(hConsole, positionCur);
+            if (_padding == _otstup)
+            {
+                printf("├"); positionCur.X++;
+            }
+            else {
+                positionCur.X++;
+                SetConsoleCursorPosition(hConsole, positionCur);
+            }
+            for (int j = positionCur.X; j < _new_padding; j++) {
+                printf("─");
+            }
+            if (i == _menu_size - 1) {
+                printf("┘");
+            }
+            else
+                printf("┴");
+            positionCur.Y -= 1; positionCur.X = _new_padding + 1;
+            SetConsoleCursorPosition(hConsole, positionCur);
+        }
+        //-----------------------------------------------------------------------------  
+        //Пример управления цветом заднего фона и текста (задний фон красный)printf("\x1b[41mHello\x1b[0m");
+                                                                           //printf("\x1b[43mHello\x1b[0m");
 
         if (funcptr != NULL && Dataptr != NULL) //Если у нас есть данные для вывода - выводим
-            funcptr (Dataptr, num);
-
-     for (int i = 0; i < Console_Width; i++) //цикл вывода делителя
-     {
-        printf("-"); 
-     }
-     printf("\n"); //переход на следующую строку
-      if (Colums == 1)  //если столбцов всего 1 
-        {
-        for (int i = 0; i < MenuSize; i++)  // до конца массива меню 
-            {
-                 if (position[1] - 1 == i) // если курсор на позици 
-                      printf("| --> %-172s |\n", Menu[i]);//выводим с курсором 
-                  else printf("| %-176s |\n" ,Menu[i]);// иначе без 
-            }
-        } else 
-          if (Colums == 2)  // если столбцов 2 , то 
-           {
-              int PosOut = 0; //Переменная текущей позиции в массиве меню
-              for (int i = 0; i < Rows; i++) { //цикл прохода по строкам
-                  for (int j = 0; j < Colums; j++) // цикл по столбцам
-                  {
-                      printf("|"); // делитель 
-                      if (i == Rows - 1 )  // если это последняя строка 
-                      { 
-                          if (Override) { // если она не полная , то 
-                              if ((position[0] - 1 == j)&&(position[1] - 1 ==i)) printf(" --> %-83s", Menu[PosOut++]); //если курсор на текукщей позици, выведем с ним 
-                              else printf(" %-86s ", Menu[PosOut++]); // иначе без
-                              printf("|"); for (int l = 1; l < 89; l++) printf(" "); printf("|"); // печатаем делители 
-                              flag = 1; // вывод строки меню завершен 
-                              break; // остановить цикл
-                          } else { //если все строки полные 
-                              if ((position[0] - 1 == j) && (position[1] - 1 == i)) printf(" --> %-83s", Menu[PosOut++]); // если есть селектор - выводим с ним 
-                              else printf(" %-86s ", Menu[PosOut++]); // иначе без 
-                          }
-                      }
-                      else // если строка не последняя 
-                      {
-                          if ((position[0]- 1 == j) && (position[1] - 1 == i)) printf(" --> %-83s", Menu[PosOut++]); // если селектор стоит на текущей позиции выводим с ним
-                          else printf(" %-86s ", Menu[PosOut++]); // иначе без
-                      }
-                  }
-                  if (!flag) // если достигли конца , делаем просто переход без делителя 
-                      printf("|\n"); else printf("\n");
-              }
-           }
-          else  // если строк больше 2
-          {
-              int PosOut = 0;
-              for (int i = 0; i < Rows; i++) {
-                  for (int j = 0; j < Colums; j++)
-                  {
-                      printf("|");
-                      if (i == Rows - 1)
-                      {
-                          if (Override == 1) {
-                              if ((position[0] - 1 == j) && (position[1] - 1 == i)) printf(" --> %-54s", Menu[PosOut++]);
-                              else printf(" %-57s ", Menu[PosOut++]);
-                              printf("|"); for (int l = 1; l < 60; l++) printf(" "); printf("|"); 
-                              for (int l = 1; l < 60; l++) printf(" "); printf("|");
-                              flag = 1;
-                              break;
-                          }
-                          else if (Override) {
-                              if ((position[0] - 1 == j) && (position[1] - 1 == i)) printf(" --> %-54s", Menu[PosOut++]);
-                              else printf(" %-57s ", Menu[PosOut++]);  printf("|"); j++; i++;
-                              if ((position[0] - 1 == j) && (position[1] - 1 == i)) printf(" --> %-54s", Menu[PosOut++]);
-                              else printf(" %-57s ", Menu[PosOut++]);
-                              printf("|");
-                              for (int l = 1; l < 60; l++) printf(" "); printf("|");
-                              flag = 1;
-                              break;
-                                }
-                          else {
-                              if ((position[0] - 1 == j) && (position[1] - 1 == i)) printf(" --> %-54s", Menu[PosOut++]);
-                              else printf(" %-57s ", Menu[PosOut++]);
-                          }
-                      }
-                      else
-                      {
-                          if ((position[0] - 1 == j) && (position[1] - 1 == i)) printf(" --> %-54s", Menu[PosOut++]);
-                          else printf(" %-57s ", Menu[PosOut++]);
-                      }
-                  }
-                  if (!flag)
-                      printf("|\n"); else printf("\n");
-              }
-          }
-        
-        for (int i = 0; i < Console_Width; i++) {
-            printf("-");
-        }
+            funcptr(Dataptr, num);
 
         char c = getch();
-         if (c == 13) {
-             if (Colums == 1) return position[1]; else if (Colums == 2)
-                 return position[0] + (position[1] - 1) * 2; else return position[0] + (position[1] - 1) * 3;
+        if (c == 13) {
+            if (_menu[position[0] - 1]._menu_size > 0) {
+                position[1] = 1;
+                while (1) {
+                    positionCur.X = _menu[position[0] - 1]._menu_name_lenght+2;
+                    positionCur.Y = _interval + 2;
+                    SetConsoleCursorPosition(hConsole, positionCur);
+                    for (int i = 0; i <= _menu[position[0] - 1]._menu_size; i++) {
+                        for (int j = 0; j <= _menu[position[0] - 1]._max_sub_lenght+2; j++) {
+                            if (j == 0) {
+                                if (i == 0) {
+                                    printf("┌");
+                                }
+                                else
+                                    if (i == _menu[position[0] - 1]._menu_size ) {
+                                        printf("└");
+                                    }
+                                    else printf("├");
+                            }
+                            else
+                                if (j == _menu[position[0] - 1]._max_sub_lenght+2) {
+                                    if (i == 0) {
+                                        printf("┐");
+                                    }
+                                    else
+                                        if (i == _menu[position[0] - 1]._menu_size ) {
+                                            printf("┘");
+                                            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+                                            positionCur.X = info_x.dwCursorPosition.X;
+                                            positionCur.Y = info_x.dwCursorPosition.Y;
+                                            positionCur.Y--; positionCur.X--;
+                                            SetConsoleCursorPosition(hConsole, positionCur);
+                                            printf("│");
+                                            positionCur.Y++; 
+                                            SetConsoleCursorPosition(hConsole, positionCur);
+                                        }
+                                        else { printf("┤"); 
+                                    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+                                            positionCur.X = info_x.dwCursorPosition.X;
+                                            positionCur.Y = info_x.dwCursorPosition.Y;
+                                            positionCur.Y--; positionCur.X--;
+                                    SetConsoleCursorPosition(hConsole, positionCur);
+                                    printf("│");
+                                    positionCur.Y++;
+                                    SetConsoleCursorPosition(hConsole, positionCur);
+                                    }
+                                }
+                                else (printf("─"));
+
+                        }
+                        positionCur.Y++; positionCur.X = _menu[position[0] - 1]._menu_name_lenght + 2;
+                        SetConsoleCursorPosition(hConsole, positionCur);
+                        if (i == _menu[position[0] - 1]._menu_size) break;
+                        int _margin = _menu[position[0] - 1]._max_sub_lenght +2 - _menu[position[0] - 1]._sub_menu_lenght[i];
+                        _margin = _margin / 2; 
+                        printf("│");
+                        for (int l = 0; l < _margin; l++) { printf(" "); }
+                        if (position[1] - 1 == i) {
+                            printf("\x1b[43m%s\x1b[0m", _menu[position[0] - 1]._sub_menu[i]);
+                        }
+                        else { printf("%s ", _menu[position[0] - 1]._sub_menu[i]); }
+                        positionCur.Y++;
+                        SetConsoleCursorPosition(hConsole, positionCur);
                     }
-         int MaxY = MenuSize / Colums; if (Override) MaxY++;
-        position =  GetCurentSelector(c, position, MaxY, Colums);
-        clear();
-      }
+                    c = getch();
+                    if (c == 13) return 16;
+                    if (c == 27) {   clear(); break; }
+                    position = _get_curent_selection(c, position, _menu[position[0] -1]._menu_size, _menu_buttons, 1);
+                }
+
+            }
+            
+            }
+        else {
+            position = _get_curent_selection(c, position, 1, _menu_buttons, 0);
+           
+        }
+          
+    }
 }
 
 
@@ -283,7 +345,7 @@ void animatedNeko() {
 /// <param name="Password">Пароль для вывода</param>
 void neko(int Password) {
     if (Password == 34097) {
-        clear();
+           clear();
         for (int i = 0; BMP1[i] != NULL; i++) {
             printf("%s\n", BMP1[i]);
         }
@@ -329,6 +391,30 @@ void _print_border(int _window_w, int _window_h) {
 }
 
 
+
+int* _get_window_size(int* size) {
+    HANDLE hWndConsole;
+    size = (int*)calloc(2, sizeof(int));
+    if (hWndConsole = GetStdHandle(-12))
+    {
+        CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+        if (GetConsoleScreenBufferInfo(hWndConsole, &consoleInfo))
+        {
+            size[0] = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
+            size[1] = consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1;
+        }
+        else
+            printf("Error: %d\n", GetLastError());
+    }
+    return size;
+}
+
+
+
+int _lenght(char** items, int count) {
+
+}
+    
 //
 //puts("┌──────┬─────┬────────────────────┬────────────┬───────────────┬──────┬──────────┬───────────┬───────┐");
 //puts("│Индекс│Номер│ ФИО                │Год рождения│Год поступления│Физика│Математика│Информатика│История│");

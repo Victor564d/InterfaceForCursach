@@ -1,5 +1,6 @@
 ﻿#pragma warning(disable : 4996);
 #include "VicMenuDLL.h"; //файл библиотеки меню
+#include "MenuStruct.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -10,25 +11,9 @@
 #define clearf() system("cls");
 
 
-const char* Menu[] = { "Добавить новый элемент",
-    "Загрузить из файла",
-    "Записать все в файл ",
-    "Вывод данных в списке",
-    "Редактировать запись",
-    "Отобразить структуру дерева",
-    "Удалить элемент(любой)",
-    "Анимация",
-    "Картинка",
-    "Очистить дерево",
-    "Колличество элементов в дереве",
-    "Отображение всех записей в которых нет ниодной тройки",
-    "Среднее арифметическое по всем предметам",
-    "Уровень элемента по ид",
-    "Тест",
-    "Выход" };
-
+_menu_item* menu = NULL;
 const int SizeStudent = sizeof(STudent);
-const int MenuSize = 16;
+const int MenuSize = 5;
 HANDLE hConsole;
 //------------------------------------------------------------------- Область функций ----------------------------------------------------------------
 //-----------------------------------функции создания дерева----------------------------------------------
@@ -208,7 +193,7 @@ void printINFO(STudent* d, int index);
 /// 
 /// 
 /// 
-int* _get_window_size();
+_menu_item* _init_menu(_menu_item* menu);
 /// 
 /// 
 /// 
@@ -225,9 +210,10 @@ int main(void) {
     SetConsoleCP(65001); // Задаем таблицу символов для консоли.
     SetConsoleOutputCP(65001);
     clearf();
+    menu = _init_menu(menu);
     // system("color F0");
-    size = _get_window_size();
-    _print_bakground(size[0], size[1]);
+
+
     FILE* f = fopen("data.dat", "rb+");//Открытие существующего файла для чтения и записи в конец
     if (!f) {
         f = fopen("data.dat", "wb+"); //Создание нового файла для обновления
@@ -238,7 +224,7 @@ int main(void) {
     }
     while (1) {//вывод меню и запуск соответствующих функций
         clear();
-        MenuSelect(PrintMenu(Menu, position, MenuSize, 2), f);
+        MenuSelect(_print_menu(menu, position, MenuSize, 5), f);
     }
 }
 int Posid = 1;
@@ -429,7 +415,7 @@ int аddNewElement(Person** st)
         clear();
         if (flag)
         {
-            switch (PrintMenuWithTable(Menu, position, 2, 1, printINFO, &d, 1)) {
+            switch (_print_menu_with_table(Menu, position, 2, 1, printINFO, &d, 1)) {
             case 1:
             {
                 d.id = NULL; d.birth_date = NULL;
@@ -443,7 +429,7 @@ int аddNewElement(Person** st)
 
         }
         else
-            switch (PrintMenu(Menu, position, 2, 1)) {
+            switch (_print_menu(Menu, position, 2, 1)) {
             case 1:
             {
 
@@ -654,7 +640,7 @@ STudent GetInfoFromCeyboard(STudent  d)
 
             c = getch();
             if (c != 13) {
-                position = GetCurentSelector(c, position, 2, 11);
+                position = _get_curent_selection(c, position, 2, 11,0);
                 if ((position[1] == 2) && (!flag)) {
                     tempPosition = position[0];
                     position[0] = 11;
@@ -810,9 +796,9 @@ int correctInfo(Person* st)
         int select; int Posid = 1; clear();
         if ((d.id != NULL) || d.birth_date != NULL) //если запись с которо работаем   - есть
         {
-            select = PrintMenuWithTable(Menu1, position, 4, 1, printINFO, &d, 1); // вызов меню с чермя параметрами 
+            select = _print_menu_with_table(Menu1, position, 4, 1, printINFO, &d, 1); // вызов меню с чермя параметрами 
         }
-        else select = PrintMenu(Menu2, position, 2, 1); // если записи нет - меню с двумя параметрами 
+        else select = _print_menu(Menu2, position, 2, 1); // если записи нет - меню с двумя параметрами 
         switch (select)
         {
         case 3:
@@ -887,19 +873,84 @@ int GetLeafLevel(Person* root, int n, int serchID) {
 
 
 
-int* _get_window_size() {
-    HANDLE hWndConsole;
-    int size[]={ 0,0 };
-    if (hWndConsole = GetStdHandle(-12))
-    {
-        CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-        if (GetConsoleScreenBufferInfo(hWndConsole, &consoleInfo))
-        {
-            size[0] = consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1;
-            size[1] = consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1;
+
+
+
+_menu_item* _init_menu(_menu_item* menu) {
+    menu = (_menu_item *) calloc(1, sizeof(_menu_item) * 5);
+//--------------------------------------------------------------------------------------------------------- 
+    strcpy(menu[0]._name, "Создание");
+    menu[0]._menu_name_lenght = 9;
+    menu[0]._menu_size = 3;
+    //"Добавить новый элемент",
+    //"Загрузить из файла",
+    //"Записать все в файл ",
+    menu[0]._sub_menu = (char**)calloc(1, sizeof(char*) * 3);
+    for (int i = 0; i < menu[0]._menu_size; i++) {
+        menu[0]._sub_menu[i] = (char*)calloc(50, sizeof(char));
+        
         }
-        else
-            printf("Error: %d\n", GetLastError());
-    }
-    return size;
+    menu[0]._sub_menu_lenght = (int*)calloc(3, sizeof(int));
+        strcpy(menu[0]._sub_menu[0], "Добавить новый элемент");  menu[0]._sub_menu_lenght[0] = 23;
+        strcpy(menu[0]._sub_menu[1], "Загрузить из файла");      menu[0]._sub_menu_lenght[1] = 19;
+        strcpy(menu[0]._sub_menu[2], "Записать все в файл");     menu[0]._sub_menu_lenght[2] = 20;
+//--------------------------------------------------------------------------------------------------------- 
+        strcpy(menu[1]._name, "Работа с данными");
+        menu[1]._menu_name_lenght = 17;
+        menu[1]._menu_size = 4;
+            //"Редактировать запись",
+            //"Удалить элемент(любой)",
+            //"Очистить дерево",
+            //"Уровень элемента по ид",
+        menu[1]._sub_menu = (char**)calloc(1, sizeof(char*) * menu[1]._menu_size);
+        for (int i = 0; i < menu[1]._menu_size; i++) {
+            menu[1]._sub_menu[i] = (char*)calloc(50, sizeof(char));
+            
+        }
+        menu[1]._sub_menu_lenght = (int*)calloc(4, sizeof(int));
+        strcpy(menu[1]._sub_menu[0], "Редактировать запись");   menu[1]._sub_menu_lenght[0] = 21;
+        strcpy(menu[1]._sub_menu[1], "Удалить элемент(любой)"); menu[1]._sub_menu_lenght[1] = 23;
+        strcpy(menu[1]._sub_menu[2], "Очистить дерево");        menu[1]._sub_menu_lenght[2] = 16;
+        strcpy(menu[1]._sub_menu[3], "Уровень элемента по ид"); menu[1]._sub_menu_lenght[3] = 23;
+//--------------------------------------------------------------------------------------------------------- 
+        strcpy(menu[2]._name, "Статистика");
+        menu[2]._menu_name_lenght = 11;
+        menu[2]._menu_size = 5;
+            //"Вывод данных в списке",  
+            //"Отобразить структуру дерева",
+            //"Колличество элементов в дереве",
+            //"Отобр. всех зап. в ко-ых нет ниодной тройки",
+            //"Ср. арифм. по всем предметам",
+        menu[2]._sub_menu = (char**)calloc(1, sizeof(char*) * menu[2]._menu_size);
+        for (int i = 0; i < menu[2]._menu_size; i++) {
+            menu[2]._sub_menu[i] = (char*)calloc(50, sizeof(char));
+           
+        }
+        menu[2]._sub_menu_lenght = (int*)calloc(5, sizeof(int));
+        strcpy(menu[2]._sub_menu[0], "Вывод данных в списке");    menu[2]._sub_menu_lenght[0] = 22;
+        strcpy(menu[2]._sub_menu[1], "Отобразить структуру дерева");  menu[2]._sub_menu_lenght[1] = 28;
+        strcpy(menu[2]._sub_menu[2], "Колличество элементов в дереве");         menu[2]._sub_menu_lenght[2] = 31;
+        strcpy(menu[2]._sub_menu[3], "Отобр. всех зап. в ко-ых ниодной тройки");  menu[2]._sub_menu_lenght[3] = 40;
+        strcpy(menu[2]._sub_menu[4], "Ср. арифм. по всем предметам");  menu[2]._sub_menu_lenght[4] = 29;
+//--------------------------------------------------------------------------------------------------------- 
+        strcpy(menu[3]._name, "Прочее");
+        menu[3]._menu_name_lenght = 7;
+        menu[3]._menu_size = 2;
+        //"Анимация",
+        //"Картинка",
+        menu[3]._sub_menu = (char**)calloc(1, sizeof(char*) * menu[3]._menu_size);
+        for (int i = 0; i < menu[3]._menu_size; i++) {
+            menu[3]._sub_menu[i] = (char*)calloc(50, sizeof(char));
+            
+        }
+        menu[3]._sub_menu_lenght = (int*)calloc(2, sizeof(int));
+        strcpy(menu[3]._sub_menu[0], "Анимация"); menu[3]._sub_menu_lenght[0] = 9;
+        strcpy(menu[3]._sub_menu[1], "Картинка"); menu[3]._sub_menu_lenght[1] = 9;
+//--------------------------------------------------------------------------------------------------------- 
+        strcpy(menu[4]._name, "Выход");
+        menu[4]._menu_name_lenght = 6;
+        menu[4]._menu_size = 0;
+        //"Выход"
+        menu[4]._sub_menu = NULL;
+    return menu;
 }

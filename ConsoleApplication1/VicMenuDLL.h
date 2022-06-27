@@ -1,4 +1,4 @@
-﻿
+﻿#include "MenuStruct.h"
 #ifndef VicMenuDLL /* страж включения */
 #define VicMenuDLL
 /// <summary>
@@ -9,10 +9,11 @@
 /// <param name="MaxY">Максимальная высота(глубина) списка(Макс смещение по вертикали)</param>
 /// <param name="Colums">Ширина(максимальное смещение указателя по горизонтали)</param>
 /// <returns>Указатель на двумерный массив, с измененными параметрами</returns>
-int* GetCurentSelector(char  c // Символ клавиатуры
+int* _get_curent_selection(char  c // Символ клавиатуры
     , int* position // Массив в котором хранятся x и y
     , int MaxY // Максимальный количество строк 
     , int Colums  // Количество столбцов, по умолчанию - 1
+    ,int _flag_x_readonly
 );
 
 /// <summary>
@@ -23,7 +24,7 @@ int* GetCurentSelector(char  c // Символ клавиатуры
 /// <param name="MenuSize">Колличество элементов в массиве наименований</param>
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int PrintMenu(char** Menu, int* position, int MenuSize, int Colums);
+int _print_menu(_menu_item * _menu, int* position, int MenuSize, int Colums);
 
 
 /// <summary>
@@ -37,9 +38,9 @@ int PrintMenu(char** Menu, int* position, int MenuSize, int Colums);
 /// <param name="Dataptr">Указатель на информационное поле</param>
 /// <param name="num">Указатель на номер элемента при выводе</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int PrintMenuWithTable(char** Menu //Массив меню 
+int _print_menu_with_table(_menu_item * _menu //Массив меню 
     , int* position //Массив текущей позиции x и y
-    , int MenuSize  //Колличество элементов меню
+    , int _menu_size  //Колличество элементов меню
     , int Colums,//Количество столбцов 
     int (*funcptr) (void*, int),
     void* Dataptr,
@@ -62,7 +63,7 @@ void neko(int Password);
 void _print_bakground(int _window_w, int _window_h);
 void clear();
 void _print_border(int _window_w, int _window_h);
-
+int* _get_window_size();
 
 
 #endif

@@ -1,4 +1,5 @@
 ﻿  VicMenuDLL.cpp
 E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(1,32): warning C4081: требуется "newline"; обнаружен ";"
-E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(296,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
+E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(358,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
+E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(416): warning C4716: _lenght: должна возвращать значение
   ConsoleApplication1.vcxproj -> E:\Учеба универ\А и П\Тестовый_Меню\InterfaceForCursach\x64\Debug\InterfaceForCursach.exe
