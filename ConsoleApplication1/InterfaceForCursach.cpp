@@ -228,14 +228,34 @@ int main(void) {
     }
 }
 int Posid = 1;
+
+//"Добавить новый элемент", 1
+//"Загрузить из файла", 2
+//"Записать все в файл ", 3
+//"Редактировать запись", 4
+//"Удалить элемент(любой)", 5
+//"Очистить дерево", 6
+//"Уровень элемента по ид", 7 
+//"Вывод данных в списке",  8 
+//"Отобразить структуру дерева", 9 
+//"Колличество элементов в дереве", 10 
+//"Отобр. всех зап. в ко-ых нет ниодной тройки", 11
+//"Ср. арифм. по всем предметам", 12
+//"Анимация", 13
+//"Картинка", 14 
+//"Выход" 15 
+
+
 void MenuSelect(int selector, FILE* f)
 {
+    char* a = (char*)calloc(200, sizeof(char));
     switch (selector) {
     case 1:
         аddNewElement(&st);
         break;
     case 2:
-        if (getResponse()) {
+        size = _get_window_size();
+        if (_confirm_window(size[0], size[1])) {
             st = loadFromFile_new(f);
         }
         break;
@@ -243,63 +263,69 @@ void MenuSelect(int selector, FILE* f)
         create_file(f, st);
         break;
     case 4:
+        correctInfo(st);
+        break;
+    case 5:
+        size = _get_window_size();
+        if (_confirm_window(size[0], size[1])) {
+            _in_window(size[0], size[1]); int l; scanf("%d", &l);
+            st = DeleteNode(st, l);
+            sprintf(a, "Ветка удалена");
+            _message_window(size[0], size[1], a);
+            getch();
+        }
+        clear();
+        break;
+    case 6:
+        size = _get_window_size();
+        if (_confirm_window(size[0], size[1])) {
+            st = deleteThree(st);
+            sprintf(a, "Дерево очищено");
+            _message_window(size[0], size[1], a);
+            getch();
+        }
+        break;
+    case 7:
+        size = _get_window_size();
+        _in_window(size[0], size[1]); int l; scanf("%d", &l); l = GetLeafLevel(st, 0, l);
+        sprintf(a,"Уровень элемента --> %d", l);
+            _message_window(size[0], size[1], a);
+        getch();
+        break;
+    case 8:
         clear();
         Posid = 1;
         PrintTreeData(st);
         puts("Нажмите любую клавишу");
         getch();
         break;
-    case 5:
-        correctInfo(st);
-        break;
-    case 6:
+    case 9:
         clear();
         printf("---------------------------------------------- Структура дерева -----------------------------------------\n");
         View(st, 1);
         printf("-------------------------------------------- Конец струк. дерева ----------------------------------------\n");
         getch();
         break;
-    case 7:
-        if (getResponse()) {
-            printf("\nВведите ИД записи -->"); int l; scanf("%d", &l);
-            st = DeleteNode(st, l);
-            puts("Ветка удалена ... Нажмите любую кнопку..."); getch();
-        }
-        clear();
-        break;
-    case 8:
-        if (getResponse()) {
-            animatedNeko();
-        }
-        break;
-    case 9:
-        if (getResponse()) {
-            neko(34097);
-            getch();
-        }
-        break;
     case 10:
-        if (getResponse()) {
-            st = deleteThree(st);
-            printf("\n\n Дерево очищенно, нажмите любую кнопку...");
+        size = _get_window_size();
+        if (_confirm_window(size[0], size[1])) {
+            sprintf(a, "Дерево содержит %d записей.",getLeafCount(st, 0));
+            _message_window(size[0], size[1], a);
             getch();
         }
         break;
     case 11:
-        if (getResponse()) {
-            printf("\n\n Дерево содержит %d записей. Нажмите любую кнопку...", getLeafCount(st, 0));
-            getch();
+        Posid = 1; printf("\n");
+        if (PrintTreeDataNonThree(st) == 1) {
+            size = _get_window_size();
+            char* a = NULL; sprintf(a, "Студентов без 3 нет");
+            _message_window(size[0], size[1], a);
         }
+        getch();
         break;
     case 12:
-        Posid = 1; printf("\n");
-        if (PrintTreeDataNonThree(st) == 1)
-            printf("\n\n Студентов без троек нет. Нажмите любую кнопку...");
-        getch();
-
-        break;
-    case 13:
-        if (getResponse()) {
+        size = _get_window_size();
+        if (_confirm_window(size[0], size[1])) {
             float  summ[] = { 0,0,0,0 };
             getSerArefm(st, &summ);
             int l = getLeafCount(st, 0);
@@ -314,28 +340,28 @@ void MenuSelect(int selector, FILE* f)
             getch();
         }
         break;
+    case 13:
+        animatedNeko();
+        break;
     case 14:
-        printf("\nВведите ИД записи -->"); int l; scanf("%d", &l); l = GetLeafLevel(st, 0, l);
-        printf("Уровень на котором элемент --> %d", l);
-        getch();
+        neko(34197);
         break;
     case 15:
-
         size = _get_window_size();
-        _print_bakground(size[0],size[1]);
-        getch();
-        break;
-    case 16:
-        size = _get_window_size();
-        if (_confirm_window(size[0],size[1])) {
+        if (_confirm_window(size[0], size[1])) {
             if (!st) {
                 deleteThree(st);
             }
             exit(666);
         }
         break;
+        
     }
 }
+
+
+
+
 
 
 int create_file(FILE* f, Person* root)
@@ -955,3 +981,20 @@ _menu_item* _init_menu(_menu_item* menu) {
         menu[4]._sub_menu = NULL;
     return menu;
 }
+
+
+//"Добавить новый элемент",
+//"Загрузить из файла",
+//"Записать все в файл ",
+//"Редактировать запись",
+//"Удалить элемент(любой)",
+//"Очистить дерево",
+//"Уровень элемента по ид",
+//"Вывод данных в списке",  
+//"Отобразить структуру дерева",
+//"Колличество элементов в дереве",
+//"Отобр. всех зап. в ко-ых нет ниодной тройки",
+//"Ср. арифм. по всем предметам",
+//"Анимация",
+//"Картинка",
+//"Выход"

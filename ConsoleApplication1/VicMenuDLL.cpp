@@ -1,6 +1,7 @@
 ﻿#pragma warning(disable : 4996);
 #include "VicMenuDLL.h"
 #include "MenuStruct.h"
+//#include "utf8.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -27,6 +28,13 @@ void clear() {
     positionCur.X = _otstup + 1;  positionCur.Y = _interval + 1;
         SetConsoleCursorPosition(hConsole, positionCur);
 }
+
+void clear_for_info() {
+    positionCur.X = _otstup + 4;  positionCur.Y = _interval + 4;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleCursorPosition(hConsole, positionCur);
+}
+
 
 /// <summary>
 /// Функция получения новой позиции селектора на основе старой
@@ -247,7 +255,14 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                         SetConsoleCursorPosition(hConsole, positionCur);
                     }
                     c = getch();
-                    if (c == 13) return 16;
+                    if (c == 13) {
+                        int result = 0;
+                        for (int l = 0; l < position[0] - 1; l++) {
+                            result += _menu[l]._menu_size;
+                        }
+                        result += position[1];
+                                     return result;
+                                }
                     if (c == 27) { clear(); break; }
                     position = _get_curent_selection(c, position, _menu[position[0] - 1]._menu_size, _menu_buttons, 1);
                 }
@@ -413,69 +428,43 @@ int* _get_window_size(int* size) {
 
 int _confirm_window(int _window_w,int _window_h) 
 {
-    int height = _window_h/4; int width = _window_w/4;
+    _window(_window_w, _window_h);
+    int height = _window_h / 4; int width = _window_w / 4;
     COORD positionCur = { _otstup,_interval }; //позиция x и y
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    int _center_x, _center_y;
-    _center_x = _window_w / 2;
-    _center_y = _window_h / 2;
-    positionCur.X = _center_x - width/2;
-    positionCur.Y = _center_y - height/2;  
-    for (int y = 0; y < height; y++) {  
-        SetConsoleCursorPosition(hConsole, positionCur);
-        for (int x = 0; x < width; x++) {           
-            if (y == 0) {
-                if (x == 0) {
-                    printf("┌");
-                }
-                else if (x == width - 1) { printf("┐"); }
-                else   printf("─");
-
-            } else
-                if (y == height - 1)
-                {
-                    if (x == 0) {
-                        printf("└");
-                    }
-                    else if(x == width-1) {
-                        printf("┘");
-                    }
-                    else printf("─");
-                } 
-                else {
-                    if (x == 0) {
-                        printf("│");
-                    }
-                    else if (x == width - 1) { printf("│"); }
-                    else printf(" ");
-                }
-        }
-        positionCur.Y++;
-    }
+    int _center_x = _window_w / 2;
+    int _center_y = _window_h / 2;
+    positionCur.X = _center_x - width / 2;
     positionCur.Y = _center_y - height / 2+ height/4;
-    //positionCur.X += 2;
     int margin = width - 21;
     margin = margin/2;
     positionCur.X += margin;
+//-------------------------------------------- попытка сделать вывод рамки ----------------------------------------------------
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------------- 
+
     SetConsoleCursorPosition(hConsole, positionCur);
     printf("Выполнить операцию ?");
     int _selection = 1;
     positionCur.Y = _center_y - height / 2 + height / 4 + height / 3;
-    positionCur.X -= margin-8;
-    
+    positionCur.X -= margin - 5;
+
     while (1) {
         SetConsoleCursorPosition(hConsole, positionCur);
-        if (_selection) {
-            printf("\x1b[43mДА\x1b[0m");
+        if (_selection) {           
+            printf("│\x1b[43mДА\x1b[0m│");
             for (int i = positionCur.X; i < positionCur.X+width - 20; i++)
                 printf(" ");
-            printf("НЕТ");
+            printf("│НЕТ│");
         }
         else {
-            printf("ДА");
+            printf("│ДА│");
             for (int i = positionCur.X; i < positionCur.X+width - 20; i++)
                 printf(" ");
-            printf("\x1b[43mНЕТ\x1b[0m");
+            printf("│\x1b[43mНЕТ\x1b[0m│");
         }
         char c = getch();
         switch(c) {
@@ -492,12 +481,130 @@ int _confirm_window(int _window_w,int _window_h)
                     return 0;
                     break;
                     }
-    }
-    
+    }  
 }
 
 
+void _window(int _window_w, int _window_h) {
+    int height = _window_h / 4; int width = _window_w / 4;
+    COORD positionCur = { _otstup,_interval }; //позиция x и y
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int _center_x, _center_y;
+    _center_x = _window_w / 2;
+    _center_y = _window_h / 2;
+    positionCur.X = _center_x - width / 2;
+    positionCur.Y = _center_y - height / 2;
+    for (int y = 0; y < height; y++) {
+        SetConsoleCursorPosition(hConsole, positionCur);
+        for (int x = 0; x < width; x++) {
+            if (y == 0) {
+                if (x == 0) {
+                    printf("┌");
+                }
+                else if (x == width - 1) { printf("┐"); }
+                else   printf("─");
+
+            }
+            else
+                if (y == height - 1)
+                {
+                    if (x == 0) {
+                        printf("└");
+                    }
+                    else if (x == width - 1) {
+                        printf("┘");
+                    }
+                    else printf("─");
+                }
+                else {
+                    if (x == 0) {
+                        printf("│");
+                    }
+                    else if (x == width - 1) { printf("│"); }
+                    else printf(" ");
+                }
+        }
+        positionCur.Y++;
+    }
+}
+
+void _in_window(int _window_w, int _window_h) {
+    _window(_window_w, _window_h);
+    int height = _window_h / 4; int width = _window_w / 4;
+    COORD positionCur = { _otstup,_interval }; //позиция x и y
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int _center_x = _window_w / 2;
+    int _center_y = _window_h / 2;
+    positionCur.X = _center_x - width / 2;
+    positionCur.Y = _center_y;
+    int margin = width - 21;
+    margin = margin / 2;
+    positionCur.X += margin;
+    SetConsoleCursorPosition(hConsole, positionCur);
+    printf("Введите данные -> ");
+}
+
+void _message_window(int _window_w, int _window_h,char* message) {
+    _window(_window_w, _window_h);
+    CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int m_lenght = u8_strlen(message);
+    int height = _window_h / 4; int width = _window_w / 4;
+    COORD positionCur = { _otstup,_interval }; //позиция x и y
+   
+    int _center_x = _window_w / 2;
+    int _center_y = _window_h / 2;
+    positionCur.X = _center_x - width / 2;
+    positionCur.Y = _center_y;
+    if (m_lenght < width - 2) {
+        int margin = width - m_lenght;
+        margin = margin / 2;
+        positionCur.X += margin;
+        SetConsoleCursorPosition(hConsole, positionCur);
+        printf("%s", message);
+    }
+    else {
+        positionCur.X++;
+        SetConsoleCursorPosition(hConsole, positionCur);
+        for (int i = 0; i < (width - 1)*2; i++) {
+            printf("%c",message[i]);
+            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+            if (info_x.dwCursorPosition.X - positionCur.X >= width - 5) {
+                printf("..."); break;
+            }
+        }
+        }
+        
+
+}
+
+
+//void fitwcs(char* dest, const char* src, const int max_length)
+//{
+//    if (!dest || !src || max_length < 4) return;
 //
+//    int
+//        curr_length = 0,
+//        src_length = strlen(src),
+//        insert_colon = (src_length - max_length > 0) ? 1 : 0;
+//
+//    char
+//        * src_var = src;
+//
+//    while (*src_var != 0 && max_length > curr_length)
+//    {
+//        *dest = (max_length - 4 < curr_length && insert_colon) ? ('.') : (*src_var);
+//
+//        src_var++;
+//        dest++;
+//        curr_length++;
+//    }
+//
+//    while (curr_length < max_length)
+//        (*(dest++) = L' ')& (curr_length++);
+//    return;
+//}
+
+// 
 //puts("┌──────┬─────┬────────────────────┬────────────┬───────────────┬──────┬──────────┬───────────┬───────┐");
 //puts("│Индекс│Номер│ ФИО                │Год рождения│Год поступления│Физика│Математика│Информатика│История│");
 //
