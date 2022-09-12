@@ -24,7 +24,7 @@
     <ProjectGuid>{d133d83a-3f60-4d0b-931c-d1ac807efc21}</ProjectGuid>
     <RootNamespace>ConsoleApplication1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>InterfaceForCursach</ProjectName>
+    <ProjectName>Cursach</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -130,7 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="InterfaceForCursach.cpp" />
+    <ClCompile Include="Cursach_main.cpp" />
     <ClCompile Include="utf8.cpp" />
     <ClCompile Include="VicMenuDLL.cpp" />
   </ItemGroup>
