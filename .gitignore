@@ -33,3 +33,4 @@
 # Others
 *.pdb
 x64
+.vs
