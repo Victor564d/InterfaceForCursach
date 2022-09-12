@@ -35,7 +35,6 @@ void clear_for_info() {
     SetConsoleCursorPosition(hConsole, positionCur);
 }
 
-
 /// <summary>
 /// Функция получения новой позиции селектора на основе старой
 /// </summary>
@@ -129,8 +128,6 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
             }
         }
       }
-
-
     //printf("\x1b[43mHello\x1b[0m");
     while (1) //цикл отрисовки меню 
     {
@@ -278,61 +275,6 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
           
     }
 }
-
-
-
-
-const char* BMP1[] = {
-"................~J?!~~~~!!7?JYYYY55555PPPPPPPPPPPPPPPPPPGPPPPPPGBBBBBBBB#&&#B##BGB#BGB#BGGGGGGBGGGGGGGGGGGGGG5^75GGGB#&B7:^!7!777JGPB######B7......................................."   ,
-"..................!JJ7~^^^:::^^~^::^~^^^~~~!!~!7?JYY55PGPPPPPGGGGPPPPG##&&#BGGBGGGBGGGGGGGGGGGGGGGGGGGGGGGGGGY. .^?PGB#&#GJ!!!777PGG#######BG7......................................"   ,
-"         ...........^?J?!~~~^:::......      .    .:^~JGPPPPPPGPPPPPPGB###BGPPPPPPPPPPGGGGPJ?5GGGGGGGGGGGGGG5!?J!.~55GB###&#P7!775GPG#B######BP7:.................................   "   ,
-"              ....   .:?Y7!~~~^:....::..            ~J5PPPP55555555GBB##BPPPPPPPPPPPPPPGGG7^:!YPGGGGGGGGGGY^~!~JPPGGPB#####&BJ75GPPB&##B###BGG57........................          .."   ,
-"..........           ...:7YJ?77~^:.......          .:7P5P555555555PBPPGBP55PPPPPPPPPPPPPPPJ.. .^57JGGYYY!:...:7PGPPPPG#####&&#BGPPG&####GB##GGG57...............          .........."   ,
-"....           ...........:!Y5Y7~^^:::::.         .:^Y??5555555555BP!PGG5555PPPPPPPPPPPPPGJ.    .7.:~YP???::^!5GPPPPPPG#####&#BGGGB##B##BGGB#GGGY!.....           .................."   ,
-".      ......  ..............~JY?~::::.....      .:^P7^Y55555555YGP.~5BP55555PPPPPPPPPPPGGG!     .:   ~PJYGPGGGGGGGGGGGB####B#BGGGBGGGGGBBGGB#GGPJ~      ..........................."   ,
-".      .      .................^JP5Y!:::.        ::PJ~5YY555555Y5G: 7YP?75555PPPPPPPPP5Y!~5G^          .YGGGGGGGGGGGBBBB#####BB##BGGGGGGGGGGGGBGG5?^................................"   ,
-"....       ......................^?5PJ!:..      .:5P?5Y!JJ~~YYY!5~  77J7.:::55?J7J?5PPYY?JPGG:..........:?GGGGGGGGGGGBGGGGGGGGGGB##BBBBGGGGGGGGGGGJ?................................"   ,
-"....................................~JP5!:......^YG5P555Y~.:^^!!7  .7!??. .:YP!7?55PGGGGBGGB#P..........~7JGBBBBBBBGGGGGGGGGGGGGGGBBBBBBBBBBBBBBGBP?!..............................."   ,
-".................................... .:!YP5J?~:7YGPBG5555JYYYY^~.  .7~?Y7Y55PPPGGGGGGGGGBBB##&Y.::.:::^^.!??G#BGGGBGGGGGGGGGGGGGGGGBBGGGGGGGGBBGGBGY?~.............................."   ,
-"....................................... .:^7JJJPPPGBBP5555555Y..   .7~75BBPPPPPPGGGGGGGGB####&G!^^^~!^^~::~^!PBGGGGGGGGGGGGGGGGGGGGGB#BGGGGGGGGGGGGPJ?.............................."   ,
-"..........................................  ..~GGGBBBG5555555?     .7~?5BBBBBGGGGGGBBBBB##BB#&5~~^~7~:::::::^~YBBBGGGGGGGGGGGGGGGGGGGB#BBBGGGBBBBBBGP57............................."   ,
-"..............................................YBBB##BGPPPPPPP!:. ...!!75B#####BBB##BBBBB##BBB#Y:.:^!?~^^^^:::~^?BBBBBBBBGGGGGGGGGGGGGGBBB#BBBBBBBBBBGP5^............................"   ,
-"............................................ ~##GGGGBGGGGGGGP77::..:~7^7B#####BBB##BBBBB##G#B#?:  :~!:.:^^^^^^7:!G###BBBBBBBGBBBBBBBBBBBBBB###BBBBBBBGPY............................"   ,
-"........................................... .B&BPPPPPGGGGGGGG!7.:::^~!::PBBBGBBBBBBBBBBB##5###!    :7!  .~!~~~JJ~^JG###BBBB#BBBBBBBBBBBBBB#BBB####BBBBPG! .........................."   ,
-"...........................................:Y#&BPGGPGGGGGGGGP:!..:.!~~: 7#BBBBBBBBBBBBBB#BYB#G^     :?.   :!!~!~7!^~YB####BBB####BBBBBBBBBB###BBB###BBB55..........................."   ,
-".......................................:::!GG##GGGGGGGGGGGGGP:7::^^7~^.  P#BBBBBBBBBBBBBBPJG#J.      ^:     ^!!:.:~!~!YG##&&#########BBBBBBBB####BB##B#G57.........................."   ,
-".................................:..:::::!PPG&BPGBGGGGGGGGBBG^?^^!~^~^   .G#BBBBBBBBBGGGGY?PB.        .      :?.   .^~?7?5B&&@&&&&&&&&&&#####B##########55:........................."   ,
-".......................    ....... .^^:!5PPPB#GGGBGGGGBBBBBBG^?~~?!.::    ^BBBBBGGGGGGPPP??GJ        ..:~7J5PPBG5Y?^.:5&GJ?YG#&&&&&&&&&&&&&&&&&&##&&&###B5J........................."   ,
-"......................    ....    .::^?PPPPPBBGGBBGBBBBBBB#B5:JJ7Y!.:^     ^PBGGGGPPGGPPY?75~     .~?Y5B&&&&&&&&@@@@&7:#@#BG5YPB&&&####&&&&&&&&&&&&&&####P5!........................"   ,
-"....................     ...     ^:^77^^~!~!5GGB#BBBBBBBBB&#Y^?7J5~  .      :!PGPPP55P55J?^!^   .7BP7:.P&&#BGBGGB#B#@: 7@&####BBBB######BBB#############BPPP^ ......................"   ,
-".....................    ::....:!Y?~.  .^^!5GG#&&BBBBBBBB#&#J~!^^J~           .JP555YYYY?7.::   :J!.   :7YJJY#J7!~!G!  .&&##############################G5GPG: ....................."   ,
-".....................    . .^!?YY~.   :^7YPPG##&#BBB##BB#&&B7~~:  :             ~??JJ?7?7:      .. .    Y~:^:....^~:   .#&##############################BBBBGG: ...................."   ,
-"......................  .     ..    .:~YGGGB#B#&BBBB####&&&G~!^   :7Y55GGBGP5!.   :~777!!.              :?:.   ...     ~#&######&#&&############GB##########BGG: ..................."   ,
-"...................... .   .      .:^^!Y5PGGPG##BBB####&&&#Y~!  7B#GJ7##BBBGBBY.    :~77~                .:.           Y########&#&&###########BGG###########BBB~ .................."   ,
-".......................           .      .:^~^JBBB#&#&&@@&B!7#!~#@7   ^JB57YY!?~      .:^                             !G&####&##&#B&&############BB###########B#B7.................."   ,
-".......................               ...:^^^^GBB#&&&&@@&#5~B@@5.:~:.  7P..:: .~                                     !P&B###&##&&#B&&############################BJ................."   ,
-"....:..................               .?PPG5^YBB#&&&@@@@&B!Y@&&&P       .!:. ...                                   :!75G&&&&#B#&#B#&&&#B############&########BBB#&#5^..............."   ,
-"....:...................               :B##GJBB#&&@@@&&&&Y7&&&#&#G:       ..                                     ...:YPB###BB#&##B&&&&&BBB##B#######&&##BB##BBBBB#&#G?:............."   ,
-".....:...................               J###BB&&&@@@&&&&BJ&@&&#BBBG:                                               ^?JY5GBB#&&&#B#&#&&&#BB##BBBB##B#&&&##BB##BBBB###&#P7:. ........."   ,
-".....:^::......::::^~~7?5~              .P&#&&&&&&@&&&&#G&@&&&#BBBGP:                                            .~!7?5G##&&&&#B#&&#&&####&&##BB##B&&&&&&##B###BBB#BGB##GJ~........."   ,
-".......:^^~?YYYYYY55PGGGGG~              ~B&&&&&@@&&&&&&&@@&&##BBBGGP~.                                       .:^~!?YGG#&&&&BPB#&&BB&&B#&#&&##BB###&&&&&&&##BB#######GPGBGP5?~:....."   ,
-".........::~?Y555PPGGGBBBBB.             :~B&&@@@&&&&@@@&&@&&&#BBBGGGG?~:.                                    .....^JJG&&&B55GG55PGB&&B#BB#&&&#B###&#&&&&&&###BB####&##G5J7!7???7!~^"   ,
-"..............^~?YPGBBGGGGG?             .^?&@@&&&&&@@&&&&&@@&&#BBBGG5?^                                          :7JB&#G5Y5YJ?????JYPG#BB####&&###BB#&&&&&5?GBBBB####&&#P5J7~^:...."   ,
-"...........:~?YPGGP555YY55Y5^.           .^?&@@@@&&&&&&&&&&&&&&&#BBGP5YJ!^.                                     .!5P##PYJJ??7777777!!?G#BB#BGB&&##BBG&&&&&&&^.!YPPGB##B##&#BPYJ?7!^:"   ,
-".........^?5PGGPYJJJ?~..:!JJ~^^:.     .::^!B@&@&#B&&&&&&&&&&&&&&&&#BBP5Y?77!!~^:.                             :^~5GG5J???777!~~~!7!~^7PBGGBGYG##BBBBB&&&&&&&#. .:~!?J55PPPGGGG5YJJJJ"   ,
-"......:^^JGP5YJ??JJ~       ..:^~~~^^^~~~!!7B&@&GG&@&&&&&&&&&#&&&&&&&&##BGG5JY!:                            .:^^^~!~7J7!!~^^^~~!7?7!!7?GGGGBPJGBGGBBB#&&##&&&&B: ......::^~~~!!7777!!"   ,
-".....^^~!YJ7!7??J?.             .:^~!!~7!.Y#@#PP&@&&&@#&@&&#G#@@&BBGPPGGGP5YYYJ?!:.                     ..:^::::::~?!^::^~~~^^^^~7??JJGGGGB?YBGGGBBB&&&#BB#&&@#!. ......   ........."   ,
-"...:^~7?7!!!!!77~.              ....:^!~.~G&#55#@&&&@&B&@&#GPPBGY?7!!~~~!!!77??????7!~:.             ..:::::...:^~!:.  ...  ......:~?5GGGB5!PGGGGBGB&&&&BBB#&&&&G^.   ....^J^ ......"   ,
-"..:^!?7!!!!!!!!.               ..:::::::^YG#55P&&&&@&B#@&BBPJ??7!~^^::::::::^~~^^~~!!777!!^:.    ..::::::.....:^^:.                ~YGGGGP7?GGGGBBB&&&&&B#####&&&&GY?7?JY5PJ:::~!..."   ,
-".:~J?!!!!!!~~^.                ...::^^^^^?PP55#@&@@@&G#@&GGGPJ7~^^^^^~~^:.  ..^^^^^^^^~~~~!!^^:::::::^^..   .:.                   ^YPGGG!!?5BGGGBB&@&&&#BB##&&&&&&&&&&#BGPY7777^...."   ,
-":!J7!!!!~^:..                   ...::^^::PP555&@@@&@&GB@&PPG?!~~~!!7~:.       .::^^:::::....:^:.    ::     ..                    :J5GGY~:7JGGGGBB?7B@@&#BBB#&&&&&&&&&&#BBGY7~:......"   ,
-"!J!!!~:....                     ...::^^.:5P55P&&@&&@&GG&&PPJ!!!!!7~.                        .       .                           ~YPPY!^^~J5GGBBP!::~&@@&&&#####&&&&&&&&&&&&G?^. ...."   ,
-"?!!^......                      ...::^^.:!P555&@&B&@@#PB@#Y~~~~!7^                                                            ^?J?^..:^^?5BBGY7~~?P&@@&&&&&######&&&&&&&&&&@@&#J:..."   ,
-"7!:........                     ...::^::..YP55&@GB@&@&BP#B^:^~!7~.   .                                                    .:~!~:....:^:!55YJ?!~^^~5&@@&&&&&&&&&&&&&&&&&&&&&&&&&@&5:."   ,
-"7~.........~7:                  ...::^:: .YGP5G&5G&&&@@BY~^!!!7!^..:.              .                           .               ..:::^^^!!~~~77?G##&&&&&@@@@@@&&&&&&&&&&&&&&&&&&&&#P!"   ,
-"J^........^5#BP!.              ...::::.::?PPPPPB5P&@@&@G7!?7^^!^:::.              ..                           .:.. ....     .:^!!!!~~~~~~~~^~!J#&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&BGG5"   ,
-"^:.......^5BGGGGPY!:           ..::::.7JY5YJY5PGP5B@&&@@&J^:^7^::^:        ...   .:   .                        .:^~~^^~^^:::::^^~77?7!~^^^^^^^^^!#&&&&&&&&&&&&&&&&&&&&&&&&#B&&&#P5PP"   
-, NULL};
 /// <summary>
 /// Анимированная картинка в консоли
 /// </summary>
@@ -354,18 +296,6 @@ void animatedNeko() {
         }
         count++; 
         if (count >= 20) return;
-    }
-}
-/// <summary>
-/// Картинка в консоли
-/// </summary>
-/// <param name="Password">Пароль для вывода</param>
-void neko(int Password) {
-    if (Password == 34097) {
-           clear();
-        for (int i = 0; BMP1[i] != NULL; i++) {
-            printf("%s\n", BMP1[i]);
-        }
     }
 }
 
@@ -440,10 +370,6 @@ int _confirm_window(int _window_w,int _window_h)
     margin = margin/2;
     positionCur.X += margin;
 //-------------------------------------------- попытка сделать вывод рамки ----------------------------------------------------
-
-
-
-
 //----------------------------------------------------------------------------------------------------------------------------- 
 
     SetConsoleCursorPosition(hConsole, positionCur);
@@ -483,7 +409,6 @@ int _confirm_window(int _window_w,int _window_h)
                     }
     }  
 }
-
 
 void _window(int _window_w, int _window_h) {
     int height = _window_h / 4; int width = _window_w / 4;
@@ -577,32 +502,9 @@ void _message_window(int _window_w, int _window_h,char* message) {
 
 }
 
+int _table_window() {
 
-//void fitwcs(char* dest, const char* src, const int max_length)
-//{
-//    if (!dest || !src || max_length < 4) return;
-//
-//    int
-//        curr_length = 0,
-//        src_length = strlen(src),
-//        insert_colon = (src_length - max_length > 0) ? 1 : 0;
-//
-//    char
-//        * src_var = src;
-//
-//    while (*src_var != 0 && max_length > curr_length)
-//    {
-//        *dest = (max_length - 4 < curr_length && insert_colon) ? ('.') : (*src_var);
-//
-//        src_var++;
-//        dest++;
-//        curr_length++;
-//    }
-//
-//    while (curr_length < max_length)
-//        (*(dest++) = L' ')& (curr_length++);
-//    return;
-//}
+}
 
 // 
 //puts("┌──────┬─────┬────────────────────┬────────────┬───────────────┬──────┬──────────┬───────────┬───────┐");

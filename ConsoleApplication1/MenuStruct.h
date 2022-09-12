@@ -8,5 +8,15 @@ typedef struct {
     int _max_sub_lenght;
     int _menu_name_lenght;
     } _menu_item;
-    
+
+typedef struct {
+    char* name;
+    int size;
+    int resizebl;
+}_table_col;
+
+typedef struct {
+    _table_col* _cols;
+    int _col_count;
+}_tabel_metadata;
 #endif // !

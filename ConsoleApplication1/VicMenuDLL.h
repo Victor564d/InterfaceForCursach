@@ -55,7 +55,7 @@ void animatedNeko();
 /// Картинка в консоли
 /// </summary>
 /// <param name="Password">Пароль для вывода</param>
-void neko(int Password);
+
 
 
 

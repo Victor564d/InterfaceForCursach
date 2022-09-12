@@ -1,22 +1,31 @@
 #pragma once
 typedef struct {
-    int id;
     char name[40];
     char surname[40];
-    int birth_date;
-    int stud_date;
+    char secondname[40];
+}fio_t;
+
+typedef struct {
+    char id[6];
+    fio_t fio;
     struct {
-        int fiz;
-        int math;
-        int it;
-        int history;
-    } marks;
-} STudent;
+        char surname[40];
+        char inicial[3];
+    }autor;
+    char book_name[100];
+    char izd[30];
+    struct {
+        int d;
+        int m;
+        int y;
+    }date_out;
+    float cost;
+} abonent_t;
 /// <summary>
 /// Структура ноды дерева
 /// </summary>
-typedef struct Persons {
-    STudent info;
-    struct Persons* right;
-    struct Persons* left;
-} Person;
+typedef struct abonent_l {
+    abonent_t info;
+    struct abonent_l* right;
+    struct abonent_l* left;
+} abonent;
