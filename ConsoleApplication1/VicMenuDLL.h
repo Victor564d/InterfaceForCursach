@@ -24,7 +24,7 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 /// <param name="MenuSize">Колличество элементов в массиве наименований</param>
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int _print_menu(_menu_item * _menu, int* position, int MenuSize, int Colums);
+int _print_menu(_menu_item * _menu, int* position, int MenuSize, int Colums, _tabel_metadata table);
 
 
 /// <summary>
@@ -38,13 +38,14 @@ int _print_menu(_menu_item * _menu, int* position, int MenuSize, int Colums);
 /// <param name="Dataptr">Указатель на информационное поле</param>
 /// <param name="num">Указатель на номер элемента при выводе</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int _print_menu_with_table(_menu_item * _menu //Массив меню 
+int _print_menu_with_table(_menu_item* _menu //Массив меню 
     , int* position //Массив текущей позиции x и y
     , int _menu_size  //Колличество элементов меню
     , int Colums,//Количество столбцов 
     int (*funcptr) (void*, int),
     void* Dataptr,
-    int num
+    int num,
+    _tabel_metadata table
 );
 
 // <summary>

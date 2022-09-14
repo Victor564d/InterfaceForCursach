@@ -228,7 +228,7 @@ int main(void) {
     }
     while (1) {//вывод меню и запуск соответствующих функций
         clear();
-        MenuSelect(_print_menu(menu, position, menu_size, 5), f);
+        MenuSelect(_print_menu(menu, position, menu_size, 5,*table), f);
     }
 }
 int Posid = 1;
@@ -888,9 +888,9 @@ _menu_item* _init_menu(_menu_item* menu) {
     //"Добавить новый элемент",
     //"Загрузить из файла",
     //"Записать все в файл ",
-    menu[0]._sub_menu = (char**)calloc(1, sizeof(char*) * 3);
+    menu[0]._sub_menu = (char**)calloc(menu[0]._menu_size, sizeof(char*) );
     for (int i = 0; i < menu[0]._menu_size; i++) {
-        menu[0]._sub_menu[i] = (char*)calloc(50, sizeof(char));
+        menu[0]._sub_menu[i] = (char*)calloc(90, sizeof(char));
                 }
     menu[0]._sub_menu_lenght = (int*)calloc(3, sizeof(int));
         strcpy(menu[0]._sub_menu[0], "Добавить новый элемент");  menu[0]._sub_menu_lenght[0] = 23;
@@ -904,9 +904,9 @@ _menu_item* _init_menu(_menu_item* menu) {
             //"Удалить элемент(любой)",
             //"Очистить дерево",
             //"Уровень элемента по ид",
-        menu[1]._sub_menu = (char**)calloc(1, sizeof(char*) * menu[1]._menu_size);
+        menu[1]._sub_menu = (char**)calloc(menu[1]._menu_size, sizeof(char*) );
         for (int i = 0; i < menu[1]._menu_size; i++) {
-            menu[1]._sub_menu[i] = (char*)calloc(50, sizeof(char)); 
+            menu[1]._sub_menu[i] = (char*)calloc(90, sizeof(char)); 
         }
         menu[1]._sub_menu_lenght = (int*)calloc(4, sizeof(int));
         strcpy(menu[1]._sub_menu[0], "Редактировать запись");   menu[1]._sub_menu_lenght[0] = 21;
@@ -922,9 +922,9 @@ _menu_item* _init_menu(_menu_item* menu) {
             //"Колличество элементов в дереве",
             //"Отобр. всех зап. в ко-ых нет ниодной тройки",
             //"Ср. арифм. по всем предметам",
-        menu[2]._sub_menu = (char**)calloc(1, sizeof(char*) * menu[2]._menu_size);
+        menu[2]._sub_menu = (char**)calloc(menu[2]._menu_size, sizeof(char*));
         for (int i = 0; i < menu[2]._menu_size; i++) {
-            menu[2]._sub_menu[i] = (char*)calloc(50, sizeof(char));
+            menu[2]._sub_menu[i] = (char*)calloc(90, sizeof(char));
            
         }
         menu[2]._sub_menu_lenght = (int*)calloc(5, sizeof(int));
@@ -939,9 +939,9 @@ _menu_item* _init_menu(_menu_item* menu) {
         menu[3]._menu_size = 2;
         //"Анимация",
         //"Картинка",
-        menu[3]._sub_menu = (char**)calloc(1, sizeof(char*) * menu[3]._menu_size);
+        menu[3]._sub_menu = (char**)calloc(menu[3]._menu_size, sizeof(char*) );
         for (int i = 0; i < menu[3]._menu_size; i++) {
-            menu[3]._sub_menu[i] = (char*)calloc(50, sizeof(char));
+            menu[3]._sub_menu[i] = (char*)calloc(90, sizeof(char));
             
         }
         menu[3]._sub_menu_lenght = (int*)calloc(2, sizeof(int));
@@ -972,7 +972,7 @@ _tabel_metadata* _init_table(_tabel_metadata* table) {
     table->_cols[1].size = u8_strlen(table->_cols[1].name);
     //-------------------------------------------------------------------------------------------//
     table->_cols[2].name = (char*)calloc(sizeof(char), 20);
-    strcpy(table->_cols[2].name, "Автор книги");
+    strcpy(table->_cols[2].name, "   Автор книги   ");
     table->_cols[2].resizebl = 0;
     table->_cols[2].size = u8_strlen(table->_cols[2].name);
     //-------------------------------------------------------------------------------------------//

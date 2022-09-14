@@ -1,29 +1,9 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: промежуточный каталог (x64\Debug\) содержит файлы, которые используются совместно с другим проектом (InterfaceForCursach.vcxproj).  Это может привести к ошибкам очистки и перестроения.
-  Cursach_main.cpp
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(1,32): warning C4081: требуется "newline"; обнаружен ";"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(2,10): warning C4067: непредвиденные лексемы за директивой препроцессора, требуется newline
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x1a0, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x1a2, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x1a6, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x1aa, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x1ad, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x1af, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\ThreeStruct.h(1,1): warning C4828: Файл содержит знак, начинающийся со смещения 0x1b2, который является недопустимым в текущей исходной кодировке (кодовая страница 65001).
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(334,40): warning C4047: функция: "float *" отличается по уровням косвенного обращения от "float (*)[4]"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(334,35): warning C4024: getSerArefm: различные типы для формального и фактического параметров 2
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(445,31): warning C4047: =: "char" отличается по уровням косвенного обращения от "char [2]"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(459,16): warning C4477: "printf": в строке форматирования "%d" требуется аргумент типа "int", но вариативный аргумент "1" имеет тип "char *"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(459,16): warning C4313: printf: конфликт "%d" в строке формата с аргументом 1 типа "char *"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(485,28): warning C4047: ==: "char [6]" отличается по уровням косвенного обращения от "int"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(510,31): warning C4047: <: "int" отличается по уровням косвенного обращения от "char [6]"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(855,36): warning C4047: ==: "char [6]" отличается по уровням косвенного обращения от "int"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(857,35): warning C4047: <: "char [6]" отличается по уровням косвенного обращения от "int"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(869,38): warning C4047: ==: "char [6]" отличается по уровням косвенного обращения от "int"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(871,37): warning C4047: <: "char [6]" отличается по уровням косвенного обращения от "int"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(967,28): warning C4013: u8_strlen: нет определения; предполагается "extern" с возвратом типа "int"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(452): warning C4716: аddNewElement: должна возвращать значение
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(771): warning C4716: GetInfoFromCeyboard: должна возвращать значение
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(776): warning C4716: printBorder: должна возвращать значение
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(849): warning C4716: correctInfo: должна возвращать значение
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\Cursach_main.cpp(784): warning C4716: printTable: должна возвращать значение
+  VicMenuDLL.cpp
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(1,32): warning C4081: требуется "newline"; обнаружен ";"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(186,9): warning C4013: _table_window: нет определения; предполагается "extern" с возвратом типа "int"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(308,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(478,20): warning C4013: u8_strlen: нет определения; предполагается "extern" с возвратом типа "int"
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(510,81): warning C4101: buff: неиспользованная локальная переменная
+E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(598): warning C4716: _table_window: должна возвращать значение
   ConsoleApplication1.vcxproj -> E:\University\A and P\Test_Menu\InterfaceForCursach\x64\Debug\Cursach.exe

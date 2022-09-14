@@ -79,9 +79,9 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 /// <param name="MenuSize">Колличество элементов в массиве наименований</param>
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int _print_menu(_menu_item * _menu, int* position, int _menu_size, int Colums)
+int _print_menu(_menu_item * _menu, int* position, int _menu_size, int Colums,_tabel_metadata table)
 {
-    return _print_menu_with_table (_menu, position, _menu_size, Colums, NULL, NULL, -1);
+    return _print_menu_with_table (_menu, position, _menu_size, Colums, NULL, NULL, -1,table);
 }
 
 /// <summary>
@@ -101,23 +101,24 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
     , int _menu_buttons,//Количество кнопок меню  
     int (*funcptr) (void*, int), //резерв
     void* Dataptr, //резерв
-    int num //резерв
+    int num, //резерв
+    _tabel_metadata table
 )
 {
-    int _padding;
-    int _new_padding;
-    int* _size_now = NULL;
-    if (_first_start) {
-        _window_size = _get_window_size(_window_size);
-        _print_bakground(_window_size[0], _window_size[1]);
-        _first_start = 0;
+    int _padding; //оступ 
+    int _new_padding; //новый отступ
+    int* _size_now = NULL; //текущий размер окна 
+    if (_first_start) { // Если у нас первый запуск
+        _window_size = _get_window_size(_window_size); //порлучаем размер окна 
+        _print_bakground(_window_size[0], _window_size[1]); // вызываем отрисовку заднего фона
+        _first_start = 0; // первый запуск закончен
     }
-    COORD positionCur = { _otstup + 1, _interval + 1 }; //позиция x и y
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleCursorPosition(hConsole, positionCur);
-    CONSOLE_SCREEN_BUFFER_INFO info_x;
-    int _max_subm_lenght = 0; 
-    for (int i = 0; i < _menu_size; i++) {
+    COORD positionCur = { _otstup + 1, _interval + 1 }; //позиция x и y у курсора. Стартовый отступ 
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); //получаем хендлер консоли
+    SetConsoleCursorPosition(hConsole, positionCur);// установим курсор в позици. 
+    CONSOLE_SCREEN_BUFFER_INFO info_x; //необходимо для получения размера консоли 
+    int _max_subm_lenght = 0;  //поиск максимальной длины записи в сабменю
+    for (int i = 0; i < _menu_size; i++) { //цикл прохода по всем записям в меню
         if (_menu[i]._menu_size > 0) {
             _max_subm_lenght = _menu[i]._sub_menu_lenght[0];
             for (int j = 1; j < _menu[i]._menu_size; j++) {
@@ -131,56 +132,58 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
     //printf("\x1b[43mHello\x1b[0m");
     while (1) //цикл отрисовки меню 
     {
-        _size_now = _get_window_size(_size_now);
-        if ((_size_now[0] != _window_size[0]) || (_size_now[1] != _window_size[1]))
+        _size_now = _get_window_size(_size_now); //получение текущего размера окна 
+        if ((_size_now[0] != _window_size[0]) || (_size_now[1] != _window_size[1])) //ели текузий размер не совпал с стартовым
         {
-            _window_size[0] = _size_now[0];  _window_size[1] = _size_now[1];
-            clearf();
-            _print_bakground(_window_size[0], _window_size[1]);
-            positionCur.X = _otstup + 1; positionCur.Y = _interval + 1;
-            SetConsoleCursorPosition(hConsole, positionCur);
+            _window_size[0] = _size_now[0];  _window_size[1] = _size_now[1]; // запоминаем текущий размер 
+            clearf(); // очистка экрана
+            _print_bakground(_window_size[0], _window_size[1]); //по новой отрисовываем задний фон и рабочую область
+            positionCur.X = _otstup + 1; positionCur.Y = _interval + 1; // задаем базовые стартовые параметры курсора 
+            SetConsoleCursorPosition(hConsole, positionCur); //устанавливаем курсор в начальное положение
         }
-        positionCur.X = _otstup + 1; positionCur.Y = _interval + 1;
-        SetConsoleCursorPosition(hConsole, positionCur);
-        for (int i = 0; i < _menu_size; i++) {
-            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
-            _padding = info_x.dwCursorPosition.X - 1;
-            if (position[0] == i + 1) {
-                printf("\x1b[43m %s \x1b[0m", _menu[i]._name);
+        positionCur.X = _otstup + 1; positionCur.Y = _interval + 1;   
+        SetConsoleCursorPosition(hConsole, positionCur);//устанавливаем курсор в начальное положение
+        for (int i = 0; i < _menu_size; i++) { //Пока у нас есть элементы в меню 
+            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x); // получаем текущее положение 
+            _padding = info_x.dwCursorPosition.X - 1; //задаем текущий падинг 
+            if (position[0] == i + 1) { //если у нас позиция курсора-указателя совпадает с текущей позицией
+                printf("\x1b[43m %s \x1b[0m", _menu[i]._name); // выделяем цветом
             }
-            else printf(" %s ", _menu[i]._name);
-            printf("│");
+            else printf(" %s ", _menu[i]._name); // иначе просто выводим на экран
+            printf("│");  //разделитель
             GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
-            positionCur.X = info_x.dwCursorPosition.X - 1;
-            _new_padding = info_x.dwCursorPosition.X - 1;
-            positionCur.Y -= 1;
+            positionCur.X = info_x.dwCursorPosition.X - 1; // получаем текущую позицию курсора, сместив его на один символ назад
+            _new_padding = info_x.dwCursorPosition.X - 1;  //запоминаем новый падинг(оступ)
+            positionCur.Y -= 1; // подымаем курсор на 1 
+            SetConsoleCursorPosition(hConsole, positionCur);  //Установили курсор
+            printf("┬"); // выводим разделитель между двумя 
+            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x); //получаем снова информацию о курсоре
+            positionCur.Y += 2; positionCur.X = _padding; //смещаем курсор вниз на две ячейки, установив его на оступ 
             SetConsoleCursorPosition(hConsole, positionCur);
-            printf("┬");
-            GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
-            positionCur.Y += 2; positionCur.X = _padding;
-            SetConsoleCursorPosition(hConsole, positionCur);
-            if (_padding == _otstup)
+            if (_padding == _otstup) // печатаем разделитель
             {
                 printf("├"); positionCur.X++;
             }
             else {
-                positionCur.X++;
+                positionCur.X++; //иначе увеличели X
                 SetConsoleCursorPosition(hConsole, positionCur);
             }
-            for (int j = positionCur.X; j < _new_padding; j++) {
-                printf("─");
-            }
+            for (int j = positionCur.X; j < _new_padding; j++) { //отрисовка нижнего отделителя
+                printf("─"); 
+                            }
             if (i == _menu_size - 1) {
-                printf("┘");
+                printf("┘"); // если элемент последний , отрисовать уголок
             }
             else
-                printf("┴");
+                printf("┴"); //иначе отрисовка отделителя
             positionCur.Y -= 1; positionCur.X = _new_padding + 1;
             SetConsoleCursorPosition(hConsole, positionCur);
         }
         //-----------------------------------------------------------------------------  
         //Пример управления цветом заднего фона и текста (задний фон красный)printf("\x1b[41mHello\x1b[0m");
                                                                            //printf("\x1b[43mHello\x1b[0m");
+
+        _table_window(_size_now[0], _size_now[1],table);
 
         if (funcptr != NULL && Dataptr != NULL) //Если у нас есть данные для вывода - выводим
             funcptr(Dataptr, num);
@@ -235,7 +238,6 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                                         }
                                 }
                                 else (printf("─"));
-
                         }
                         positionCur.Y++; positionCur.X = _menu[position[0] - 1]._menu_name_lenght + 2;
                         SetConsoleCursorPosition(hConsole, positionCur);
@@ -263,16 +265,12 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                     if (c == 27) { clear(); break; }
                     position = _get_curent_selection(c, position, _menu[position[0] - 1]._menu_size, _menu_buttons, 1);
                 }
-
             }
-            else return 16;
-            
+            else return 16;          
             }
         else {
-            position = _get_curent_selection(c, position, 1, _menu_buttons, 0);
-           
-        }
-          
+            position = _get_curent_selection(c, position, 1, _menu_buttons, 0);    
+        }         
     }
 }
 /// <summary>
@@ -306,7 +304,7 @@ void _print_bakground(int _window_w,int _window_h)
     for (int i = 0; i < _window_h; i++)
     {
         for (int j = 0; j < _window_w; j++) {
-            printf("%c", c);
+            printf("\x1b[44m%c\x1b[0m",c);
             c= rand() % (47 - 33 + 1) + 33;
         }
         printf("\n");
@@ -324,7 +322,6 @@ void _print_border(int _window_w, int _window_h) {
             printf("└");
         else 
         printf("│");
-       
         for (int x = _otstup+1; x < _window_w - _otstup; x++) {
             if ((y == _interval) || (y == _window_h - _interval)) printf("─"); else  printf(" ");
         } 
@@ -371,13 +368,11 @@ int _confirm_window(int _window_w,int _window_h)
     positionCur.X += margin;
 //-------------------------------------------- попытка сделать вывод рамки ----------------------------------------------------
 //----------------------------------------------------------------------------------------------------------------------------- 
-
     SetConsoleCursorPosition(hConsole, positionCur);
     printf("Выполнить операцию ?");
     int _selection = 1;
     positionCur.Y = _center_y - height / 2 + height / 4 + height / 3;
     positionCur.X -= margin - 5;
-
     while (1) {
         SetConsoleCursorPosition(hConsole, positionCur);
         if (_selection) {           
@@ -502,7 +497,90 @@ void _message_window(int _window_w, int _window_h,char* message) {
 
 }
 
-int _table_window() {
+int _table_window(int _window_w, int _window_h,_tabel_metadata table) {
+    CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
+    int _size_delta = 0;
+    for (int i = 0; i < table._col_count; i++) {
+        _size_delta += table._cols[i].size;
+    }
+    int height = _window_h - _interval * 2 - 4 ; int width = _window_w - _otstup * 2 - 4;
+    _size_delta = (width -2) - _size_delta - table._col_count*2-5 ;
+    COORD positionCur = { _otstup+2,_interval+3}; //позиция x и y 
+    SetConsoleCursorPosition(hConsole, positionCur);
+    for (int i = 0; i < width; i++) {
+        if (i == 0) {
+            printf("┌");
+        }
+        if (i == width - 1) {
+            printf("┐");
+        } else 
+        printf("─");
+    }
+    positionCur.Y++; //positionCur.X++;
+    SetConsoleCursorPosition(hConsole, positionCur);
+    printf("│");
+    for (int i = 0; i < table._col_count; i++) {
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+        _padding = info_x.dwCursorPosition.X - 1;
+         printf(" %s ", table._cols[i].name);
+        if (u8_strlen(table._cols[i].name) != table._cols[i].size) {
+            int _tab_index = table._cols[i].size - u8_strlen(table._cols[i].name)  - 2;
+            _size_delta -= _tab_index;
+            for (int i = 0; i < _tab_index; i++) {
+                printf(" ");
+            }
+        }
+        if (table._cols[i].resizebl) {
+            if (!_mn_size_flag) {
+                int _tmp_padding = _size_delta / 3;
+                _size_delta -= _tmp_padding;
+                for (int i = 0; i < _tmp_padding; i++) {
+                    printf(" ");
+                }
+                _mn_size_flag = 1;
+               // table._cols[i].size += _tmp_padding;
+            }
+            else {
+                for (int i = 0; i < _size_delta; i++) {
+                    printf(" ");
+                }
+               // table._cols[i].size += _size_delta;
+            }
+        }
+        printf("│");
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+        positionCur.X = info_x.dwCursorPosition.X - 1;
+        _new_padding = info_x.dwCursorPosition.X - 1;
+        positionCur.Y -= 1;
+        SetConsoleCursorPosition(hConsole, positionCur);
+        if (i == table._col_count - 1) {
+            printf("┐");
+        }
+        else  
+            printf("┬");
+        GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info_x);
+        positionCur.Y += 2; positionCur.X = _padding;
+        SetConsoleCursorPosition(hConsole, positionCur);
+        if (_padding == _otstup+2)
+        {
+            printf("├"); positionCur.X++;
+        }
+        else {
+            positionCur.X++;
+            SetConsoleCursorPosition(hConsole, positionCur);
+        }
+        for (int j = positionCur.X; j < _new_padding; j++) {
+            printf("─");
+        }
+        if (i == table._col_count - 1) {
+            printf("┤");
+        }
+        else
+            printf("┼");
+        positionCur.Y -= 1; positionCur.X = _new_padding + 1;
+        SetConsoleCursorPosition(hConsole, positionCur);
+    }
 
 }
 
