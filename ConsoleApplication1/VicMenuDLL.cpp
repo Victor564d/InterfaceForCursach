@@ -1,7 +1,7 @@
 ﻿#pragma warning(disable : 4996);
 #include "VicMenuDLL.h"
 #include "MenuStruct.h"
-//#include "utf8.h"
+#include "utf8.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -272,6 +272,8 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
             position = _get_curent_selection(c, position, 1, _menu_buttons, 0);    
         }         
     }
+
+    return EXIT_SUCCESS;
 }
 /// <summary>
 /// Анимированная картинка в консоли
@@ -299,7 +301,8 @@ void animatedNeko() {
 
 void _print_bakground(int _window_w,int _window_h)
 {
-    clearf(); char c =  rand() % (47 - 33 + 1) + 33;
+    clearf();
+    char c =  rand() % (47 - 33 + 1) + 33;
     srand(time(NULL));
     for (int i = 0; i < _window_h; i++)
     {
@@ -402,7 +405,9 @@ int _confirm_window(int _window_w,int _window_h)
                     return 0;
                     break;
                     }
-    }  
+    }
+
+    return EXIT_SUCCESS;
 }
 
 void _window(int _window_w, int _window_h) {
@@ -582,6 +587,7 @@ int _table_window(int _window_w, int _window_h,_tabel_metadata table) {
         SetConsoleCursorPosition(hConsole, positionCur);
     }
 
+    return EXIT_SUCCESS;
 }
 
 // 

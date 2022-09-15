@@ -32,7 +32,7 @@ int аddNewElement(abonent** st);
 /// </summary>
 /// <param name="d">Информационные поля</param>
 /// <returns>Возвращает информационную структуру которую необходимо сохранить</returns>
-abonent_t GetInfoFromCeyboard(abonent_t  d);
+abonent_t GetInfoFromKeyboard(abonent_t  d);
 /// <summary>
 /// Отображение структуры дерева
 /// </summary>
@@ -132,7 +132,7 @@ int getResponse();
 /// </summary>
 /// <param name="d">Информационные поля</param>
 /// <returns>Возвращает информационную структуру которую необходимо сохранить</returns>
-abonent_t GetInfoFromCeyboard(abonent_t  d);
+abonent_t GetInfoFromKeyboard(abonent_t  d);
 /// <summary>
 /// Заголовок таблицы
 /// </summary>
@@ -442,13 +442,15 @@ void addToTree(abonent** root, const abonent_t* info)
 
 int аddNewElement(abonent** st)
 {
-    abonent_t d; d.id[0] = "0";
+    abonent_t d;
+    strcpy(d.id, "0");
     while (1) {
         clear();
-                d = GetInfoFromCeyboard(d);
+                d = GetInfoFromKeyboard(d);
                 addToTree(st, &d);
                 printf("\nЗапись добавлена . Для выхода из ввода нажмите esc\n"); if (getch() == 27)break;
               }
+    return EXIT_SUCCESS;
 }
 
 void View(abonent* top, int otstup) {
@@ -456,7 +458,7 @@ void View(abonent* top, int otstup) {
         otstup += 3; //отступ от края экрана
         View(top->right, otstup); //обход правого поддерева
         for (int i = 0; i < otstup; i++) printf(" ");
-        printf("|%d\n", top->info.id);
+        printf("|%s\n", top->info.id);
         View(top->left, otstup); //обход левого поддерева
     }
 }
@@ -565,11 +567,18 @@ float* getSerArefm(abonent* root, float* summ) {
 
 int getResponse() {
     printf("\n Вы уверены что хотите выполнить данную команду ? [Y | Any]  "); char c = getch();
-    if ((c == 'y') || (c == 'Y')) return 1; else return 0;
+    if ((c == 'y') || (c == 'Y'))
+        return 1;
+    else
+        return 0;
 }
 
-abonent_t GetInfoFromCeyboard(abonent_t  d)
+abonent_t GetInfoFromKeyboard(abonent_t  d)
 {
+    /* Убрать return ниже в случае раскомментирования кода под return'ом. */
+    abonent_t a = {.id = 1};
+    return a;
+
     //hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     //char del = '|'; int index = 1;
     //if ((d.id != NULL) || (d.date_out.d != NULL))
@@ -773,6 +782,8 @@ abonent_t GetInfoFromCeyboard(abonent_t  d)
 int printBorder() {
     for (int i = 0; i < 180; i++)
         printf("-");
+
+    return EXIT_SUCCESS;
 }
 
 int printTable()
@@ -781,6 +792,8 @@ int printTable()
     printBorder(); printf("\n"); char del = '|';
     printf("%c %s %c  %s  %-13c %-8s %12c %18s %13c %s %c %s %c %s %c %s %c %s %c %s %c\n", del, TableColsName[0], del, TableColsName[1], del, TableColsName[2], del, TableColsName[3], del, TableColsName[4], del, TableColsName[5], del, TableColsName[6], del, TableColsName[7], del, TableColsName[8], del, TableColsName[9], del);
     printBorder(); printf("\n");
+
+    return EXIT_SUCCESS;
 }
 
 void printINFO(abonent_t* d, int index)
@@ -812,7 +825,7 @@ int correctInfo(abonent* st)
     //    case 3:
     //    {
 
-    //        d = GetInfoFromCeyboard(d); // получение данных с клавиатуры
+    //        d = GetInfoFromKeyboard(d); // получение данных с клавиатуры
     //        break;
     //    }
     //    case 4:
@@ -846,10 +859,13 @@ int correctInfo(abonent* st)
     //    case 2: return 0;
     //    }
     //}
+
+    return EXIT_SUCCESS;
 }
 
 abonent* getLeaf(abonent* root, int index)
 {
+    //! TODO: Исправить сравнение указателя на массив строк и числа
     if (root == NULL)
         return NULL;
     else if (root->info.id == index)
