@@ -71,6 +71,8 @@ void clear_for_info();
 void _in_window(int _window_w, int _window_h);
 void _message_window(int _window_w, int _window_h, char* message);
 
+int _table_window(int, int, _tabel_metadata);
+
 
 #endif
 

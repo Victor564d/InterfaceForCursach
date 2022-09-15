@@ -1,3 +1,18 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include <stdint.h>
+
+#ifdef _WIN32
+#include <malloc.h>
+#else
+#include <alloca.h>
+#endif
+
+#ifndef _UTF8_H
+#define _UTF8_H
+
 typedef int u_int32_t;
 /* is c the start of a utf8 sequence? */
 #define isutf(c) (((c)&0xC0)!=0x80)
@@ -69,4 +84,4 @@ int u8_is_locale_utf8(char *locale);
 int u8_vprintf(char *fmt, va_list ap);
 int u8_printf(char *fmt, ...);
 
-
+#endif //! _UTF8_H

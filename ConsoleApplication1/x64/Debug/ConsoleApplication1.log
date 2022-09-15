@@ -1,9 +1,0 @@
-﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: промежуточный каталог (x64\Debug\) содержит файлы, которые используются совместно с другим проектом (InterfaceForCursach.vcxproj).  Это может привести к ошибкам очистки и перестроения.
-  VicMenuDLL.cpp
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(1,32): warning C4081: требуется "newline"; обнаружен ";"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(186,9): warning C4013: _table_window: нет определения; предполагается "extern" с возвратом типа "int"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(308,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(478,20): warning C4013: u8_strlen: нет определения; предполагается "extern" с возвратом типа "int"
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(510,81): warning C4101: buff: неиспользованная локальная переменная
-E:\University\A and P\Test_Menu\InterfaceForCursach\ConsoleApplication1\VicMenuDLL.cpp(598): warning C4716: _table_window: должна возвращать значение
-  ConsoleApplication1.vcxproj -> E:\University\A and P\Test_Menu\InterfaceForCursach\x64\Debug\Cursach.exe
