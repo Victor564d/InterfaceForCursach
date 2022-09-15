@@ -250,6 +250,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                             printf("\x1b[43m%s\x1b[0m", _menu[position[0] - 1]._sub_menu[i]);
                         }
                         else { printf("%s ", _menu[position[0] - 1]._sub_menu[i]); }
+                        for (int l = 0; l < _margin; l++) { printf(" "); }
                         positionCur.Y++;
                         SetConsoleCursorPosition(hConsole, positionCur);
                     }
