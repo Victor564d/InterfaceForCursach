@@ -136,11 +136,6 @@ abonent_t GetInfoFromKeyboard(abonent_t  d);
 /// <summary>
 /// Заголовок таблицы
 /// </summary>
-int printTable();
-/// <summary>
-/// Горизонтальный разделитель таблицы
-/// </summary>
-int printBorder();
 int correctInfo(abonent* st);
 /// <summary>
 /// Вспомогательная рекурсивная функция поиска необходимого листка/ноды
@@ -161,7 +156,7 @@ abonent* deleteThree(abonent* st);
 /// <param name="root">Корень дерева/текущая нода</param>
 /// <param name="id">Значение которое ищем в дереве</param>
 /// <returns>Корень дерева после изменения</returns>
-abonent* DeleteNode(abonent* root, int id);
+abonent* DeleteNode(abonent* root, char id);
 /// <summary>
 /// Рекурсивная функция подсчета количества записей в дереве
 /// </summary>
@@ -176,9 +171,7 @@ int getLeafCount(abonent* root, int count);
 /// <param name="summ">Указатель на массив флоат в котором хранятся значения</param>
 /// <returns>Указатель на массив из четырех элементов типа флоат где лежит сумма балов по предметам</returns>
 float* getSerArefm(abonent* root, float* summ);
-
 int GetLeafLevel(abonent* root, int n, int serchID);
-
 void printINFO(abonent_t* d, int index);
 /// <summary>
 /// Рекурсивная функция вывода информации о студентах без троек
@@ -216,9 +209,7 @@ int main(void) {
     menu = _init_menu(menu);
     table = _init_table(table);
     // system("color F0");
-
-
-    FILE* f = fopen("data.dat", "rb+");//Открытие существующего файла для чтения и записи в конец
+    FILE* f =  fopen("data.dat", "rb+");//Открытие существующего файла для чтения и записи в конец
     if (!f) {
         f = fopen("data.dat", "wb+"); //Создание нового файла для обновления
         if (!f) {
@@ -564,7 +555,6 @@ float* getSerArefm(abonent* root, float* summ) {
     return summ;
 }
 
-
 int getResponse() {
     printf("\n Вы уверены что хотите выполнить данную команду ? [Y | Any]  "); char c = getch();
     if ((c == 'y') || (c == 'Y'))
@@ -779,23 +769,6 @@ abonent_t GetInfoFromKeyboard(abonent_t  d)
     //return d;
 }
 
-int printBorder() {
-    for (int i = 0; i < 180; i++)
-        printf("-");
-
-    return EXIT_SUCCESS;
-}
-
-int printTable()
-{
-    char* TableColsName[] = { " № "," id "," Фамилия "," Имя "," Год рождения "," Год поступления "," Физика "," Математика "," Программирование "," История " };
-    printBorder(); printf("\n"); char del = '|';
-    printf("%c %s %c  %s  %-13c %-8s %12c %18s %13c %s %c %s %c %s %c %s %c %s %c %s %c\n", del, TableColsName[0], del, TableColsName[1], del, TableColsName[2], del, TableColsName[3], del, TableColsName[4], del, TableColsName[5], del, TableColsName[6], del, TableColsName[7], del, TableColsName[8], del, TableColsName[9], del);
-    printBorder(); printf("\n");
-
-    return EXIT_SUCCESS;
-}
-
 void printINFO(abonent_t* d, int index)
 {
     //if (index == 1 || index == 0) printTable(); //заголовок таблицы
@@ -977,37 +950,37 @@ _tabel_metadata* _init_table(_tabel_metadata* table) {
     table->_col_count = 7;
     table->_cols = (_table_col*)calloc(sizeof(_table_col) , table->_col_count);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[0].name = (char*)calloc(sizeof(char), 20);
+    table->_cols[0].name = (char*)calloc(sizeof(char), 40);
     strcpy(table->_cols[0].name, "№");
     table->_cols[0].resizebl = 0;
     table->_cols[0].size = u8_strlen(table->_cols[0].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[1].name = (char*)calloc(sizeof(char), 20);
+    table->_cols[1].name = (char*)calloc(sizeof(char), 40);
     strcpy(table->_cols[1].name, "ФИО абонента");
     table->_cols[1].resizebl = 1;
     table->_cols[1].size = u8_strlen(table->_cols[1].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[2].name = (char*)calloc(sizeof(char), 20);
+    table->_cols[2].name = (char*)calloc(sizeof(char), 40);
     strcpy(table->_cols[2].name, "   Автор книги   ");
     table->_cols[2].resizebl = 0;
     table->_cols[2].size = u8_strlen(table->_cols[2].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[3].name = (char*)calloc(sizeof(char), 20);
+    table->_cols[3].name = (char*)calloc(sizeof(char), 40);
     strcpy(table->_cols[3].name, "Название книги");
     table->_cols[3].resizebl = 1;
     table->_cols[3].size = u8_strlen(table->_cols[3].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[4].name = (char*)calloc(sizeof(char), 20);
+    table->_cols[4].name = (char*)calloc(sizeof(char), 40);
     strcpy(table->_cols[4].name, "Издательство");
     table->_cols[4].resizebl = 0;
     table->_cols[4].size = u8_strlen(table->_cols[4].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[5].name = (char*)calloc(sizeof(char), 20);
+    table->_cols[5].name = (char*)calloc(sizeof(char), 40);
     strcpy(table->_cols[5].name, "Дата выдачи");
     table->_cols[5].resizebl = 0;
     table->_cols[5].size = u8_strlen(table->_cols[5].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[6].name = (char*)calloc(sizeof(char), 20);
+    table->_cols[6].name = (char*)calloc(sizeof(char), 40);
     strcpy(table->_cols[6].name, "Стоимость");
     table->_cols[6].resizebl = 0;
     table->_cols[6].size = u8_strlen(table->_cols[6].name);
