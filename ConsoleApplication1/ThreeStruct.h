@@ -6,7 +6,7 @@ typedef struct {
 }fio_t;
 
 typedef struct {
-    char id[6];
+    unsigned int id;
     fio_t fio;
     struct {
         char surname[40];

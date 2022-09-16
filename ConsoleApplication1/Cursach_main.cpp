@@ -219,7 +219,7 @@ int main(void) {
     }
     while (1) {//вывод меню и запуск соответствующих функций
         clear();
-        MenuSelect(_print_menu(menu, position, menu_size, 5,*table), f);
+        MenuSelect(_print_menu(menu, position, menu_size, 5,table), f);
     }
 }
 int Posid = 1;
@@ -319,21 +319,7 @@ void MenuSelect(int selector, FILE* f)
         getch();
         break;
     case 12:
-        size = _get_window_size();
-        if (_confirm_window(size[0], size[1])) {
-            float  summ[] = { 0,0,0,0 };
-            getSerArefm(abonents, &summ);
-            int l = getLeafCount(abonents, 0);
-            float temp = summ[0] / l;
-            printf("\n Средняя оценка по Физике --> %.4f ", temp);
-            temp = summ[1] / l;
-            printf("\n Средняя оценка по Математика --> %.4f ", temp);
-            temp = summ[2] / l;
-            printf("\n Средняя оценка по Информатика --> %.4f ", temp);
-            temp = summ[3] / l;
-            printf("\n Средняя оценка по История --> %.4f ", temp);
-            getch();
-        }
+        
         break;
     case 13:
         animatedNeko();
@@ -421,10 +407,10 @@ void addToTree(abonent** root, const abonent_t* info)
         (*root)->info = *info;
     }
     else {
-        if (strcmp((*root)->info.id, info->id) == 0) {
+        if (((*root)->info.id== info->id)) {
             _message_window(size[0], size[1], "Запись с таким id уже существует"); 
             return;            
-        }else if (strcmp((*root)->info.id, info->id) > 0)
+        }else if (((*root)->info.id > info->id))
             addToTree(&((*root)->left), info);
         else
             addToTree(&((*root)->right), info);
@@ -433,9 +419,8 @@ void addToTree(abonent** root, const abonent_t* info)
 
 int аddNewElement(abonent** st)
 {
-    abonent_t d;
-    strcpy(d.id, "0");
-    while (1) {
+    abonent_t d; d.id = 0;
+        while (1) {
         clear();
                 d = GetInfoFromKeyboard(d);
                 addToTree(st, &d);
@@ -538,307 +523,27 @@ int PrintTreeDataNonThree(abonent* root) {
     return Posid;
 }
 
-
-float* getSerArefm(abonent* root, float* summ) {
-    if (root) {
-        if (root->left) {
-            summ = getSerArefm(root->left, summ);
-        }
-        //summ[0] = summ[0] + root->info.marks.fiz;
-        //summ[1] = summ[1] + root->info.marks.math;
-        //summ[2] = summ[2] + root->info.marks.it;
-        //summ[3] = summ[3] + root->info.marks.history;
-        if (root->right) {
-            summ = getSerArefm(root->right, summ);
-        }
-    }
-    return summ;
-}
-
-int getResponse() {
-    printf("\n Вы уверены что хотите выполнить данную команду ? [Y | Any]  "); char c = getch();
-    if ((c == 'y') || (c == 'Y'))
-        return 1;
-    else
-        return 0;
-}
-
 abonent_t GetInfoFromKeyboard(abonent_t  d)
 {
     /* Убрать return ниже в случае раскомментирования кода под return'ом. */
     abonent_t a = {.id = 1};
     return a;
 
-    //hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    //char del = '|'; int index = 1;
-    //if ((d.id != NULL) || (d.date_out.d != NULL))
-    //{
-    //    int* position = (int*)malloc(2 * sizeof(int));
-    //    position[0] = 1; position[1] = 1; int tempPosition = 1; int flag = 0;
-    //    char c;
-    //    while (1) {
-    //        clear();   printTable();
-    //        switch (position[0]) {
-    //        case 1:
-    //        case 2: {
-    //            printf("%c %-3d %c->%-5d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c %-12d %c %-18d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 3: {
-    //            printf("%c %-3d %c %-6d %c->%-31s %c %-30s %c %-14d %c %-17d %c %-8d %c %-12d %c %-18d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 4: {
-    //            printf("%c %-3d %c %-6d %c %-32s %c->%-29s %c %-14d %c %-17d %c %-8d %c %-12d %c %-18d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 5: {
-    //            printf("%c %-3d %c %-6d %c %-32s %c %-30s %c->%-13d %c %-17d %c %-8d %c %-12d %c %-18d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 6: {
-    //            printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c->%-16d %c %-8d %c %-12d %c %-18d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 7: {
-    //            printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c->%-7d %c %-12d %c %-18d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 8: {
-    //            printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c->%-11d %c %-18d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 9: {
-    //            printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c %-12d %c->%-17d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 10: {
-    //            printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c %-12d %c %-18d %c->%-8d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\nВыход из редактирования\n");
-    //            break;
-    //        }
-    //        case 11: {
-    //            printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c %-12d %c %-18d %c %-9d %c\n", del, index, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del, d.marks.history, del);
-    //            printBorder();
-    //            printf("\n--> Выход из редактирования\n");
-    //            break;
-    //        }
-    //        default: { }
-    //        }
-    //        COORD positionCur = { 50,3 }; //позиция x и y
-
-
-    //        c = getch();
-    //        if (c != 13) {
-    //            position = _get_curent_selection(c, position, 2, 11,0);
-    //            if ((position[1] == 2) && (!flag)) {
-    //                tempPosition = position[0];
-    //                position[0] = 11;
-    //                flag = 1;
-    //            }
-    //            else { if (flag) { position[0] = tempPosition; flag = 0; } }
-    //        }
-    //        else {
-    //            switch (position[0]) {
-    //            case 1:
-    //            case 2: {
-    //                positionCur.X = 7; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("       ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%d", &d.id);
-    //                break;
-    //            }
-    //            case 3: {
-    //                positionCur.X = 16; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("                               ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%s", &d.surname);
-    //                break;
-    //            }
-    //            case 4: {
-    //                positionCur.X = 51; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("                             ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%s", &d.name);
-    //                break;
-    //            }
-    //            case 5: {
-    //                positionCur.X = 84; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("             ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%d", &d.birth_date);
-    //                break;
-    //            }
-    //            case 6: {
-    //                positionCur.X = 101; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("                ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%d", &d.stud_date);
-    //                break;
-    //            }
-    //            case 7: {
-    //                positionCur.X = 121; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("       ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%d", &d.marks.fiz);
-    //                break;
-    //            }
-    //            case 8: {
-    //                positionCur.X = 132; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("           ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%d", &d.marks.math);
-    //                break;
-    //            }
-    //            case 9: {
-    //                positionCur.X = 147; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("                 ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%d", &d.marks.it);
-    //                break;
-    //            }
-    //            case 10: {
-    //                positionCur.X = 168; //x 
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                printf("        ");
-    //                SetConsoleCursorPosition(hConsole, positionCur);
-    //                scanf("%d", &d.marks.history);
-    //                break;
-    //            }
-    //            case 11: {
-    //                return d;
-    //                break;
-    //            }
-    //            }
-    //        }
-
-    //    }
-    //}
-    //else {
-    //    printf("\n");
-    //    printTable();
-    //    printf("|     | "); scanf("%d", &d.id); clear();
-    //    printTable(); printf("|     | %-6d | ", d.id);
-    //    scanf("%s", &d.surname); clear(); char del = '|'; int l = 1;
-    //    printTable(); printf("%c %-3d %c %-6d %c %-32s %c", del, l, del, d.id, del, d.surname, del);
-    //    scanf("%s", &d.name);
-    //    clear(); printTable();
-    //    printf("%c %-3d %c %-6d %c %-32s %c %-30s %c", del, l, del, d.id, del, d.surname, del, d.name, del);
-    //    scanf("%d", &d.birth_date);
-    //    clear(); printTable();
-    //    printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c", del, l, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del);
-    //    scanf("%d", &d.stud_date);
-    //    clear(); printTable();
-    //    printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c", del, l, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del);
-    //    scanf("%d", &d.marks.fiz);
-    //    clear(); printTable();
-    //    printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c", del, l, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del);
-    //    scanf("%d", &d.marks.math);
-    //    clear(); printTable();
-    //    printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c %-12d %c", del, l, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del);
-    //    scanf("%d", &d.marks.it);
-    //    clear(); printTable();
-    //    printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c %-12d %c %-18d %c", del, l, del, d.id, del, d.surname, del, d.name, del, d.birth_date, del, d.stud_date, del, d.marks.fiz, del, d.marks.math, del, d.marks.it, del);
-    //    scanf("%d", &d.marks.history);
-    //}
-    //return d;
+   
 }
 
 void printINFO(abonent_t* d, int index)
 {
-    //if (index == 1 || index == 0) printTable(); //заголовок таблицы
-    //char del = '|';
-    //printf("%c %-3d %c %-6d %c %-32s %c %-30s %c %-14d %c %-17d %c %-8d %c %-12d %c %-18d %c %-9d %c", del, index, del, d->id, del, d->surname, del, d->name, del, d->birth_date, del, d->stud_date, del, d->marks.fiz, del, d->marks.math, del, d->marks.it, del, d->marks.history, del);
-    //printf("\n");
-    //printBorder();
-    //printf("\n");
+   
 }
 
 int correctInfo(abonent* st)
 {
-    //char** Menu1[] = { "Найти по номеру","Выйти в главное меню", "Редактировать","Сохранить" }; //меню если элемент для редактирования активен
-    //char** Menu2[] = { "Найти по номеру","Выйти в главное меню" }; //меню если элемента нет 
-    //int position[] = { 1,1 }; //массив позиции для меню
-    //abonent_t d, old;  d.id = NULL; d.birth_date = NULL;  abonent* temp = NULL;
-    //while (1)
-    //{
-    //    int select; int Posid = 1; clear();
-    //    if ((d.id != NULL) || d.birth_date != NULL) //если запись с которо работаем   - есть
-    //    {
-    //        select = _print_menu_with_table(Menu1, position, 4, 1, printINFO, &d, 1); // вызов меню с чермя параметрами 
-    //    }
-    //    else select = _print_menu(Menu2, position, 2, 1); // если записи нет - меню с двумя параметрами 
-    //    switch (select)
-    //    {
-    //    case 3:
-    //    {
-
-    //        d = GetInfoFromKeyboard(d); // получение данных с клавиатуры
-    //        break;
-    //    }
-    //    case 4:
-    //    {
-    //        clear();
-    //        printf("\n--------------------------------------------------------------------------------- Новая запись ------------------------------------------------------------------------------------- \n");
-    //        printINFO(&d, 1); // вывод информации
-    //        printf("\n-------------------------------------------------------------------------------- Старая запись ------------------------------------------------------------------------------------- \n");
-    //        printINFO(&old, 1); // вывод информации
-    //        printf("\n");
-    //        if (getResponse()) {
-    //            temp->info = d;
-    //            puts("Данные сохранены . Нажмите любую кнопку");
-    //            getch();
-    //        }
-    //    }
-    //    break;
-    //    case 1: {
-    //        int SerchID; printf("\nВведите идентификационный номер -->"); scanf("%d", &SerchID);
-    //        int flag = 0;  if (!st) break;
-    //        temp = getLeaf(st, SerchID);
-    //        if (temp) {
-    //            d = temp->info;
-    //            old = temp->info;
-    //        }
-    //        if (!temp) {
-    //            printf("Не найден студент с таким идентификатором .... Нажмите любую кнопку"); getch();
-    //            d.id = NULL; d.birth_date = NULL;
-    //        }
-    //        break; }
-    //    case 2: return 0;
-    //    }
-    //}
-
-    return EXIT_SUCCESS;
+   return EXIT_SUCCESS;
 }
 
 abonent* getLeaf(abonent* root, int index)
 {
-    //! TODO: Исправить сравнение указателя на массив строк и числа
     if (root == NULL)
         return NULL;
     else if (root->info.id == index)

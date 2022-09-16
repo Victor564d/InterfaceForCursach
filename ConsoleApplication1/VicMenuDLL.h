@@ -1,4 +1,5 @@
 ﻿#include "MenuStruct.h"
+#include "ThreeStruct.h"
 #ifndef VicMenuDLL /* страж включения */
 #define VicMenuDLL
 /// <summary>
@@ -24,7 +25,7 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 /// <param name="MenuSize">Колличество элементов в массиве наименований</param>
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int _print_menu(_menu_item * _menu, int* position, int MenuSize, int Colums, _tabel_metadata table);
+int _print_menu(_menu_item * _menu, int* position, int MenuSize, int Colums, _tabel_metadata *table);
 
 
 /// <summary>
@@ -45,7 +46,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив меню
     int (*funcptr) (void*, int),
     void* Dataptr,
     int num,
-    _tabel_metadata table
+    _tabel_metadata* table
 );
 
 // <summary>
@@ -65,13 +66,13 @@ void _print_bakground(int _window_w, int _window_h);
 void clear();
 void _print_border(int _window_w, int _window_h);
 int* _get_window_size();
-int _confirm_window(int _window_h, int _window_w);
+int _confirm_window();
 void _window(int _window_w, int _window_h);
 void clear_for_info();
-void _in_window(int _window_w, int _window_h);
-void _message_window(int _window_w, int _window_h, char* message);
-
-int _table_window(int, int, _tabel_metadata);
+void _in_window();
+void _message_window( char* message);
+int _table_window( _tabel_metadata *, abonent_t* , int, int*) ;
+abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass);
 
 
 #endif

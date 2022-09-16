@@ -131,11 +131,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cursach_main.cpp" />
+    <ClCompile Include="data_utils.c" />
     <ClCompile Include="utf8.cpp" />
     <ClCompile Include="VicMenuDLL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\11-я лаба\Lr9C\Lr9C\ThreeStruct.h" />
+    <ClInclude Include="include\data_utils.h" />
     <ClInclude Include="MenuStruct.h" />
     <ClInclude Include="utf8.h" />
     <ClInclude Include="VicMenuDLL.h" />
