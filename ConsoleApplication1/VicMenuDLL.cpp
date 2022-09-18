@@ -69,17 +69,17 @@ int* _get_curent_selection(char  c // Символ клавиатуры
     int x = position[0]; int y = position[1];
     switch (c)
     {
-    case 72://вверх
+    case KEY_ARROW_UP://вверх
         if (y > 1) y--;
         break;
-    case 80://вниз
+    case KEY_ARROW_DOWN://вниз
         if (y < MaxY) y++;
         break;
-    case 75://лево
+    case KEY_ARROW_LEFT://лево
         if (x > 1) x--;
         if(_flag_x_readonly) if (y > 1) y--;
         break;
-    case 77://право
+    case KEY_ARROW_RIGHT://право
         if (x < Colums) x++;
         if (_flag_x_readonly) if (y < MaxY) y++;
         break;
@@ -146,8 +146,8 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                 _menu[i]._max_sub_lenght = _max_subm_lenght;
             }
         }
-      }
-    //printf("\x1b[43mHello\x1b[0m");
+    }
+      
     while (1) //цикл отрисовки меню 
     {
         _size_now = _get_window_size(_size_now); //получение текущего размера окна 
