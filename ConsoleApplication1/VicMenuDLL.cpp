@@ -1,14 +1,17 @@
 ﻿#pragma warning(disable : 4996);
-#include "VicMenuDLL.h"
-#include "MenuStruct.h"
-#include "utf8.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <conio.h>
-#include <Windows.h>
 #include <time.h>
 
+#include <conio.h>
+#include <Windows.h>
+
+#include "utf8.h"
+
+#include "VicMenuDLL.h"
+#include "MenuStruct.h"
 
 const int _otstup = 3;
 const int _interval = 3;

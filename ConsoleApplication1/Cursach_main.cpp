@@ -1,13 +1,16 @@
 ﻿#pragma warning(disable : 4996);
-#include "VicMenuDLL.h"; //файл библиотеки меню
-#include "MenuStruct.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #include <conio.h>
 #include <Windows.h>
-#include "ThreeStruct.h"
+
 #include "include/data_utils.h"
+#include "ThreeStruct.h"
+#include "VicMenuDLL.h"
+#include "MenuStruct.h"
 
 #define clearf() system("cls");
 
