@@ -14,7 +14,7 @@ unsigned int util_hashCodeFromString(const char* string)
 {
 	unsigned int ret = 0;
 
-	for (int position = 0; string[position] != NULL; ++position)
+	for (int position = 0; string[position] != '\0'; ++position)
 	{
 		ret += string[position];
 	}

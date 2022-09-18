@@ -1,11 +1,13 @@
 ﻿#pragma warning(disable : 4996);
 
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <conio.h>
 #include <Windows.h>
+
+#include "utf8.h"
 
 #include "include/data_utils.h"
 #include "ThreeStruct.h"

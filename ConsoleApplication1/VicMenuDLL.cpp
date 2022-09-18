@@ -907,19 +907,37 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             else printf("Отмена");
             c = getch();
 
-            if (c == _key_enter) {
+            if (c == _key_enter)
+            {
                 if (_men_position[1] == table->_col_count + 1)
+                {
                     if (_confirm_window("Отменить операцию ?"))
-                        return _temp_info; else flag_clear = 1;
+                    {
+                        return _temp_info;
+                    }
+                    else
+                    {
+                        flag_clear = 1;
+                    }
+                }
             }
 
             if (c == _key_enter) {
                 if (_men_position[1] == table->_col_count)
+                {
                     if (_confirm_window("Сохранить данные ?"))
-                        return _output_info; else flag_clear = 1;
+                    {
+                        return _output_info;
+                    }
+                    else
+                    {
+                        flag_clear = 1;
+                    }
+                }
             }
 
-            if (c == _key_esc) {
+            if (c == _key_esc)
+            {
                 break;  return _output_info;
             }
             _men_position = _get_curent_selection(c, _men_position, table->_col_count + 1, 1, 1);
