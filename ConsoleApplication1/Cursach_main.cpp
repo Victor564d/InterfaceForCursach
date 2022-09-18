@@ -361,13 +361,29 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
 
 int create_file(FILE* f, abonent* root)
 {
-    if (!root) return 666;
-    fclose(f); f = fopen("data.dat", "wb+");
+    if (!root)
+        return 666;
+    
+    fclose(f);
+    f = fopen("data.dat", "wb+");
+
+    if (f == NULL)
+    {
+        clear();
+        fprintf (stderr, "Не удалось открыть файл для записи.");
+        getch();
+        
+        return 666;
+    }
+
     fseek(f, 0, SEEK_SET);
+    
     printToFile(f, root);
+    
     clear();
     puts("Данные сохранены. Нажмите любую кнопку ....");
     getch();
+    
     return 0;
 }
 
@@ -507,16 +523,10 @@ abonent* DeleteNode(abonent* root, char id) {
 }
 
 int getLeafCount(abonent* root, int count) {
-    if (root) {
-        if (root->left) {
-            count = getLeafCount(root->left, count);
-        }
-        count++;
-        if (root->right) {
-            count = getLeafCount(root->right, count);
-        }
-    }
-    return count;
+    if (root != NULL)
+        return getLeafCount(root->left, count) + 1 + getLeafCount(root->right, count);
+    else
+        return 0;
 }
 
 
