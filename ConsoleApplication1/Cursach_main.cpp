@@ -256,7 +256,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         _in_info_window(table, NULL);
         break;
     case 2:
-        if (_confirm_window()) {
+        if (_confirm_window(NULL)) {
             abonents = loadFromFile_new(f);
         }
         break;
@@ -267,7 +267,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         correctInfo(abonents);
         break;
     case 5:
-        if (_confirm_window()) {
+        if (_confirm_window(NULL)) {
             _in_window(); int l; scanf("%d", &l);
             abonents = DeleteNode(abonents, l);
             sprintf(a, "Ветка удалена");
@@ -278,7 +278,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         break;
     case 6:
         size = _get_window_size();
-        if (_confirm_window()) {
+        if (_confirm_window(NULL)) {
             abonents = deleteThree(abonents);
             sprintf(a, "Дерево очищено");
             _message_window( a);
@@ -286,7 +286,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         }
         break;
     case 7:
-        _in_window(); int l; scanf("%d", &l); l = GetLeafLevel(abonents, 0, l);
+        _in_window(NULL); int l; scanf("%d", &l); l = GetLeafLevel(abonents, 0, l);
         sprintf(a,"Уровень элемента --> %d", l);
             _message_window(a);
         getch();
@@ -306,7 +306,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         getch();
         break;
     case 10:
-        if (_confirm_window()) {
+        if (_confirm_window(NULL)) {
             sprintf(a, "Дерево содержит %d записей.",getLeafCount(abonents, 0));
             _message_window(a);
             getch();
@@ -330,8 +330,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         
         break;
     case 16:
-        size = _get_window_size();
-        if (_confirm_window()) {
+        if (_confirm_window(NULL)) {
             if (!abonents) {
                 deleteThree(abonents);
             }
@@ -341,11 +340,6 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         
     }
 }
-
-
-
-
-
 
 int create_file(FILE* f, abonent* root)
 {
@@ -440,7 +434,6 @@ void View(abonent* top, int otstup) {
         View(top->left, otstup); //обход левого поддерева
     }
 }
-
 
 abonent* loadFromFile_new(FILE* f)
 {
