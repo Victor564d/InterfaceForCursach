@@ -18,7 +18,8 @@ int x, y;
 COORD positionCur = {4,4};
 
 #define clearf() system("cls");
-#define _set_cursor_for_pos()
+#define _key_enter 13
+#define _key_esc 27
 
 BOOL _get_con_info(CONSOLE_SCREEN_BUFFER_INFO* x)
 {
@@ -73,9 +74,11 @@ int* _get_curent_selection(char  c // Символ клавиатуры
         break;
     case 75://лево
         if (x > 1) x--;
+        if(_flag_x_readonly) if (y > 1) y--;
         break;
     case 77://право
         if (x < Colums) x++;
+        if (_flag_x_readonly) if (y < MaxY) y++;
         break;
     }
     if (!_flag_x_readonly)
@@ -200,7 +203,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
             funcptr(Dataptr, num);
 
         char c = getch();
-        if (c == 13) {
+        if (c == _key_enter) {
             if (_menu[position[0] - 1]._menu_size > 0) {
                 position[1] = 1;
                 while (1) {
@@ -266,7 +269,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                         _set_cur_to_pos(hConsole, positionCur);
                     }
                     c = getch();
-                    if (c == 13) {
+                    if (c == _key_enter) {
                         int result = 0;
                         for (int l = 0; l < position[0] - 1; l++) {
                             result += _menu[l]._menu_size;
@@ -274,7 +277,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                         result += position[1];
                                      return result;
                                 }
-                    if (c == 27) { clear(); break; }
+                    if (c == _key_esc) { clear(); break; }
                     position = _get_curent_selection(c, position, _menu[position[0] - 1]._menu_size, _menu_buttons, 1);
                 }
             }
@@ -368,62 +371,7 @@ int* _get_window_size(int* size) {
     return size;
 }
 
-int _confirm_window() 
-{
-    int* _size_n = NULL;
-    _size_n = _get_window_size(_size_n);
-    int _window_w = _size_n[0]; int _window_h = _size_n[1];
-    _window(_window_w, _window_h,"Подтверждение");
-    int height = _window_h / 4; int width = _window_w / 4;
-    COORD positionCur = { _otstup,_interval }; //позиция x и y
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    int _center_x = _window_w / 2;
-    int _center_y = _window_h / 2;
-    positionCur.X = _center_x - width / 2;
-    positionCur.Y = _center_y - height / 2+ height/4;
-    int margin = width - 21;
-    margin = margin/2;
-    positionCur.X += margin;
-//-------------------------------------------- попытка сделать вывод рамки ----------------------------------------------------
-//----------------------------------------------------------------------------------------------------------------------------- 
-    _set_cur_to_pos(hConsole, positionCur);
-    printf("Выполнить операцию ?");
-    int _selection = 1;
-    positionCur.Y = _center_y - height / 2 + height / 4 + height / 3;
-    positionCur.X -= margin - 5;
-    while (1) {
-        _set_cur_to_pos(hConsole, positionCur);
-        if (_selection) {           
-            printf(" \x1b[43mДА\x1b[0m ");
-            for (int i = positionCur.X; i < positionCur.X+width - 20; i++)
-                printf(" ");
-            printf(" НЕТ ");
-        }
-        else {
-            printf(" ДА ");
-            for (int i = positionCur.X; i < positionCur.X+width - 20; i++)
-                printf(" ");
-            printf(" \x1b[43mНЕТ\x1b[0m ");
-        }
-        char c = getch();
-        switch(c) {
-                case 75://лево
-                    if (_selection != 1) _selection++;
-                    break;
-                case 77://право
-                    if (_selection == 1) _selection--;
-                    break;
-                case 13://лево
-                    return _selection;
-                    break;
-                case 27://право
-                    return 0;
-                    break;
-                    }
-    }
 
-    return EXIT_SUCCESS;
-}
 
 void _window(int _window_w, int _window_h, char* title) {
     int height = _window_h / 4; int width = _window_w / 4;
@@ -490,6 +438,86 @@ void _window(int _window_w, int _window_h, char* title) {
     }
 }
 
+int _confirm_window(char * message)
+{
+    if (!message)  message = "Выполнить операцию ?";
+    int* _size_n = NULL;
+    _size_n = _get_window_size(_size_n);
+    int _window_w = _size_n[0]; int _window_h = _size_n[1];
+    _window(_window_w, _window_h, "Подтверждение");
+    CONSOLE_SCREEN_BUFFER_INFO info_x;
+    int height = _window_h / 4; int width = _window_w / 4;
+    COORD positionCur = { _otstup,_interval }; //позиция x и y
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int _center_x = _window_w / 2;
+    int _center_y = _window_h / 2;
+    positionCur.X = _center_x - width / 2;
+    positionCur.Y = _center_y - height / 2 + height / 4+2;
+    int m_lenght = u8_strlen(message);
+    int margin = 0;
+    /*margin = width - 21;
+    margin = margin / 2;
+    positionCur.X += margin;
+    _set_cur_to_pos(hConsole, positionCur);
+    printf("%s");*/
+
+    if (m_lenght < width - 2) {
+        int margin = width - m_lenght;
+        margin = margin / 2;
+        positionCur.X += margin;
+        _set_cur_to_pos(hConsole, positionCur);
+        printf("%s", message);
+    }
+    else {
+        positionCur.X++;
+        _set_cur_to_pos(hConsole, positionCur);
+        for (int i = 0; i < (width - 1) * 2; i++) {
+            printf("%c", message[i]);
+            _get_con_info(&info_x);
+            if (info_x.dwCursorPosition.X - positionCur.X >= width - 5) {
+                printf("..."); break;
+            }
+        }
+    }
+    int _selection = 1;
+    positionCur.Y = _center_y - height / 2 + height / 4 + height / 3+2;
+    while (1) {
+        positionCur.X = _center_x - width / 2 + 3;
+        _set_cur_to_pos(hConsole, positionCur);
+        if (_selection) {
+            printf(" \x1b[43mДА\x1b[0m ");
+            positionCur.X = _center_x + width / 2-8;
+            _set_cur_to_pos(hConsole, positionCur);
+            printf(" НЕТ ");
+            
+        }
+        else {
+            printf(" ДА ");
+            positionCur.X = _center_x + width / 2 - 8;
+            _set_cur_to_pos(hConsole, positionCur);
+            printf(" \x1b[43mНЕТ\x1b[0m ");
+            
+        }
+        char c = getch();
+        switch (c) {
+        case 75://лево
+            if (_selection != 1) _selection++;
+            break;
+        case 77://право
+            if (_selection == 1) _selection--;
+            break;
+        case _key_enter://лево
+            return _selection;
+            break;
+        case _key_esc://право
+            return 0;
+            break;
+        }
+    }
+
+    return EXIT_SUCCESS;
+}
+
 void _in_window() {
     int* _size_n = NULL;
     _size_n = _get_window_size(_size_n);
@@ -540,7 +568,7 @@ void _message_window(char* message) {
                 printf("..."); break;
             }
         }
-        }
+      }
         
 
 }
@@ -685,7 +713,8 @@ void _big_window(char* title) {
     _size_n = _get_window_size(_size_n);
     int _window_w = _size_n[0]; int  _window_h = _size_n[1];
     int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
-    int height = _window_h / 2; int width = _window_w / 2;
+    int height = _window_h / 2;  
+    int width = _window_w / 2;
     int _center_x = _window_w / 2;
     int _center_y = _window_h / 2;
     positionCur.X = _center_x - width / 2;
@@ -749,55 +778,147 @@ void _big_window(char* title) {
 
 
 
-abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_info) {
+abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    int* _size_n = NULL;
+    int* _size_n = NULL; abonent_t *  _temp_info;
+    if (_output_info) {
+        _temp_info = (abonent_t*)calloc(1, sizeof(abonent_t));
+        *_temp_info = *_output_info;
+    }
+       
+    else _temp_info = (abonent_t*)calloc(1, sizeof(abonent_t));
     _size_n = _get_window_size(_size_n);
     int _window_w = _size_n[0]; int  _window_h = _size_n[1];
     int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
     int height = _window_h / 2; int width = _window_w / 2;
-    int _center_x = _window_w / 2;
+    int _center_x = _window_w / 2; int flag_clear = 0;
     int _center_y = _window_h / 2;
     _big_window("Окно ввода/редактирования записи");
+    int max_lenght = 0; int y_modifire = 1;
+    if (height > 20) y_modifire = 2;
+    for (int i = 1; i < table->_col_count; i++) {
+        if (u8_strlen(table->_cols[i].name) > max_lenght)
+            max_lenght = u8_strlen(table->_cols[i].name);
+    }
     
     char c;
     int* _men_position = (int*)calloc(2, sizeof(int));
     _men_position[0] = 1; _men_position[1] = 1;
-    while (1) {
+    while (1) { 
+        if (flag_clear) { _big_window("Окно ввода/редактирования записи"); flag_clear = 0; }
         positionCur.X = _center_x - width / 2 + 4;
         positionCur.Y = _center_y - height / 2 + 4;
         _set_cur_to_pos(hConsole, positionCur);
-        for (int i = 0; i < table->_col_count; i++) {
-            if (_men_position[1] - 1 == i) {
-                printf("\x1b[43m%s\x1b[0m", table->_cols[i].name); 
+        for (int i = 1; i < table->_col_count; i++) {
+            if (_men_position[1]  == i) {
+               // printf("\x1b[43m%s\x1b[0m", table->_cols[i].name); 
+                printf("%s", table->_cols[i].name);
             }
             else {
-                printf("%s ", table->_cols[i].name);
+                printf("%s", table->_cols[i].name);
             }
-            positionCur.Y++;
+            positionCur.Y+= y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
         } 
+        positionCur.X = _center_x - width / 2 + 4 + max_lenght +1;
+        positionCur.Y = _center_y - height / 2 + 4;
+        _set_cur_to_pos(hConsole, positionCur);
+        for (int i = 1; i < table->_col_count; i++) {
+            if (_men_position[1] == i) {
+                printf("\x1b[43m --> \x1b[0m");
+            }
+            else {
+                printf(" --> ");
+            }
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+        }
+        _get_con_info(&info_x);
+        int padding =  info_x.dwCursorPosition.X; // получаем текущую позицию курсора, сместив его на один символ назад
+        padding -= _center_x;
+        positionCur.X = _center_x - width / 2 + 4 + max_lenght + 6;
+        positionCur.Y = _center_y - height / 2 + 4;
+        _set_cur_to_pos(hConsole, positionCur);
+        for (int i = 1; i < table->_col_count; i++) {
+            for (int j = 0; j < (width/2 - padding-8); j++) {
+                printf("_");
+            }
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+        }
+
+        positionCur.X = _center_x - width / 2 + 4 + max_lenght + 6;
+        positionCur.Y = _center_y - height / 2 + 4;
+        _set_cur_to_pos(hConsole, positionCur);
+
+       
+        if (u8_strlen(_temp_info->fio.name)>0)
+            printf(" %s ", _temp_info->fio.name);
+        if (u8_strlen(_temp_info->fio.surname) > 0)
+            printf(" %s ", _temp_info->fio.surname);
+        if (u8_strlen(_temp_info->fio.secondname) > 0)
+            printf(" %s ", _temp_info->fio.secondname);
+        positionCur.Y += y_modifire;
+        _set_cur_to_pos(hConsole, positionCur);
+        if (u8_strlen(_temp_info->autor.surname) > 0)
+            printf(" %s ", _temp_info->autor.surname);
+        if (u8_strlen(_temp_info->autor.inicial) > 0)
+            printf(" %s ", _temp_info->autor.inicial);
+        positionCur.Y += y_modifire;
+        _set_cur_to_pos(hConsole, positionCur);
+        if (u8_strlen(_temp_info->book_name) > 0) {
+            printf(" %s ", _temp_info->book_name);
+        }
+        positionCur.Y += y_modifire;
+        _set_cur_to_pos(hConsole, positionCur);
+        if (u8_strlen(_temp_info->izd) > 0) {
+            printf(" %s ", _temp_info->izd);
+        }
+        positionCur.Y += y_modifire;
+        _set_cur_to_pos(hConsole, positionCur);
+        if (_temp_info->date_out.d > 0) {
+            printf(" %d ", _temp_info->date_out.d);
+            printf(" %d ", _temp_info->date_out.m);
+            printf(" %d ", _temp_info->date_out.y);
+        }
+        positionCur.Y += y_modifire;
+        _set_cur_to_pos(hConsole, positionCur);
+        if (_temp_info->cost > 0) {
+            printf(" \e[4m%f\e ", _temp_info->cost);
+        }
+
+        
+        positionCur.X = _center_x - width / 2 + 4;
         positionCur.Y = _center_y + height / 2 -2;
         _set_cur_to_pos(hConsole, positionCur);
-        if (_men_position[1] == table->_col_count+1 ) {
+        if (_men_position[1] == table->_col_count ) {
             printf("\x1b[43mСохранить\x1b[0m");
         }
         else printf("Сохранить");
         positionCur.X = _center_x + (width / 2  - u8_strlen("Отмена") - 3);
         _set_cur_to_pos(hConsole, positionCur);
-        if (_men_position[1] == table->_col_count+2) {
+        if (_men_position[1] == table->_col_count+1) {
             printf("\x1b[43mОтмена\x1b[0m");
         }
         else printf("Отмена");
             c = getch();
-            if (c == 13) {
 
-                // return _output_info;
+            if (c == _key_enter) {
+                if (_men_position[1] == table->_col_count + 1)
+                    if (_confirm_window("Отменить операцию ?"))
+                        return _temp_info; else flag_clear = 1;
             }
-            if (c == 27) {
+
+            if (c == _key_enter) {
+                if(_men_position[1] == table->_col_count )
+                    if (_confirm_window("Сохранить данные ?"))
+                 return _output_info; else flag_clear = 1;
+            }
+
+            if (c == _key_esc) {
                 break;  return _output_info;
             }
-            _men_position = _get_curent_selection(c, _men_position, table->_col_count + 2, 1, 1);
+            _men_position = _get_curent_selection(c, _men_position, table->_col_count + 1, 1, 1);
         }
     }
 
@@ -810,6 +931,6 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_info) {
 //for (int i = 0; i < MaxIndex; i++)
 //{
 //    puts("├──────┼─────┼────────────────────┼────────────┼───────────────┼──────┼──────────┼───────────┼───────┤");
-//    printf("│%6d│%5d│%-20s│%-20s│%-10.2f│%-13d│\n", st[i]._Index, st[i]._Number, st[i]._FIO, st[i]._God, st[i]._GodPos, st[i].marks.Fizika);
+//    printf("│%6d│%5d│%-20s│%-20s│%-10.2f│%-_key_enterd│\n", st[i]._Index, st[i]._Number, st[i]._FIO, st[i]._God, st[i]._GodPos, st[i].marks.Fizika);
 //}
 //puts("└──────┴─────┴────────────────────┴────────────────────┴──────────┴─────────────┘");

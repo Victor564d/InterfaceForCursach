@@ -201,6 +201,11 @@ int* size;
 
 int main(void) {
     hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_CURSOR_INFO structCursorInfo;
+    GetConsoleCursorInfo(hConsole, &structCursorInfo);
+    structCursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(hConsole, &structCursorInfo);
+
     SetConsoleCP(65001); // Задаем таблицу символов для консоли.
     SetConsoleOutputCP(65001);
     clearf();
@@ -208,6 +213,7 @@ int main(void) {
     _tabel_metadata* table = NULL;
     menu = _init_menu(menu);
     table = _init_table(table);
+   
     // system("color F0");
     FILE* f =  fopen("data.dat", "rb+");//Открытие существующего файла для чтения и записи в конец
     if (!f) {
