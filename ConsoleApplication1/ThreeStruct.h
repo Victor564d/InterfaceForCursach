@@ -1,8 +1,8 @@
 #pragma once
 typedef struct {
-    char name[40];
-    char surname[40];
-    char secondname[40];
+    char name[60];
+    char surname[60];
+    char secondname[60];
 }fio_t;
 
 typedef struct {
@@ -12,8 +12,8 @@ typedef struct {
         char surname[40];
         char inicial[3];
     }autor;
-    char book_name[100];
-    char izd[30];
+    char book_name[140];
+    char izd[50];
     struct {
         int d;
         int m;

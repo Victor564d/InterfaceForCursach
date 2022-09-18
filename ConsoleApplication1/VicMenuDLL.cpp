@@ -193,16 +193,9 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
         }
         //-----------------------------------------------------------------------------  
         //Пример управления цветом заднего фона и текста (задний фон красный)printf("\x1b[41mHello\x1b[0m");
-                                                                           //printf("\x1b[43mHello\x1b[0m");
-
+                                                                          //printf("\x1b[43mHello\x1b[0m");
         _table_window(table,NULL,0,0);
-
-
-        _in_info_window( table, NULL);
-
-
-
-
+                 
         if (funcptr != NULL && Dataptr != NULL) //Если у нас есть данные для вывода - выводим
             funcptr(Dataptr, num);
 
@@ -380,7 +373,7 @@ int _confirm_window()
     int* _size_n = NULL;
     _size_n = _get_window_size(_size_n);
     int _window_w = _size_n[0]; int _window_h = _size_n[1];
-    _window(_window_w, _window_h);
+    _window(_window_w, _window_h,"Подтверждение");
     int height = _window_h / 4; int width = _window_w / 4;
     COORD positionCur = { _otstup,_interval }; //позиция x и y
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -432,7 +425,7 @@ int _confirm_window()
     return EXIT_SUCCESS;
 }
 
-void _window(int _window_w, int _window_h) {
+void _window(int _window_w, int _window_h, char* title) {
     int height = _window_h / 4; int width = _window_w / 4;
     COORD positionCur = { _otstup,_interval }; //позиция x и y
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -473,13 +466,35 @@ void _window(int _window_w, int _window_h) {
         }
         positionCur.Y++;
     }
+    positionCur.X = _center_x - width / 2 + 1;
+    positionCur.Y = _center_y - height / 2 + 1;
+    _set_cur_to_pos(hConsole, positionCur);
+    int _temp_ots;
+    if (title) _temp_ots = (width - 2 - u8_strlen(title)) / 2;
+    for (int j = 0; j < _temp_ots; j++) {
+        printf(" ");
+    }
+    if (title)  printf("%s", title);
+    for (int j = 0; j < _temp_ots; j++) {
+        printf(" ");
+    }
+    positionCur.X = _center_x - width / 2;
+    positionCur.Y = _center_y - height / 2 + 2;
+    _set_cur_to_pos(hConsole, positionCur);
+    for (int j = 0; j < width; j++) {
+        if (j == 0) printf("├");
+        else if (j == width - 1) {
+            printf("┤");
+        }
+        else printf("─");
+    }
 }
 
 void _in_window() {
     int* _size_n = NULL;
     _size_n = _get_window_size(_size_n);
     int _window_w = _size_n[0]; int _window_h = _size_n[1];
-    _window(_window_w, _window_h);
+    _window(_window_w, _window_h,"Окно ввода");
     int height = _window_h / 4; int width = _window_w / 4;
     COORD positionCur = { _otstup,_interval }; //позиция x и y
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -498,7 +513,7 @@ void _message_window(char* message) {
     int* _size_n = NULL;
     _size_n = _get_window_size(_size_n);
     int _window_w = _size_n[0]; int _window_h = _size_n[1];
-    _window(_window_w, _window_h);
+    _window(_window_w, _window_h,"Сообщение");
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     int m_lenght = u8_strlen(message);
     int height = _window_h / 4; int width = _window_w / 4;
@@ -620,6 +635,8 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
     positionCur.X = _otstup + 2;
     _set_cur_to_pos(hConsole, positionCur);
     if (_output_mass) {
+        
+        
         int _col_inpage = height - positionCur.Y;
         int _diap[2] = { 0,0 };
         _diap[0] = ( * page) * _col_inpage;
@@ -658,16 +675,11 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
         else
             printf("─");
     }
-    
-
-
-
-
-    return EXIT_SUCCESS;
+     return EXIT_SUCCESS;
 }
 
 
-abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_info) {
+void _big_window(char* title) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     int* _size_n = NULL;
     _size_n = _get_window_size(_size_n);
@@ -710,6 +722,44 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_info) {
         }
         positionCur.Y++;
     }
+
+    positionCur.X = _center_x - width / 2 + 1;
+    positionCur.Y = _center_y - height / 2 + 1;
+    _set_cur_to_pos(hConsole, positionCur);
+     int _temp_ots;
+     if (title) _temp_ots = (width - 2 - u8_strlen(title)) / 2;
+    for (int j = 0; j < _temp_ots; j++) {
+        printf(" ");
+    }
+    if(title)  printf("%s", title);
+    for (int j = 0; j < _temp_ots; j++) {
+        printf(" ");
+    }
+    positionCur.X = _center_x - width / 2;
+    positionCur.Y = _center_y - height / 2 + 2;
+    _set_cur_to_pos(hConsole, positionCur);
+    for (int j = 0; j < width; j++) {
+        if (j == 0) printf("├");
+        else if (j == width - 1) {
+            printf("┤");
+        }
+        else printf("─");
+    }
+}
+
+
+
+abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_info) {
+    CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int* _size_n = NULL;
+    _size_n = _get_window_size(_size_n);
+    int _window_w = _size_n[0]; int  _window_h = _size_n[1];
+    int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
+    int height = _window_h / 2; int width = _window_w / 2;
+    int _center_x = _window_w / 2;
+    int _center_y = _window_h / 2;
+    _big_window("Окно ввода/редактирования записи");
+    
     char c;
     int* _men_position = (int*)calloc(2, sizeof(int));
     _men_position[0] = 1; _men_position[1] = 1;
@@ -717,22 +767,40 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_info) {
         positionCur.X = _center_x - width / 2 + 4;
         positionCur.Y = _center_y - height / 2 + 4;
         _set_cur_to_pos(hConsole, positionCur);
-        for (int i = 0; i <= table->_col_count; i++) {
-
+        for (int i = 0; i < table->_col_count; i++) {
+            if (_men_position[1] - 1 == i) {
+                printf("\x1b[43m%s\x1b[0m", table->_cols[i].name); 
+            }
+            else {
+                printf("%s ", table->_cols[i].name);
+            }
+            positionCur.Y++;
+            _set_cur_to_pos(hConsole, positionCur);
+        } 
+        positionCur.Y = _center_y + height / 2 -2;
+        _set_cur_to_pos(hConsole, positionCur);
+        if (_men_position[1] == table->_col_count+1 ) {
+            printf("\x1b[43mСохранить\x1b[0m");
         }
-        c = getch();
-        if (c == 13) {
-
-            return _output_info;
+        else printf("Сохранить");
+        positionCur.X = _center_x + (width / 2  - u8_strlen("Отмена") - 3);
+        _set_cur_to_pos(hConsole, positionCur);
+        if (_men_position[1] == table->_col_count+2) {
+            printf("\x1b[43mОтмена\x1b[0m");
         }
-        if (c == 27) { break; }
-        _men_position = _get_curent_selection(c, _men_position, table->_col_count, 1, 1);
+        else printf("Отмена");
+            c = getch();
+            if (c == 13) {
 
-
-        
-        printf("Тест");
+                // return _output_info;
+            }
+            if (c == 27) {
+                break;  return _output_info;
+            }
+            _men_position = _get_curent_selection(c, _men_position, table->_col_count + 2, 1, 1);
+        }
     }
-}
+
 
 
 // 

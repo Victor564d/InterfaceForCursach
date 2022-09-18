@@ -219,7 +219,7 @@ int main(void) {
     }
     while (1) {//вывод меню и запуск соответствующих функций
         clear();
-        MenuSelect(_print_menu(menu, position, menu_size, 5,table), f);
+        MenuSelect(_print_menu(menu, position, menu_size, 5,table), f,table);
     }
 }
 int Posid = 1;
@@ -241,16 +241,16 @@ int Posid = 1;
 //"Выход" 16 
 
 
-void MenuSelect(int selector, FILE* f)
+void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
 {
     char* a = (char*)calloc(200, sizeof(char));
     switch (selector) {
     case 1:
-        аddNewElement(&abonents);
+        //аddNewElement(&abonents);
+        _in_info_window(table, NULL);
         break;
     case 2:
-        size = _get_window_size();
-        if (_confirm_window(size[0], size[1])) {
+        if (_confirm_window()) {
             abonents = loadFromFile_new(f);
         }
         break;
@@ -261,30 +261,28 @@ void MenuSelect(int selector, FILE* f)
         correctInfo(abonents);
         break;
     case 5:
-        size = _get_window_size();
-        if (_confirm_window(size[0], size[1])) {
-            _in_window(size[0], size[1]); int l; scanf("%d", &l);
+        if (_confirm_window()) {
+            _in_window(); int l; scanf("%d", &l);
             abonents = DeleteNode(abonents, l);
             sprintf(a, "Ветка удалена");
-            _message_window(size[0], size[1], a);
+            _message_window(a);
             getch();
         }
         clear();
         break;
     case 6:
         size = _get_window_size();
-        if (_confirm_window(size[0], size[1])) {
+        if (_confirm_window()) {
             abonents = deleteThree(abonents);
             sprintf(a, "Дерево очищено");
-            _message_window(size[0], size[1], a);
+            _message_window( a);
             getch();
         }
         break;
     case 7:
-        size = _get_window_size();
-        _in_window(size[0], size[1]); int l; scanf("%d", &l); l = GetLeafLevel(abonents, 0, l);
+        _in_window(); int l; scanf("%d", &l); l = GetLeafLevel(abonents, 0, l);
         sprintf(a,"Уровень элемента --> %d", l);
-            _message_window(size[0], size[1], a);
+            _message_window(a);
         getch();
         break;
     case 8:
@@ -302,19 +300,17 @@ void MenuSelect(int selector, FILE* f)
         getch();
         break;
     case 10:
-        size = _get_window_size();
-        if (_confirm_window(size[0], size[1])) {
+        if (_confirm_window()) {
             sprintf(a, "Дерево содержит %d записей.",getLeafCount(abonents, 0));
-            _message_window(size[0], size[1], a);
+            _message_window(a);
             getch();
         }
         break;
     case 11:
         Posid = 1; printf("\n");
         if (PrintTreeDataNonThree(abonents) == 1) {
-            size = _get_window_size();
             char* a = NULL; sprintf(a, "Студентов без 3 нет");
-            _message_window(size[0], size[1], a);
+            _message_window(a);
         }
         getch();
         break;
@@ -329,7 +325,7 @@ void MenuSelect(int selector, FILE* f)
         break;
     case 16:
         size = _get_window_size();
-        if (_confirm_window(size[0], size[1])) {
+        if (_confirm_window()) {
             if (!abonents) {
                 deleteThree(abonents);
             }
@@ -434,7 +430,7 @@ void View(abonent* top, int otstup) {
         otstup += 3; //отступ от края экрана
         View(top->right, otstup); //обход правого поддерева
         for (int i = 0; i < otstup; i++) printf(" ");
-        printf("|%s\n", top->info.id);
+        printf("|%d\n", top->info.id);
         View(top->left, otstup); //обход левого поддерева
     }
 }
@@ -666,9 +662,9 @@ _tabel_metadata* _init_table(_tabel_metadata* table) {
     table->_cols[1].size = u8_strlen(table->_cols[1].name);
     //-------------------------------------------------------------------------------------------//
     table->_cols[2].name = (char*)calloc(sizeof(char), 40);
-    strcpy(table->_cols[2].name, "   Автор книги   ");
-    table->_cols[2].resizebl = 0;
-    table->_cols[2].size = u8_strlen(table->_cols[2].name);
+    strcpy(table->_cols[2].name, "Автор книги");
+    table->_cols[2].resizebl = 0; 
+    table->_cols[2].size = u8_strlen(table->_cols[2].name); table->_cols[2].size =18;
     //-------------------------------------------------------------------------------------------//
     table->_cols[3].name = (char*)calloc(sizeof(char), 40);
     strcpy(table->_cols[3].name, "Название книги");

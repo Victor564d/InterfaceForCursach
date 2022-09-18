@@ -67,12 +67,13 @@ void clear();
 void _print_border(int _window_w, int _window_h);
 int* _get_window_size();
 int _confirm_window();
-void _window(int _window_w, int _window_h);
+void _window(int _window_w, int _window_h,char * title);
 void clear_for_info();
 void _in_window();
 void _message_window( char* message);
 int _table_window( _tabel_metadata *, abonent_t* , int, int*) ;
-abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass);
+void _big_window(char* title);
+abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass);                                                                    
 
 
 #endif
