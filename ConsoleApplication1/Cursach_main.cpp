@@ -7,6 +7,7 @@
 #include <conio.h>
 #include <Windows.h>
 #include "ThreeStruct.h"
+#include "include/data_utils.h"
 
 #define clearf() system("cls");
 
@@ -26,7 +27,7 @@ void addToTree(abonent** head, const abonent_t* info);
 /// </summary>
 /// <param name="st">Указатель на корень дерева</param>
 /// <returns>При успешном добавлении возвращает 1</returns>
-int аddNewElement(abonent** st);
+int аddNewElement(abonent** st,_tabel_metadata *table);
 /// <summary>
 /// Функция реализующая ввод через форму
 /// </summary>
@@ -252,8 +253,8 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     char* a = (char*)calloc(200, sizeof(char));
     switch (selector) {
     case 1:
-        //аddNewElement(&abonents);
-        _in_info_window(table, NULL);
+      
+        аddNewElement(&abonents,table);
         break;
     case 2:
         if (_confirm_window(NULL)) {
@@ -404,7 +405,7 @@ void addToTree(abonent** root, const abonent_t* info)
     }
     else {
         if (((*root)->info.id== info->id)) {
-            _message_window(size[0], size[1], "Запись с таким id уже существует"); 
+            _message_window("Запись с таким id уже существует"); 
             return;            
         }else if (((*root)->info.id > info->id))
             addToTree(&((*root)->left), info);
@@ -413,14 +414,15 @@ void addToTree(abonent** root, const abonent_t* info)
     }
 }
 
-int аddNewElement(abonent** st)
+int аddNewElement(abonent** st,_tabel_metadata* table)
 {
-    abonent_t d; d.id = 0;
+    abonent_t* d; 
         while (1) {
-        clear();
-                d = GetInfoFromKeyboard(d);
-                addToTree(st, &d);
-                printf("\nЗапись добавлена . Для выхода из ввода нажмите esc\n"); if (getch() == 27)break;
+         d =   _in_info_window(table, NULL, 1);
+         if (!d)   return EXIT_SUCCESS;
+         d->id = util_hashCodeFromFio(&d->fio);
+         int c = util_hashCodeFromFio(&d->fio);
+         addToTree(st, &d);
               }
     return EXIT_SUCCESS;
 }

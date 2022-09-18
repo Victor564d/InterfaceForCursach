@@ -778,7 +778,7 @@ void _big_window(char* title) {
 
 
 
-abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info) {
+abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _cycle_in_flag) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     int* _size_n = NULL; abonent_t *  _temp_info;
     if (_output_info) {
@@ -792,8 +792,9 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info) {
     int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
     int height = _window_h / 2; int width = _window_w / 2;
     int _center_x = _window_w / 2; int flag_clear = 0;
-    int _center_y = _window_h / 2;
-    _big_window("Окно ввода/редактирования записи");
+    int _center_y = _window_h / 2; char* title = NULL;
+    if (_cycle_in_flag) title = "Око ввода информации"; else title = "Окно редактирования информации";
+    _big_window(title);
     int max_lenght = 0; int y_modifire = 1;
     if (height > 20) y_modifire = 2;
     for (int i = 1; i < table->_col_count; i++) {
@@ -804,28 +805,28 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info) {
     char c;
     int* _men_position = (int*)calloc(2, sizeof(int));
     _men_position[0] = 1; _men_position[1] = 1;
-    while (1) { 
-        if (flag_clear) { _big_window("Окно ввода/редактирования записи"); flag_clear = 0; }
+    while (1) {
+        if (flag_clear) { _big_window(title); flag_clear = 0; }
         positionCur.X = _center_x - width / 2 + 4;
         positionCur.Y = _center_y - height / 2 + 4;
         _set_cur_to_pos(hConsole, positionCur);
         for (int i = 1; i < table->_col_count; i++) {
-            if (_men_position[1]  == i) {
-               // printf("\x1b[43m%s\x1b[0m", table->_cols[i].name); 
+            if (_men_position[1] == i) {
+                // printf("\x1b[43m%s\x1b[0m", table->_cols[i].name); 
                 printf("%s", table->_cols[i].name);
             }
             else {
                 printf("%s", table->_cols[i].name);
             }
-            positionCur.Y+= y_modifire;
+            positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
-        } 
-        positionCur.X = _center_x - width / 2 + 4 + max_lenght +1;
+        }
+        positionCur.X = _center_x - width / 2 + 4 + max_lenght + 1;
         positionCur.Y = _center_y - height / 2 + 4;
         _set_cur_to_pos(hConsole, positionCur);
         for (int i = 1; i < table->_col_count; i++) {
             if (_men_position[1] == i) {
-                printf("\x1b[43m --> \x1b[0m");
+               if(!_cycle_in_flag) printf("\x1b[43m --> \x1b[0m"); else printf(" --> ");
             }
             else {
                 printf(" --> ");
@@ -834,13 +835,13 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info) {
             _set_cur_to_pos(hConsole, positionCur);
         }
         _get_con_info(&info_x);
-        int padding =  info_x.dwCursorPosition.X; // получаем текущую позицию курсора, сместив его на один символ назад
+        int padding = info_x.dwCursorPosition.X; // получаем текущую позицию курсора, сместив его на один символ назад
         padding -= _center_x;
         positionCur.X = _center_x - width / 2 + 4 + max_lenght + 6;
         positionCur.Y = _center_y - height / 2 + 4;
         _set_cur_to_pos(hConsole, positionCur);
         for (int i = 1; i < table->_col_count; i++) {
-            for (int j = 0; j < (width/2 - padding-8); j++) {
+            for (int j = 0; j < (width / 2 - padding - 8); j++) {
                 printf("_");
             }
             positionCur.Y += y_modifire;
@@ -851,56 +852,56 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info) {
         positionCur.Y = _center_y - height / 2 + 4;
         _set_cur_to_pos(hConsole, positionCur);
 
-       
-        if (u8_strlen(_temp_info->fio.name)>0)
-            printf(" %s ", _temp_info->fio.name);
-        if (u8_strlen(_temp_info->fio.surname) > 0)
-            printf(" %s ", _temp_info->fio.surname);
-        if (u8_strlen(_temp_info->fio.secondname) > 0)
-            printf(" %s ", _temp_info->fio.secondname);
-        positionCur.Y += y_modifire;
-        _set_cur_to_pos(hConsole, positionCur);
-        if (u8_strlen(_temp_info->autor.surname) > 0)
-            printf(" %s ", _temp_info->autor.surname);
-        if (u8_strlen(_temp_info->autor.inicial) > 0)
-            printf(" %s ", _temp_info->autor.inicial);
-        positionCur.Y += y_modifire;
-        _set_cur_to_pos(hConsole, positionCur);
-        if (u8_strlen(_temp_info->book_name) > 0) {
-            printf(" %s ", _temp_info->book_name);
-        }
-        positionCur.Y += y_modifire;
-        _set_cur_to_pos(hConsole, positionCur);
-        if (u8_strlen(_temp_info->izd) > 0) {
-            printf(" %s ", _temp_info->izd);
-        }
-        positionCur.Y += y_modifire;
-        _set_cur_to_pos(hConsole, positionCur);
-        if (_temp_info->date_out.d > 0) {
-            printf(" %d ", _temp_info->date_out.d);
-            printf(" %d ", _temp_info->date_out.m);
-            printf(" %d ", _temp_info->date_out.y);
-        }
-        positionCur.Y += y_modifire;
-        _set_cur_to_pos(hConsole, positionCur);
-        if (_temp_info->cost > 0) {
-            printf(" \e[4m%f\e ", _temp_info->cost);
-        }
+        if (!_cycle_in_flag) {
+            if (u8_strlen(_temp_info->fio.surname) > 0)
+                printf(" %s ", _temp_info->fio.surname);
+            if (u8_strlen(_temp_info->fio.name) > 0)
+                printf(" %s ", _temp_info->fio.name);
+            if (u8_strlen(_temp_info->fio.secondname) > 0)
+                printf(" %s ", _temp_info->fio.secondname);
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            if (u8_strlen(_temp_info->autor.surname) > 0)
+                printf(" %s ", _temp_info->autor.surname);
+            if (u8_strlen(_temp_info->autor.inicial) > 0)
+                printf(" %s ", _temp_info->autor.inicial);
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            if (u8_strlen(_temp_info->book_name) > 0) {
+                printf(" %s ", _temp_info->book_name);
+            }
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            if (u8_strlen(_temp_info->izd) > 0) {
+                printf(" %s ", _temp_info->izd);
+            }
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            if (_temp_info->date_out.d > 0) {
+                printf(" %d ", _temp_info->date_out.d);
+                printf(" %d ", _temp_info->date_out.m);
+                printf(" %d ", _temp_info->date_out.y);
+            }
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            if (_temp_info->cost > 0) {
+                printf(" \e[4m%f\e ", _temp_info->cost);
+            }
 
-        
-        positionCur.X = _center_x - width / 2 + 4;
-        positionCur.Y = _center_y + height / 2 -2;
-        _set_cur_to_pos(hConsole, positionCur);
-        if (_men_position[1] == table->_col_count ) {
-            printf("\x1b[43mСохранить\x1b[0m");
-        }
-        else printf("Сохранить");
-        positionCur.X = _center_x + (width / 2  - u8_strlen("Отмена") - 3);
-        _set_cur_to_pos(hConsole, positionCur);
-        if (_men_position[1] == table->_col_count+1) {
-            printf("\x1b[43mОтмена\x1b[0m");
-        }
-        else printf("Отмена");
+
+            positionCur.X = _center_x - width / 2 + 4;
+            positionCur.Y = _center_y + height / 2 - 2;
+            _set_cur_to_pos(hConsole, positionCur);
+            if (_men_position[1] == table->_col_count) {
+                printf("\x1b[43mСохранить\x1b[0m");
+            }
+            else printf("Сохранить");
+            positionCur.X = _center_x + (width / 2 - u8_strlen("Отмена") - 3);
+            _set_cur_to_pos(hConsole, positionCur);
+            if (_men_position[1] == table->_col_count + 1) {
+                printf("\x1b[43mОтмена\x1b[0m");
+            }
+            else printf("Отмена");
             c = getch();
 
             if (c == _key_enter) {
@@ -910,9 +911,9 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info) {
             }
 
             if (c == _key_enter) {
-                if(_men_position[1] == table->_col_count )
+                if (_men_position[1] == table->_col_count)
                     if (_confirm_window("Сохранить данные ?"))
-                 return _output_info; else flag_clear = 1;
+                        return _output_info; else flag_clear = 1;
             }
 
             if (c == _key_esc) {
@@ -920,7 +921,59 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info) {
             }
             _men_position = _get_curent_selection(c, _men_position, table->_col_count + 1, 1, 1);
         }
+        else {
+            
+
+            char mes[] = "Для выхода, введите '0 0 0' в поле ФИО";
+
+            positionCur.Y = _center_y + height / 2 - 2;
+            positionCur.X = _center_x - u8_strlen(mes)/2;
+            _set_cur_to_pos(hConsole, positionCur);
+            printf("%s", mes);
+            
+            CONSOLE_CURSOR_INFO structCursorInfo;
+            GetConsoleCursorInfo(hConsole, &structCursorInfo);
+            structCursorInfo.bVisible = TRUE;
+            SetConsoleCursorInfo(hConsole, &structCursorInfo);
+            positionCur.X = _center_x - width / 2 + 4 + max_lenght + 6;
+            positionCur.Y = _center_y - height / 2 + 4;
+            _set_cur_to_pos(hConsole, positionCur);
+            scanf("%s", _temp_info->fio.surname);
+            scanf("%s", _temp_info->fio.name);
+            scanf("%s", _temp_info->fio.secondname);
+
+            if (u8_strlen(_temp_info->fio.surname) == 1 && u8_strlen(_temp_info->fio.name) == 1 && u8_strlen(_temp_info->fio.secondname) == 1)
+                return NULL;
+
+
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            scanf("%s", _temp_info->autor.surname);
+            scanf("%s", _temp_info->autor.inicial);
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            scanf("%s", _temp_info->book_name);
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            scanf("%s", _temp_info->izd);
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            scanf("%d", &_temp_info->date_out.d);
+            scanf("%d", &_temp_info->date_out.m);
+            scanf("%d", &_temp_info->date_out.y);
+            positionCur.Y += y_modifire;
+            _set_cur_to_pos(hConsole, positionCur);
+            scanf("%f", &_temp_info->cost);
+            _message_window("Запись успешно добавлена");
+            Sleep(3000);
+            structCursorInfo.bVisible = FALSE;
+            SetConsoleCursorInfo(hConsole, &structCursorInfo);
+            return _temp_info;
+        }
+        }
     }
+       
+    
 
 
 
