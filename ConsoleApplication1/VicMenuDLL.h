@@ -76,7 +76,11 @@ enum KeyboardCodes
     KEY_ARROW_DOWN = 80,
     KEY_ARROW_LEFT = 75,
     KEY_ARROW_RIGHT = 77,
-    KEY_TAB = 9
+    KEY_TAB = 9,
+    KEY_HOME = 71,
+    KEY_END  = 79,
+    KEY_ENTER = 13,
+    KEY_ESC  = 27
 };
 
 #endif

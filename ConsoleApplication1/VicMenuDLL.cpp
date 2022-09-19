@@ -21,8 +21,8 @@ int x, y;
 COORD positionCur = {4,4};
 
 #define clearf() system("cls");
-#define _key_enter 13
-#define _key_esc 27
+#define KEY_ENTER 13
+#define KEY_ESC 27
 
 int page = 1;
 
@@ -209,7 +209,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
 
         char c = getch();
         if (c == KEY_TAB) { table_focus_flag = 1; } else 
-        if (c == _key_enter) {
+        if (c == KEY_ENTER) {
             if (_menu[position[0] - 1]._menu_size > 0) {
                 position[1] = 1;
                 while (1) {
@@ -275,7 +275,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                         _set_cur_to_pos(hConsole, positionCur);
                     }
                     c = getch();
-                    if (c == _key_enter) {
+                    if (c == KEY_ENTER) {
                         int result = 0;
                         for (int l = 0; l < position[0] - 1; l++) {
                             result += _menu[l]._menu_size;
@@ -283,7 +283,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                         result += position[1];
                                      return result;
                                 }
-                    if (c == _key_esc) { clear(); break; }
+                    if (c == KEY_ESC) { clear(); break; }
                     position = _get_curent_selection(c, position, _menu[position[0] - 1]._menu_size, _menu_buttons, 1);
                 }
             }
@@ -512,10 +512,10 @@ int _confirm_window(char * message)
         case 77://право
             if (_selection == 1) _selection--;
             break;
-        case _key_enter://лево
+        case KEY_ENTER://лево
             return _selection;
             break;
-        case _key_esc://право
+        case KEY_ESC://право
             return 0;
             break;
         }
@@ -689,7 +689,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
                 if (_info_count <= j) break;
                 _set_cur_to_pos(hConsole, positionCur);
                 if (*_table_focus_flag)
-                    if (j == row_selection[0]-1)
+                    if (j == ((*page) - 1) * _col_inpage + row_selection[0]-1)
                         printf("\x1b[43m");
                 printf("│");
                 char buff[400] = { "" };
@@ -794,7 +794,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
                         printf(" ");
                 }
                 printf("│"); 
-                if (j == row_selection[0] - 1)
+                if (j == ((*page) - 1) * _col_inpage + row_selection[0] - 1)
                     printf("\x1b[0m");
                 positionCur.Y++;
             }
@@ -835,19 +835,22 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
         if (*_table_focus_flag)
         {
             char c = getch();
-             if (c == _key_enter) {
-                if (row_selection[1] == table->_col_count)
-                {
-                    if (_confirm_window("Сохранить данные ?"))
-                    {
-                        return row_selection;
-                    }
-                }
+             if (c == KEY_ENTER) {
+                 _in_info_window(table, &_output_mass[((*page) - 1) * height + row_selection[0] - 1], 0);
             }
 
-            if (c == _key_esc)
+
+            if (c == KEY_ESC || c == KEY_TAB)
             {
                 *_table_focus_flag = 0;  
+            }
+            if (c == KEY_HOME)
+            {
+                if (*page > 1) (*page)--;
+            }
+            if (c == KEY_END)
+            {
+                if (_info_count > ((*page) * height)) (*page)++;
             }
             int* temp = (int*)calloc(2, sizeof(int));
             temp = _get_curent_selection(c, row_selection, height, 1, 1);
@@ -1042,7 +1045,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             if (_temp_info->cost > 0) {
-                printf(" \e[4m%f\e ", _temp_info->cost);
+                printf(" %f ", _temp_info->cost);
             }
 
 
@@ -1061,7 +1064,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             else printf("Отмена");
             c = getch();
 
-            if (c == _key_enter)
+            if (c == KEY_ENTER)
             {
                 if (_men_position[1] == table->_col_count + 1)
                 {
@@ -1076,7 +1079,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                 }
             }
 
-            if (c == _key_enter) {
+            if (c == KEY_ENTER) {
                 if (_men_position[1] == table->_col_count)
                 {
                     if (_confirm_window("Сохранить данные ?"))
@@ -1090,7 +1093,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                 }
             }
 
-            if (c == _key_esc)
+            if (c == KEY_ESC)
             {
                 break;  return _output_info;
             }
@@ -1159,6 +1162,6 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
 //for (int i = 0; i < MaxIndex; i++)
 //{
 //    puts("├──────┼─────┼────────────────────┼────────────┼───────────────┼──────┼──────────┼───────────┼───────┤");
-//    printf("│%6d│%5d│%-20s│%-20s│%-10.2f│%-_key_enterd│\n", st[i]._Index, st[i]._Number, st[i]._FIO, st[i]._God, st[i]._GodPos, st[i].marks.Fizika);
+//    printf("│%6d│%5d│%-20s│%-20s│%-10.2f│%-KEY_ENTERd│\n", st[i]._Index, st[i]._Number, st[i]._FIO, st[i]._God, st[i]._GodPos, st[i].marks.Fizika);
 //}
 //puts("└──────┴─────┴────────────────────┴────────────────────┴──────────┴─────────────┘");
