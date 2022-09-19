@@ -1,5 +1,6 @@
 #ifndef MenuStruct
 #define MenuStruct
+
 typedef struct {
     int _menu_size;
     char _name[60];
@@ -19,4 +20,22 @@ typedef struct {
     _table_col* _cols;
     int _col_count;
 }_tabel_metadata;
-#endif // !
+
+enum MenuItemCodes
+{
+    ADD_NEW_RECORD = 1,
+    LOAD_FROM_FILE = 2,
+    SAVE_TO_FILE = 3,
+    EDIT_RECORD = 4,
+    REMOVE_RECORD = 5,
+    CLEAN_TREE = 6,
+    RECORD_LEVEL = 7,
+    PRINT_TREE = 8,
+    PRINT_TREE_STRUCT = 9,
+    TREE_SIZE = 10,
+    PROCESS_1 = 11,
+    PRINT_HORRIBLE_ANIMATION = 13,
+    PROGRAM_EXIT = 16
+};
+
+#endif //! MenuStruct

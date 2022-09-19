@@ -1,6 +1,7 @@
 ﻿#include "MenuStruct.h"
 #include "ThreeStruct.h"
-#ifndef VicMenuDLL /* страж включения */
+
+#ifndef VicMenuDLL
 #define VicMenuDLL
 /// <summary>
 /// Функция получения новой позиции селектора на основе старой
@@ -75,6 +76,13 @@ int _table_window( _tabel_metadata *, abonent_t* , int, int*) ;
 void _big_window(char* title);
 abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass,int);                                                                    
 
+enum KeyboardCodes
+{
+    KEY_ARROW_UP = 72,
+    KEY_ARROW_DOWN = 80,
+    KEY_ARROW_LEFT = 75,
+    KEY_ARROW_RIGHT = 77
+};
 
 #endif
 

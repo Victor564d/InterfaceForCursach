@@ -1,14 +1,17 @@
 ﻿#pragma warning(disable : 4996);
-#include "VicMenuDLL.h"
-#include "MenuStruct.h"
-#include "utf8.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <conio.h>
-#include <Windows.h>
 #include <time.h>
 
+#include <conio.h>
+#include <Windows.h>
+
+#include "utf8.h"
+
+#include "VicMenuDLL.h"
+#include "MenuStruct.h"
 
 const int _otstup = 3;
 const int _interval = 3;
@@ -66,17 +69,17 @@ int* _get_curent_selection(char  c // Символ клавиатуры
     int x = position[0]; int y = position[1];
     switch (c)
     {
-    case 72://вверх
+    case KEY_ARROW_UP://вверх
         if (y > 1) y--;
         break;
-    case 80://вниз
+    case KEY_ARROW_DOWN://вниз
         if (y < MaxY) y++;
         break;
-    case 75://лево
+    case KEY_ARROW_LEFT://лево
         if (x > 1) x--;
         if(_flag_x_readonly) if (y > 1) y--;
         break;
-    case 77://право
+    case KEY_ARROW_RIGHT://право
         if (x < Colums) x++;
         if (_flag_x_readonly) if (y < MaxY) y++;
         break;
@@ -143,8 +146,8 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
                 _menu[i]._max_sub_lenght = _max_subm_lenght;
             }
         }
-      }
-    //printf("\x1b[43mHello\x1b[0m");
+    }
+      
     while (1) //цикл отрисовки меню 
     {
         _size_now = _get_window_size(_size_now); //получение текущего размера окна 
@@ -904,19 +907,37 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             else printf("Отмена");
             c = getch();
 
-            if (c == _key_enter) {
+            if (c == _key_enter)
+            {
                 if (_men_position[1] == table->_col_count + 1)
+                {
                     if (_confirm_window("Отменить операцию ?"))
-                        return _temp_info; else flag_clear = 1;
+                    {
+                        return _temp_info;
+                    }
+                    else
+                    {
+                        flag_clear = 1;
+                    }
+                }
             }
 
             if (c == _key_enter) {
                 if (_men_position[1] == table->_col_count)
+                {
                     if (_confirm_window("Сохранить данные ?"))
-                        return _output_info; else flag_clear = 1;
+                    {
+                        return _output_info;
+                    }
+                    else
+                    {
+                        flag_clear = 1;
+                    }
+                }
             }
 
-            if (c == _key_esc) {
+            if (c == _key_esc)
+            {
                 break;  return _output_info;
             }
             _men_position = _get_curent_selection(c, _men_position, table->_col_count + 1, 1, 1);

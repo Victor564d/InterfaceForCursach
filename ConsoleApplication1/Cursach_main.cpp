@@ -1,13 +1,18 @@
 ﻿#pragma warning(disable : 4996);
-#include "VicMenuDLL.h"; //файл библиотеки меню
-#include "MenuStruct.h"
+
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include <conio.h>
 #include <Windows.h>
-#include "ThreeStruct.h"
+
+#include "utf8.h"
+
 #include "include/data_utils.h"
+#include "ThreeStruct.h"
+#include "VicMenuDLL.h"
+#include "MenuStruct.h"
 
 #define clearf() system("cls");
 
@@ -252,22 +257,26 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
 {
     char* a = (char*)calloc(200, sizeof(char));
     switch (selector) {
-    case 1:
-      
+    
+    case ADD_NEW_RECORD:
         аddNewElement(&abonents,table);
         break;
-    case 2:
+    
+    case LOAD_FROM_FILE:
         if (_confirm_window(NULL)) {
             abonents = loadFromFile_new(f);
         }
         break;
-    case 3:
+    
+    case SAVE_TO_FILE:
         create_file(f, abonents);
         break;
-    case 4:
+    
+    case EDIT_RECORD:
         correctInfo(abonents);
         break;
-    case 5:
+    
+    case REMOVE_RECORD:
         if (_confirm_window(NULL)) {
             _in_window(); int l; scanf("%d", &l);
             abonents = DeleteNode(abonents, l);
@@ -277,7 +286,8 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         }
         clear();
         break;
-    case 6:
+    
+    case CLEAN_TREE:
         size = _get_window_size();
         if (_confirm_window(NULL)) {
             abonents = deleteThree(abonents);
@@ -286,34 +296,39 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
             getch();
         }
         break;
-    case 7:
+    
+    case RECORD_LEVEL:
         _in_window(NULL); int l; scanf("%d", &l); l = GetLeafLevel(abonents, 0, l);
         sprintf(a,"Уровень элемента --> %d", l);
             _message_window(a);
         getch();
         break;
-    case 8:
+    
+    case PRINT_TREE:
         clear();
         Posid = 1;
         PrintTreeData(abonents);
         puts("Нажмите любую клавишу");
         getch();
         break;
-    case 9:
+    
+    case PRINT_TREE_STRUCT:
         clear();
         printf("---------------------------------------------- Структура дерева -----------------------------------------\n");
         View(abonents, 1);
         printf("-------------------------------------------- Конец струк. дерева ----------------------------------------\n");
         getch();
         break;
-    case 10:
+    
+    case TREE_SIZE:
         if (_confirm_window(NULL)) {
             sprintf(a, "Дерево содержит %d записей.",getLeafCount(abonents, 0));
             _message_window(a);
             getch();
         }
         break;
-    case 11:
+    
+    case PROCESS_1:
         Posid = 1; printf("\n");
         if (PrintTreeDataNonThree(abonents) == 1) {
             char* a = NULL; sprintf(a, "Студентов без 3 нет");
@@ -321,16 +336,18 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         }
         getch();
         break;
-    case 12:
-        
+    
+    case 12:    
         break;
-    case 13:
+    
+    case PRINT_HORRIBLE_ANIMATION:
         animatedNeko();
         break;
-    case 14:
-        
+    
+    case 14:    
         break;
-    case 16:
+    
+    case PROGRAM_EXIT:
         if (_confirm_window(NULL)) {
             if (!abonents) {
                 deleteThree(abonents);
@@ -344,13 +361,29 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
 
 int create_file(FILE* f, abonent* root)
 {
-    if (!root) return 666;
-    fclose(f); f = fopen("data.dat", "wb+");
+    if (!root)
+        return 666;
+    
+    fclose(f);
+    f = fopen("data.dat", "wb+");
+
+    if (f == NULL)
+    {
+        clear();
+        fprintf (stderr, "Не удалось открыть файл для записи.");
+        getch();
+        
+        return 666;
+    }
+
     fseek(f, 0, SEEK_SET);
+    
     printToFile(f, root);
+    
     clear();
     puts("Данные сохранены. Нажмите любую кнопку ....");
     getch();
+    
     return 0;
 }
 
@@ -490,16 +523,10 @@ abonent* DeleteNode(abonent* root, char id) {
 }
 
 int getLeafCount(abonent* root, int count) {
-    if (root) {
-        if (root->left) {
-            count = getLeafCount(root->left, count);
-        }
-        count++;
-        if (root->right) {
-            count = getLeafCount(root->right, count);
-        }
-    }
-    return count;
+    if (root != NULL)
+        return getLeafCount(root->left, count) + 1 + getLeafCount(root->right, count);
+    else
+        return 0;
 }
 
 
