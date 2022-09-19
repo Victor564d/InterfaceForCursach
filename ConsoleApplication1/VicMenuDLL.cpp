@@ -57,7 +57,7 @@ void clear_table() {
     int _window_w = temp_window_size[0];
     for (int y = _interval+3; y <= _window_h - _interval-3; y++) {
         _set_cur_to_pos(hConsole, positionCur);
-        for (int x = _otstup + 2; x < _window_w - _otstup-2; x++) {
+        for (int x = _otstup + 2; x < _window_w - _otstup-1; x++) {
              printf(" "); //_otstup+2,_interval+3
         }
         
@@ -710,7 +710,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
                 if (_info_count <= j) break;
                 _set_cur_to_pos(hConsole, positionCur);
                 if (*_table_focus_flag)
-                    if (j == ((*page) - 1) * _col_inpage + row_selection[0]-1)
+                    if (j == ((*page) - 1) * _col_inpage + row_selection[1]-1)
                         printf("\x1b[43m");
                 printf("│");
                 char buff[400] = { "" };
@@ -815,7 +815,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
                         printf(" ");
                 }
                 printf("│"); 
-                if (j == ((*page) - 1) * _col_inpage + row_selection[0] - 1)
+                if (j == ((*page) - 1) * _col_inpage + row_selection[1] - 1)
                     printf("\x1b[0m");
                 positionCur.Y++;
             }
@@ -857,7 +857,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
         {
             char c = getch();
              if (c == KEY_ENTER) {
-                 _in_info_window(table, &_output_mass[((*page) - 1) * height + row_selection[0] - 1], 0);
+                 _in_info_window(table, &_output_mass[((*page) - 1) * height + row_selection[1] - 1], 0);
             }
 
 
@@ -872,18 +872,21 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
             }
             if (c == KEY_END)
             {
-                if (_info_count > ((*page) * height)) { (*page)++; clear_table(); }
+                if (_info_count > ((*page) * height)) { 
+                    (*page)++; 
+                    clear_table(); 
+                    if ((((*page) - 1) * height + row_selection[1] - 1) > _info_count) {
+                        row_selection[1] = _info_count - ((*page) - 1) * height ;
+                    }
+                }
             }
             int* temp = (int*)calloc(2, sizeof(int));
-            temp = _get_curent_selection(c, row_selection, height, 1, 1);
-            row_selection[0] = temp[0];
-            row_selection[0] = temp[1];
+            temp = _get_curent_selection(c, row_selection, height, 1, 1);           
+            row_selection[1] = temp[1];
+            if ((((*page) - 1) * height + row_selection[1] - 1) == _info_count) {
+                row_selection[1] = row_selection[1] - 1;
+            }
         }
-
-
-
-
-
     }while (*_table_focus_flag);
      return EXIT_SUCCESS;
 }
