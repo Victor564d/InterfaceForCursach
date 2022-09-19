@@ -218,6 +218,7 @@ abonent_t* _get_output_info(abonent* root, abonent_t * _output_memory,int* index
 /// 
 /// 
 //------------------------------------------------------------------- Конец области функций ---------------------------------------------------------
+
 abonent* abonents = NULL;
 //abonent* root = NULL;
 int position[] = { 1,1 };
@@ -462,7 +463,7 @@ void addToTree(abonent** root, const abonent_t* info)
         (*root)->info = *info;
     }
     else {
-        if (((*root)->info.id== info->id)) {
+        if (((*root)->info.id == info->id)) {
             _message_window("Запись с таким id уже существует"); 
             return;            
         }else if (((*root)->info.id > info->id))
@@ -479,8 +480,7 @@ int аddNewElement(abonent** st,_tabel_metadata* table)
          d =   _in_info_window(table, NULL, 1);
          if (!d)   return EXIT_SUCCESS;
          d->id = util_hashCodeFromFio(&d->fio);
-         int c = util_hashCodeFromFio(&d->fio);
-         addToTree(st, &d);
+         addToTree(st, d);
               }
     return EXIT_SUCCESS;
 }

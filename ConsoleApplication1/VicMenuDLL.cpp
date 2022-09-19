@@ -24,6 +24,8 @@ COORD positionCur = {4,4};
 #define _key_enter 13
 #define _key_esc 27
 
+int page = 1;
+
 BOOL _get_con_info(CONSOLE_SCREEN_BUFFER_INFO* x)
 {
     return GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), x);
@@ -123,6 +125,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
     _tabel_metadata * table
 )
 {
+    int  table_focus_flag = 0;
     int _padding; //оступ 
     int _new_padding; //новый отступ
     int* _size_now = NULL; //текущий размер окна 
@@ -200,11 +203,12 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
         //-----------------------------------------------------------------------------  
         //Пример управления цветом заднего фона и текста (задний фон красный)printf("\x1b[41mHello\x1b[0m");
                                                                   //printf("\x1b[43mHello\x1b[0m");
-        _table_window(table,_output_mas,_output_colcount,1);
+        _table_window(table,_output_mas,_output_colcount,&page,&table_focus_flag);
                  
 
 
         char c = getch();
+        if (c == KEY_TAB) { table_focus_flag = 1; } else 
         if (c == _key_enter) {
             if (_menu[position[0] - 1]._menu_size > 0) {
                 position[1] = 1;
@@ -575,10 +579,14 @@ void _message_window(char* message) {
 
 }
 
-int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_count, int  page) {
+int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_count, int*  page, int * _table_focus_flag) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-    int* _size_n = NULL;
+    CONSOLE_CURSOR_INFO structCursorInfo;
+    GetConsoleCursorInfo(hConsole, &structCursorInfo);
+    structCursorInfo.bVisible = FALSE;
+    SetConsoleCursorInfo(hConsole, &structCursorInfo);
+    static int row_selection[] = {1,1};
+    int* _size_n = NULL; 
     _size_n = _get_window_size(_size_n);
      int _window_w = _size_n[0]; int _window_h = _size_n[1];
     int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
@@ -586,9 +594,11 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
     for (int i = 0; i < table->_col_count; i++) {
         _size_delta += table->_cols[i].size;
     }
-    int height = _window_h - _interval * 2 - 15 ; int width = _window_w - _otstup * 2 - 4;
+    int height = _window_h - _interval * 2 - 10 ; int width = _window_w - _otstup * 2 - 4;
     _size_delta = (width -2) - _size_delta - table->_col_count*2-5 ;
+    do {
     COORD positionCur = { _otstup+2,_interval+3}; //позиция x и y 
+   
     _set_cur_to_pos(hConsole, positionCur);
     for (int i = 0; i < width; i++) {
         if (i == 0) {
@@ -665,161 +675,191 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
     positionCur.Y += 2; 
     positionCur.X = _otstup + 2;
     _set_cur_to_pos(hConsole, positionCur);
-    if (_output_mass) {
-        
-        
-        int _col_inpage = height - 5;
-        int _diap[2] = { 0,0 };
-        _diap[0] =   (page-1) * _col_inpage;
-        _diap[1] = _diap[0] + _col_inpage;
-        
-        for (int j = _diap[0]; j < _diap[1]; j++)
-        {
-            if (_info_count < j) break;
-            _set_cur_to_pos(hConsole, positionCur);
-            printf("│");
-            char buff[400];
-            sprintf(buff, "%d", j);
-            printf("%s", buff);
-            if (u8_strlen(buff) < 3)
+   
+        if (_output_mass) {
+
+
+            int _col_inpage = height;
+            int _diap[2] = { 0,0 };
+            _diap[0] = ((*page) - 1) * _col_inpage;
+            _diap[1] = _diap[0] + _col_inpage;
+
+            for (int j = _diap[0]; j < _diap[1]; j++)
             {
-                for (int l = 0; l < 3 - u8_strlen(buff); l++)
-                    printf(" ");
-            }
-            printf("│");
-
-            sprintf(buff, "%s %s %s", _output_mass[j].fio.name, _output_mass[j].fio.surname, _output_mass[j].fio.secondname);
-            if (u8_strlen(buff) > table->_cols[1].size+2) {
-                sprintf(buff, "%s %c.%c", _output_mass[j].fio.name, _output_mass[j].fio.surname[0], _output_mass[j].fio.secondname[1]);
-            } 
-            printf("%s", buff);
-            if (u8_strlen(buff) < table->_cols[1].size+2)
-            {
-                for (int l = 0; l < table->_cols[1].size+2 - u8_strlen(buff); l++)
-                    printf(" ");
-            }
-            printf("│");
-
-            sprintf(buff, "%s %s", _output_mass[j].autor.surname, _output_mass[j].autor.inicial);
-
-            if (u8_strlen(buff) > table->_cols[2].size + 2) {
-                for (int l = 0; l < table->_cols[2].size - 1; l++) {
-                    printf("%c", buff[l]);
-                }
-                printf("...");
-            }
-            else
+                if (_info_count <= j) break;
+                _set_cur_to_pos(hConsole, positionCur);
+                if (*_table_focus_flag)
+                    if (j == row_selection[0]-1)
+                        printf("\x1b[43m");
+                printf("│");
+                char buff[400] = { "" };
+                sprintf(buff, "%d", j);
                 printf("%s", buff);
-            if (u8_strlen(buff) < table->_cols[2].size + 2)
-            {
-                for (int l = 0; l < table->_cols[2].size + 2 - u8_strlen(buff); l++)
-                    printf(" ");
-            }
-            printf("│");
-
-            sprintf(buff, "%s",  _output_mass[j].book_name);
-            if (u8_strlen(buff) > table->_cols[3].size + 2) {
-                for (int l = 0; l < table->_cols[3].size-1;l++) {
-                    printf("%c", _output_mass[j].book_name[l]);
+                if (u8_strlen(buff) < 3)
+                {
+                    for (int l = 0; l < 3 - u8_strlen(buff); l++)
+                        printf(" ");
                 }
-                printf("...");
-            } else
-               printf("%s", buff);
-            if (u8_strlen(buff) < table->_cols[3].size + 2)
-            {
-                for (int l = 0; l < table->_cols[3].size + 2 - u8_strlen(buff); l++)
-                    printf(" ");
-            }
-            printf("│");
+                printf("│");
 
-            sprintf(buff, "%s", _output_mass[j].izd);
-            if (u8_strlen(buff) > table->_cols[4].size + 2) {
-                for (int l = 0; l < table->_cols[4].size-1; l++) {
-                    printf("%c", _output_mass[j].izd[l]);
+                sprintf(buff, "%s %s %s", _output_mass[j].fio.name, _output_mass[j].fio.surname, _output_mass[j].fio.secondname);
+                if (u8_strlen(buff) > table->_cols[1].size + 2) {
+                    sprintf(buff, "%s %c.%c", _output_mass[j].fio.name, _output_mass[j].fio.surname[0], _output_mass[j].fio.secondname[1]);
                 }
-                printf("...");
-            }
-            else
                 printf("%s", buff);
-            if (u8_strlen(buff) < table->_cols[4].size + 2)
-            {
-                for (int l = 0; l < table->_cols[4].size + 2 - u8_strlen(buff); l++)
-                    printf(" ");
-            }
-            printf("│");
-
-            sprintf(buff, "%d.%d.%d", _output_mass[j].date_out.d, _output_mass[j].date_out.m, _output_mass[j].date_out.y);
-            if (u8_strlen(buff) > table->_cols[5].size + 2) {
-                for (int l = 0; l < table->_cols[5].size-1; l++) {
-                    printf("%c", buff[l]);
+                if (u8_strlen(buff) < table->_cols[1].size + 2)
+                {
+                    for (int l = 0; l < table->_cols[1].size + 2 - u8_strlen(buff); l++)
+                        printf(" ");
                 }
-                printf("...");
-            }
-            else
-                printf("%s", buff);
-            if (u8_strlen(buff) < table->_cols[5].size + 2)
-            {
-                for (int l = 0; l < table->_cols[5].size + 2 - u8_strlen(buff); l++)
-                    printf(" ");
-            }
-            printf("│");
+                printf("│");
 
-            sprintf(buff, "%f",  _output_mass[j].cost);
-            if (u8_strlen(buff) > table->_cols[6].size + 2) {
-                for (int l = 0; l < table->_cols[6].size-1; l++) {
-                    printf("%c", buff[l]);
+                sprintf(buff, "%s %s", _output_mass[j].autor.surname, _output_mass[j].autor.inicial);
+
+                if (u8_strlen(buff) > table->_cols[2].size + 2) {
+                    for (int l = 0; l < table->_cols[2].size - 1; l++) {
+                        printf("%c", buff[l]);
+                    }
+                    printf("...");
                 }
-                printf("...");
+                else
+                    printf("%s", buff);
+                if (u8_strlen(buff) < table->_cols[2].size + 2)
+                {
+                    for (int l = 0; l < table->_cols[2].size + 2 - u8_strlen(buff); l++)
+                        printf(" ");
+                }
+                printf("│");
+
+                sprintf(buff, "%s", _output_mass[j].book_name);
+                if (u8_strlen(buff) > table->_cols[3].size + 2) {
+                    for (int l = 0; l < table->_cols[3].size - 1; l++) {
+                        printf("%c", _output_mass[j].book_name[l]);
+                    }
+                    printf("...");
+                }
+                else
+                    printf("%s", buff);
+                if (u8_strlen(buff) < table->_cols[3].size + 2)
+                {
+                    for (int l = 0; l < table->_cols[3].size + 2 - u8_strlen(buff); l++)
+                        printf(" ");
+                }
+                printf("│");
+
+                sprintf(buff, "%s", _output_mass[j].izd);
+                if (u8_strlen(buff) > table->_cols[4].size + 2) {
+                    for (int l = 0; l < table->_cols[4].size - 1; l++) {
+                        printf("%c", _output_mass[j].izd[l]);
+                    }
+                    printf("...");
+                }
+                else
+                    printf("%s", buff);
+                if (u8_strlen(buff) < table->_cols[4].size + 2)
+                {
+                    for (int l = 0; l < table->_cols[4].size + 2 - u8_strlen(buff); l++)
+                        printf(" ");
+                }
+                printf("│");
+
+                sprintf(buff, "%d.%d.%d", _output_mass[j].date_out.d, _output_mass[j].date_out.m, _output_mass[j].date_out.y);
+                if (u8_strlen(buff) > table->_cols[5].size + 2) {
+                    for (int l = 0; l < table->_cols[5].size - 1; l++) {
+                        printf("%c", buff[l]);
+                    }
+                    printf("...");
+                }
+                else
+                    printf("%s", buff);
+                if (u8_strlen(buff) < table->_cols[5].size + 2)
+                {
+                    for (int l = 0; l < table->_cols[5].size + 2 - u8_strlen(buff); l++)
+                        printf(" ");
+                }
+                printf("│");
+
+                sprintf(buff, "%f", _output_mass[j].cost);
+                if (u8_strlen(buff) > table->_cols[6].size + 2) {
+                    for (int l = 0; l < table->_cols[6].size - 1; l++) {
+                        printf("%c", buff[l]);
+                    }
+                    printf("...");
+                }
+                else
+                    printf("%s", buff);
+                if (u8_strlen(buff) < table->_cols[6].size + 2)
+                {
+                    for (int l = 0; l < table->_cols[6].size + 2 - u8_strlen(buff); l++)
+                        printf(" ");
+                }
+                printf("│"); 
+                if (j == row_selection[0] - 1)
+                    printf("\x1b[0m");
+                positionCur.Y++;
             }
-            else
-                printf("%s", buff);
-            if (u8_strlen(buff) < table->_cols[6].size + 2)
-            {
-                for (int l = 0; l < table->_cols[6].size + 2 - u8_strlen(buff); l++)
-                    printf(" ");
-            }
+        }
+        else {
             printf("│");
-
-
-
+            for (int i = 0; i < (width - 12) / 2; i++)
+                printf("-");
+            printf(" Данных нет ");
+            for (int i = 0; i < (width - 12) / 2 - 1; i++)
+                printf("-");
+            if ((width - 12) % 2 == 1) printf("-");
+            printf("│");
             positionCur.Y++;
-            
         }
-        
 
-
-    }
-    else {
-        printf("│");
-        for (int i = 0; i < (width-12)/2; i++)
-            printf("-");
-        printf(" Данных нет ");
-        for (int i = 0; i < (width - 12) / 2 - 1; i++)
-            printf("-");
-        if ((width - 12) % 2 == 1) printf("-");
-        printf("│");
-        positionCur.Y++;
-    }
-    
-       _set_cur_to_pos(hConsole, positionCur);
-       int _row_num = 0; int _padd_border = table->_cols[_row_num].size + 2;
-    for (int i = 0; i < width; i++) {
-        if (i == 0) {
-            printf("└");
-        }
-        if (i == width - 1) {
-            printf("┘");
-        }
-        else
-            if (i == _padd_border) {
-                _row_num++;
-                if (_row_num < table->_col_count)
-                    _padd_border += table->_cols[_row_num].size + 3;
-                printf("┴");
+        _set_cur_to_pos(hConsole, positionCur);
+        int _row_num = 0; int _padd_border = table->_cols[_row_num].size + 2;
+        for (int i = 0; i < width; i++) {
+            if (i == 0) {
+                printf("└");
+            }
+            if (i == width - 1) {
+                printf("┘");
             }
             else
-            printf("─");
-    }
+                if (i == _padd_border) {
+                    _row_num++;
+                    if (_row_num < table->_col_count)
+                        _padd_border += table->_cols[_row_num].size + 3;
+                    printf("┴");
+                }
+                else
+                    printf("─");
+        }
+
+
+        if (*_table_focus_flag)
+        {
+            char c = getch();
+             if (c == _key_enter) {
+                if (row_selection[1] == table->_col_count)
+                {
+                    if (_confirm_window("Сохранить данные ?"))
+                    {
+                        return row_selection;
+                    }
+                }
+            }
+
+            if (c == _key_esc)
+            {
+                *_table_focus_flag = 0;  
+            }
+            int* temp = (int*)calloc(2, sizeof(int));
+            temp = _get_curent_selection(c, row_selection, height, 1, 1);
+            row_selection[0] = temp[0];
+            row_selection[0] = temp[1];
+        }
+
+
+
+
+
+    }while (*_table_focus_flag);
      return EXIT_SUCCESS;
 }
 
