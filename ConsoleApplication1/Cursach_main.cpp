@@ -192,19 +192,19 @@ void printINFO(abonent_t* d, int index);
 /// 
 _menu_item* _init_menu(_menu_item* menu);
 _tabel_metadata* _init_table(_tabel_metadata* table);
-abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int index);
+abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int *index);
 
 
-abonent_t* _get_output_info(abonent* root, abonent_t * _output_memory,int index) {
+abonent_t* _get_output_info(abonent* root, abonent_t * _output_memory,int* index) {
     {
         if (root) {
             if (root->left) {
-                _output_memory= _get_output_info(root->left, _output_memory,index);
+                _get_output_info(root->left, _output_memory,index);
             }
-                   _output_memory[index] = root->info;
-                   index++;
+                   _output_memory[*index] = root->info;
+                   (* index)++;
             if (root->right) {
-                _output_memory = _get_output_info( root->right,_output_memory,index);
+                 _get_output_info( root->right,_output_memory,index);
             }
             return _output_memory;
         }
@@ -251,7 +251,8 @@ int main(void) {
         clear();
         int leafCount = getLeafCount(abonents, 0);
         _output_info = (abonent_t*)calloc(leafCount, sizeof(abonent_t));
-        _output_info =  _get_output_info(abonents, _output_info, 0);
+        int  temp = 0;
+        _output_info =  _get_output_info(abonents, _output_info,&temp);
         if (leafCount == 0)
             _output_info = NULL;
 
