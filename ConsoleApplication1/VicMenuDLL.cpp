@@ -47,6 +47,26 @@ void clear() {
         _set_cur_to_pos(hConsole, positionCur);
 }
 
+
+void clear_table() {
+    positionCur.X = _otstup + 2;  positionCur.Y = _interval + 3;
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int* temp_window_size = NULL;
+    temp_window_size = _get_window_size(temp_window_size);
+    _set_cur_to_pos(hConsole, positionCur); int _window_h = temp_window_size[1];
+    int _window_w = temp_window_size[0];
+    for (int y = _interval+3; y <= _window_h - _interval-3; y++) {
+        _set_cur_to_pos(hConsole, positionCur);
+        for (int x = _otstup + 2; x < _window_w - _otstup-2; x++) {
+             printf(" "); //_otstup+2,_interval+3
+        }
+        
+        positionCur.Y++;
+    }
+}
+
+
+
 void clear_for_info() {
     positionCur.X = _otstup + 4;  positionCur.Y = _interval + 4;
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -161,6 +181,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
             _print_bakground(_window_size[0], _window_size[1]); //по новой отрисовываем задний фон и рабочую область
             positionCur.X = _otstup + 1; positionCur.Y = _interval + 1; // задаем базовые стартовые параметры курсора 
             _set_cur_to_pos(hConsole, positionCur); //устанавливаем курсор в начальное положение
+            page = 1;
         }
         positionCur.X = _otstup + 1; positionCur.Y = _interval + 1;   
         _set_cur_to_pos(hConsole, positionCur);//устанавливаем курсор в начальное положение
@@ -598,7 +619,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
     _size_delta = (width -2) - _size_delta - table->_col_count*2-5 ;
     do {
     COORD positionCur = { _otstup+2,_interval+3}; //позиция x и y 
-   
+    
     _set_cur_to_pos(hConsole, positionCur);
     for (int i = 0; i < width; i++) {
         if (i == 0) {
@@ -846,11 +867,12 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
             }
             if (c == KEY_HOME)
             {
-                if (*page > 1) (*page)--;
+                if (*page > 1) { (*page)--; clear_table(); }
+ 
             }
             if (c == KEY_END)
             {
-                if (_info_count > ((*page) * height)) (*page)++;
+                if (_info_count > ((*page) * height)) { (*page)++; clear_table(); }
             }
             int* temp = (int*)calloc(2, sizeof(int));
             temp = _get_curent_selection(c, row_selection, height, 1, 1);
@@ -1007,11 +1029,9 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
         }
-
         positionCur.X = _center_x - width / 2 + 4 + max_lenght + 6;
         positionCur.Y = _center_y - height / 2 + 4;
         _set_cur_to_pos(hConsole, positionCur);
-
         if (!_cycle_in_flag) {
             if (u8_strlen(_temp_info->fio.surname) > 0)
                 printf(" %s ", _temp_info->fio.surname);
@@ -1100,10 +1120,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             _men_position = _get_curent_selection(c, _men_position, table->_col_count + 1, 1, 1);
         }
         else {
-            
-
             char mes[] = "Для выхода, введите '0 0 0' в поле ФИО";
-
             positionCur.Y = _center_y + height / 2 - 2;
             positionCur.X = _center_x - u8_strlen(mes)/2;
             _set_cur_to_pos(hConsole, positionCur);
