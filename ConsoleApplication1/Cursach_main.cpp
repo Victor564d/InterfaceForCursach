@@ -192,6 +192,24 @@ void printINFO(abonent_t* d, int index);
 /// 
 _menu_item* _init_menu(_menu_item* menu);
 _tabel_metadata* _init_table(_tabel_metadata* table);
+abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int index);
+
+
+abonent_t* _get_output_info(abonent* root, abonent_t * _output_memory,int index) {
+    {
+        if (root) {
+            if (root->left) {
+                _get_output_info( root->left, _output_memory,index);
+            }
+                   _output_memory[index] = root->info;
+                   index++;
+            if (root->right) {
+                _get_output_info( root->right,_output_memory,index);
+            }
+
+        }
+    }
+}
 
 
 /// 
@@ -219,7 +237,7 @@ int main(void) {
     _tabel_metadata* table = NULL;
     menu = _init_menu(menu);
     table = _init_table(table);
-   
+    abonent_t* _output_info;
     // system("color F0");
     FILE* f =  fopen("data.dat", "rb+");//Открытие существующего файла для чтения и записи в конец
     if (!f) {
@@ -231,7 +249,11 @@ int main(void) {
     }
     while (1) {//вывод меню и запуск соответствующих функций
         clear();
-        MenuSelect(_print_menu(menu, position, menu_size, 5,table), f,table);
+        int leafCount = getLeafCount(abonents, 0);
+        _output_info = (abonent_t*)calloc(leafCount, sizeof(abonent_t));
+        _get_output_info(abonents, _output_info, 0);
+
+        MenuSelect(_print_menu(menu, position, menu_size, 5,_output_info,leafCount,table), f,table);
     }
 }
 int Posid = 1;

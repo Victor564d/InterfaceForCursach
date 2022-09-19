@@ -97,9 +97,10 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 /// <param name="MenuSize">Колличество элементов в массиве наименований</param>
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int _print_menu(_menu_item * _menu, int* position, int _menu_size, int Colums,_tabel_metadata * table)
+int _print_menu(_menu_item * _menu, int* position, int _menu_size, int Colums, abonent_t* _output_mas,
+    int _output_colcount, _tabel_metadata * table)
 {
-    return _print_menu_with_table (_menu, position, _menu_size, Colums, NULL, NULL, -1,table);
+    return _print_menu_with_table (_menu, position, _menu_size, Colums, _output_mas, _output_colcount,table);
 }
 
 /// <summary>
@@ -117,9 +118,8 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
     , int* position //Массив текущей позиции x и y
     , int _menu_size  //Колличество элементов в массиве объектов меню
     , int _menu_buttons,//Количество кнопок меню  
-    int (*funcptr) (void*, int), //резерв
-    void* Dataptr, //резерв
-    int num, //резерв
+    abonent_t * _output_mas,
+    int _output_colcount,
     _tabel_metadata * table
 )
 {
@@ -199,11 +199,10 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
         }
         //-----------------------------------------------------------------------------  
         //Пример управления цветом заднего фона и текста (задний фон красный)printf("\x1b[41mHello\x1b[0m");
-                                                                          //printf("\x1b[43mHello\x1b[0m");
-        _table_window(table,NULL,0,0);
+                                                                  //printf("\x1b[43mHello\x1b[0m");
+        _table_window(table,_output_mas,_output_colcount,1);
                  
-        if (funcptr != NULL && Dataptr != NULL) //Если у нас есть данные для вывода - выводим
-            funcptr(Dataptr, num);
+
 
         char c = getch();
         if (c == _key_enter) {
