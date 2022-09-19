@@ -575,8 +575,9 @@ void _message_window(char* message) {
 
 }
 
-int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_count, int * page) {
+int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_count, int  page) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
     int* _size_n = NULL;
     _size_n = _get_window_size(_size_n);
      int _window_w = _size_n[0]; int _window_h = _size_n[1];
@@ -667,18 +668,124 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
     if (_output_mass) {
         
         
-        int _col_inpage = height - positionCur.Y;
+        int _col_inpage = height - 5;
         int _diap[2] = { 0,0 };
-        _diap[0] = ( * page) * _col_inpage;
+        _diap[0] =   (page-1) * _col_inpage;
         _diap[1] = _diap[0] + _col_inpage;
-        printf("│");
+        
         for (int j = _diap[0]; j < _diap[1]; j++)
         {
             if (_info_count < j) break;
-            char buff[200];
+            _set_cur_to_pos(hConsole, positionCur);
+            printf("│");
+            char buff[400];
             sprintf(buff, "%d", j);
-        }
+            printf("%s", buff);
+            if (u8_strlen(buff) < 3)
+            {
+                for (int l = 0; l < 3 - u8_strlen(buff); l++)
+                    printf(" ");
+            }
+            printf("│");
 
+            sprintf(buff, "%s %s %s", _output_mass[j].fio.name, _output_mass[j].fio.surname, _output_mass[j].fio.secondname);
+            if (u8_strlen(buff) > table->_cols[1].size+2) {
+                sprintf(buff, "%s %c.%c", _output_mass[j].fio.name, _output_mass[j].fio.surname[0], _output_mass[j].fio.secondname[1]);
+            } 
+            printf("%s", buff);
+            if (u8_strlen(buff) < table->_cols[1].size+2)
+            {
+                for (int l = 0; l < table->_cols[1].size+2 - u8_strlen(buff); l++)
+                    printf(" ");
+            }
+            printf("│");
+
+            sprintf(buff, "%s %s", _output_mass[j].autor.surname, _output_mass[j].autor.inicial);
+
+            if (u8_strlen(buff) > table->_cols[2].size + 2) {
+                for (int l = 0; l < table->_cols[2].size - 1; l++) {
+                    printf("%c", buff[l]);
+                }
+                printf("...");
+            }
+            else
+                printf("%s", buff);
+            if (u8_strlen(buff) < table->_cols[2].size + 2)
+            {
+                for (int l = 0; l < table->_cols[2].size + 2 - u8_strlen(buff); l++)
+                    printf(" ");
+            }
+            printf("│");
+
+            sprintf(buff, "%s",  _output_mass[j].book_name);
+            if (u8_strlen(buff) > table->_cols[3].size + 2) {
+                for (int l = 0; l < table->_cols[3].size-1;l++) {
+                    printf("%c", _output_mass[j].book_name[l]);
+                }
+                printf("...");
+            } else
+               printf("%s", buff);
+            if (u8_strlen(buff) < table->_cols[3].size + 2)
+            {
+                for (int l = 0; l < table->_cols[3].size + 2 - u8_strlen(buff); l++)
+                    printf(" ");
+            }
+            printf("│");
+
+            sprintf(buff, "%s", _output_mass[j].izd);
+            if (u8_strlen(buff) > table->_cols[4].size + 2) {
+                for (int l = 0; l < table->_cols[4].size-1; l++) {
+                    printf("%c", _output_mass[j].izd[l]);
+                }
+                printf("...");
+            }
+            else
+                printf("%s", buff);
+            if (u8_strlen(buff) < table->_cols[4].size + 2)
+            {
+                for (int l = 0; l < table->_cols[4].size + 2 - u8_strlen(buff); l++)
+                    printf(" ");
+            }
+            printf("│");
+
+            sprintf(buff, "%d.%d.%d", _output_mass[j].date_out.d, _output_mass[j].date_out.m, _output_mass[j].date_out.y);
+            if (u8_strlen(buff) > table->_cols[5].size + 2) {
+                for (int l = 0; l < table->_cols[5].size-1; l++) {
+                    printf("%c", buff[l]);
+                }
+                printf("...");
+            }
+            else
+                printf("%s", buff);
+            if (u8_strlen(buff) < table->_cols[5].size + 2)
+            {
+                for (int l = 0; l < table->_cols[5].size + 2 - u8_strlen(buff); l++)
+                    printf(" ");
+            }
+            printf("│");
+
+            sprintf(buff, "%f",  _output_mass[j].cost);
+            if (u8_strlen(buff) > table->_cols[6].size + 2) {
+                for (int l = 0; l < table->_cols[6].size-1; l++) {
+                    printf("%c", buff[l]);
+                }
+                printf("...");
+            }
+            else
+                printf("%s", buff);
+            if (u8_strlen(buff) < table->_cols[6].size + 2)
+            {
+                for (int l = 0; l < table->_cols[6].size + 2 - u8_strlen(buff); l++)
+                    printf(" ");
+            }
+            printf("│");
+
+
+
+            positionCur.Y++;
+            
+        }
+        
 
 
     }
@@ -695,6 +802,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
     }
     
        _set_cur_to_pos(hConsole, positionCur);
+       int _row_num = 0; int _padd_border = table->_cols[_row_num].size + 2;
     for (int i = 0; i < width; i++) {
         if (i == 0) {
             printf("└");
@@ -703,6 +811,13 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
             printf("┘");
         }
         else
+            if (i == _padd_border) {
+                _row_num++;
+                if (_row_num < table->_col_count)
+                    _padd_border += table->_cols[_row_num].size + 3;
+                printf("┴");
+            }
+            else
             printf("─");
     }
      return EXIT_SUCCESS;
