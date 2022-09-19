@@ -1115,7 +1115,6 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     }
                 }
             }
-
             if (c == KEY_ESC)
             {
                 break;  return _output_info;
@@ -1127,8 +1126,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             positionCur.Y = _center_y + height / 2 - 2;
             positionCur.X = _center_x - u8_strlen(mes)/2;
             _set_cur_to_pos(hConsole, positionCur);
-            printf("%s", mes);
-            
+            printf("%s", mes);      
             CONSOLE_CURSOR_INFO structCursorInfo;
             GetConsoleCursorInfo(hConsole, &structCursorInfo);
             structCursorInfo.bVisible = TRUE;
@@ -1139,11 +1137,8 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             scanf("%s", _temp_info->fio.surname);
             scanf("%s", _temp_info->fio.name);
             scanf("%s", _temp_info->fio.secondname);
-
             if (u8_strlen(_temp_info->fio.surname) == 1 && u8_strlen(_temp_info->fio.name) == 1 && u8_strlen(_temp_info->fio.secondname) == 1)
                 return NULL;
-
-
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             scanf("%s", _temp_info->autor.surname);
