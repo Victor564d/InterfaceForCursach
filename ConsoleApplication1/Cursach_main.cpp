@@ -508,8 +508,8 @@ abonent* loadFromFile_new(FILE* f)
         printINFO(&tmp, count);
         count++;
     }
-    puts("Данные считаны. Нажмите любую кнопку ");
-    getch();
+    _message_window("Данные считаны");
+    Sleep(3000);
     return head;
 }
 
