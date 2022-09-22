@@ -221,20 +221,8 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
             positionCur.Y -= 1; positionCur.X = _new_padding + 1;
             _set_cur_to_pos(hConsole, positionCur);
         }
-        //-----------------------------------------------------------------------------  
-        //Пример управления цветом заднего фона и текста (задний фон красный)printf("\x1b[41mHello\x1b[0m");
-                                                                  //printf("\x1b[43mHello\x1b[0m");
-        _table_window(table,_output_mas,_output_colcount,&page,&table_focus_flag);
-                 
+        _table_window(table,_output_mas,_output_colcount,&page,&table_focus_flag);    
         char c = getch();
-        
-       /* while (1) {
-            
-            c = getch();
-            char buffff[40]; sprintf(buffff, "%c", c);
-
-            _message_window(&buffff);
-        }*/
         if (c == KEY_TAB) { table_focus_flag = 1; } else 
         if (c == KEY_ENTER) {
             if (_menu[position[0] - 1]._menu_size > 0) {
@@ -540,10 +528,10 @@ int _confirm_window(char * message)
         case 77://право
             if (_selection == 1) _selection--;
             break;
-        case KEY_ENTER://лево
+        case KEY_ENTER:
             return _selection;
             break;
-        case KEY_ESC://право
+        case KEY_ESC:
             return 0;
             break;
         }
