@@ -230,8 +230,8 @@ int main(void) {
     GetConsoleCursorInfo(hConsole, &structCursorInfo);
     structCursorInfo.bVisible = FALSE;
     SetConsoleCursorInfo(hConsole, &structCursorInfo);
-
-    SetConsoleCP(65001); // Задаем таблицу символов для консоли.
+    system("chcp 1251");
+    SetConsoleCP(1251); // Задаем таблицу символов для консоли.
     SetConsoleOutputCP(65001);
     clearf();
     _menu_item* menu = NULL;
