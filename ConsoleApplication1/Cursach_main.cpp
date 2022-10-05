@@ -142,15 +142,6 @@ int GetLeafLevel(abonent* root, int n, int serchID);
 _menu_item* _init_menu(_menu_item* menu);
 _tabel_metadata* _init_table(_tabel_metadata* table);
 
-
-
-
-
-/// 
-/// 
-/// 
-/// 
-/// 
 //------------------------------------------------------------------- Конец области функций ---------------------------------------------------------
 
 abonent* abonents = NULL;

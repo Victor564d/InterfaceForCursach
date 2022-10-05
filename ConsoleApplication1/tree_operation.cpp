@@ -18,7 +18,7 @@ abonent* getLeaf(abonent* root, int index)
         return getLeaf(root->left, index);
 }
 
-abonent* DeleteNode(abonent* root, char id) {
+abonent* DeleteNode(abonent* root, int id) {
     if (root == NULL) return root; // выход если пустой узел
     if (root->info.id == id) { //найден удал. узел
         abonent* tmp; // указатель
@@ -42,6 +42,7 @@ abonent* DeleteNode(abonent* root, char id) {
             }
         }
         free(root);
+        root = NULL;
         return tmp;
     }
     else //бинарный поиск в левом или правом поддереве

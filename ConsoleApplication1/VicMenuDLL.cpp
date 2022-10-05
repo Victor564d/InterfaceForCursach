@@ -223,7 +223,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
             positionCur.Y -= 1; positionCur.X = _new_padding + 1;
             _set_cur_to_pos(hConsole, positionCur);
         }
-        _table_window(table,_output_mas,_output_colcount,&page,&table_focus_flag,root);    
+        _table_window(table,_output_mas,&_output_colcount,&page,&table_focus_flag,root);    
         char c = getch();
         if (c == KEY_TAB) { table_focus_flag = 1; } else 
         if (c == KEY_ENTER) {
@@ -597,7 +597,7 @@ void _message_window(char* message) {
 
 }
 
-int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_count, int*  page, int * _table_focus_flag, abonent* root) {
+int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info_count, int*  page, int * _table_focus_flag, abonent* root) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO structCursorInfo;
     GetConsoleCursorInfo(hConsole, &structCursorInfo);
@@ -704,7 +704,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
 
             for (int j = _diap[0]; j < _diap[1]; j++)
             {
-                if (_info_count <= j) break;
+                if (*_info_count <= j) break;
                 _set_cur_to_pos(hConsole, positionCur);
                 if (*_table_focus_flag)
                     if (j == ((*page) - 1) * _col_inpage + row_selection[1]-1)
@@ -876,14 +876,14 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
 
             if (c == KEY_DEL) {
                 if (_confirm_window("Вы действительно хотите удалить запись ?")) {
-                    DeleteNode(root, &_output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
+                  root =  DeleteNode(root, _output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
                     _message_window("Запись успешно удалена");
-                    int leafount = getLeafCount(root, 0);
+                    int leafcount = getLeafCount(root, 0);
                     int  temp = 0;
                     _output_mass = _get_output_info(root, _output_mass, &temp);
-                    if (leafount == 0)
+                    if (leafcount == 0)
                         _output_mass = NULL;
-                    _info_count = leafount;
+                    *_info_count = leafcount;
                 }
               }
 
@@ -894,18 +894,18 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
             }
             if (c == KEY_END)
             {
-                if (_info_count > ((*page) * height)) { 
+                if (*_info_count > ((*page) * height)) { 
                     (*page)++; 
                     clear_table(); 
-                    if ((((*page) - 1) * height + row_selection[1] - 1) > _info_count) {
-                        row_selection[1] = _info_count - ((*page) - 1) * height ;
+                    if ((((*page) - 1) * height + row_selection[1] - 1) > *_info_count) {
+                        row_selection[1] = *_info_count - ((*page) - 1) * height ;
                     }
                 }
             }
             int* temp = (int*)calloc(2, sizeof(int));
             temp = _get_curent_selection(c, row_selection, height, 1, 1);           
             row_selection[1] = temp[1];
-            if ((((*page) - 1) * height + row_selection[1] - 1) == _info_count) {
+            if ((((*page) - 1) * height + row_selection[1] - 1) == *_info_count) {
                 row_selection[1] = row_selection[1] - 1;
             }
         }
