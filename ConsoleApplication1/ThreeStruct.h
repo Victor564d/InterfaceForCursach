@@ -10,7 +10,7 @@ typedef struct {
     fio_t fio;
     struct {
         char surname[40];
-        char inicial[3];
+        char inicial[5];
     }autor;
     char book_name[140];
     char izd[50];
@@ -29,3 +29,4 @@ typedef struct abonent_l {
     struct abonent_l* right;
     struct abonent_l* left;
 } abonent;
+const int size_abonent_t;

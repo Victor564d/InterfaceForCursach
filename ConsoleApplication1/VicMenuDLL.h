@@ -27,7 +27,7 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
 int _print_menu(_menu_item* _menu, int* position, int _menu_size, int Colums, abonent_t* _output_mas,
-    int _output_colcount, _tabel_metadata* table);
+    int _output_colcount, _tabel_metadata* table, abonent* root);
 
 
 /// <summary>
@@ -42,7 +42,7 @@ int _print_menu(_menu_item* _menu, int* position, int _menu_size, int Colums, ab
 /// <param name="num">Указатель на номер элемента при выводе</param>
 /// <returns>Индекс выбранного пункта меню</returns>
 int _print_menu_with_table(_menu_item* _menu, int* position, int _menu_size, int Colums, abonent_t* _output_mas,
-    int _output_colcount, _tabel_metadata* table);
+    int _output_colcount, _tabel_metadata* table, abonent* root);
 
 // <summary>
 /// Анимированная картинка в консоли
@@ -66,7 +66,7 @@ void _window(int _window_w, int _window_h,char * title);
 void clear_for_info();
 void _in_window();
 void _message_window( char* message);
-int _table_window(_tabel_metadata* table, abonent_t* _output_mass, int _info_count, int* page, int* _table_focus_flag);
+int _table_window(_tabel_metadata* table, abonent_t* _output_mass, int _info_count, int* page, int* _table_focus_flag,abonent * root);
 void _big_window(char* title);
 abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass,int);                                                                    
 
@@ -80,7 +80,8 @@ enum KeyboardCodes
     KEY_HOME = 71,
     KEY_END  = 79,
     KEY_ENTER = 13,
-    KEY_ESC  = 27
+    KEY_ESC  = 27,
+    KEY_DEL = 83
 };
 
 #endif

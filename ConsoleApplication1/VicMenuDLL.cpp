@@ -12,6 +12,7 @@
 
 #include "VicMenuDLL.h"
 #include "MenuStruct.h"
+#include "tree_operation.h"
 
 const int _otstup = 3;
 const int _interval = 3;
@@ -120,9 +121,9 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
 int _print_menu(_menu_item * _menu, int* position, int _menu_size, int Colums, abonent_t* _output_mas,
-    int _output_colcount, _tabel_metadata * table)
+    int _output_colcount, _tabel_metadata * table, abonent* root)
 {
-    return _print_menu_with_table (_menu, position, _menu_size, Colums, _output_mas, _output_colcount,table);
+    return _print_menu_with_table (_menu, position, _menu_size, Colums, _output_mas, _output_colcount,table,root);
 }
 
 /// <summary>
@@ -142,7 +143,8 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
     , int _menu_buttons,//Количество кнопок меню  
     abonent_t * _output_mas,
     int _output_colcount,
-    _tabel_metadata * table
+    _tabel_metadata * table,
+    abonent* root
 )
 {
     int  table_focus_flag = 0;
@@ -221,7 +223,7 @@ int _print_menu_with_table(_menu_item* _menu //Массив объектов  м
             positionCur.Y -= 1; positionCur.X = _new_padding + 1;
             _set_cur_to_pos(hConsole, positionCur);
         }
-        _table_window(table,_output_mas,_output_colcount,&page,&table_focus_flag);    
+        _table_window(table,_output_mas,_output_colcount,&page,&table_focus_flag,root);    
         char c = getch();
         if (c == KEY_TAB) { table_focus_flag = 1; } else 
         if (c == KEY_ENTER) {
@@ -321,10 +323,10 @@ void animatedNeko() {
         for (int i = 0; i < 11; i++) {
             char url[256] = { 0 };
             sprintf(url, "bakemonogatari-monogatari/banner (%d).txt", i);
-            f = fopen(url, "r"); char a[195]; ;
-            while (fgets(a,195,f) != NULL)
+            f = fopen(url, "r"); char a[210]; ;
+            while (fgets(a,210,f) != NULL)
             {
-                printf("%s", a);
+                printf("         %s", a);
             }
             Sleep(30);
             COORD positionCur = { 0,0 }; //позиция x и y
@@ -595,7 +597,7 @@ void _message_window(char* message) {
 
 }
 
-int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_count, int*  page, int * _table_focus_flag) {
+int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_count, int*  page, int * _table_focus_flag, abonent* root) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO structCursorInfo;
     GetConsoleCursorInfo(hConsole, &structCursorInfo);
@@ -720,9 +722,9 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
                 SetConsoleOutputCP(65001); //-------
                 printf("│");
 
-                sprintf(buff, "%s %s %s", _output_mass[j].fio.name, _output_mass[j].fio.surname, _output_mass[j].fio.secondname);
+                sprintf(buff, "%s %s %s", _output_mass[j].fio.surname, _output_mass[j].fio.name, _output_mass[j].fio.secondname);
                 if (u8_strlen(buff) > table->_cols[1].size + 2) {
-                    sprintf(buff, "%s %c.%c", _output_mass[j].fio.name, _output_mass[j].fio.surname[0], _output_mass[j].fio.secondname[1]);
+                    sprintf(buff, "%s %c.%c", _output_mass[j].fio.surname, _output_mass[j].fio.name[0], _output_mass[j].fio.secondname[1]);
                 }
                 SetConsoleOutputCP(1251); //-------
                 printf("%s", buff);
@@ -733,9 +735,8 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
                 }
                 SetConsoleOutputCP(65001); //-------
                 printf("│");
-
-                sprintf(buff, "%s %s", _output_mass[j].autor.surname, _output_mass[j].autor.inicial);
                 SetConsoleOutputCP(1251); //-------
+                sprintf(buff, "%s %s", _output_mass[j].autor.surname, _output_mass[j].autor.inicial);
                 if (u8_strlen(buff) > table->_cols[2].size + 2) {
                     for (int l = 0; l < table->_cols[2].size - 1; l++) {
                         printf("%c", buff[l]);
@@ -862,6 +863,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
         if (*_table_focus_flag)
         {
             char c = getch();
+
              if (c == KEY_ENTER) {
                  _in_info_window(table, &_output_mass[((*page) - 1) * height + row_selection[1] - 1], 0);
             }
@@ -871,6 +873,20 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int _info_c
             {
                 *_table_focus_flag = 0;  
             }
+
+            if (c == KEY_DEL) {
+                if (_confirm_window("Вы действительно хотите удалить запись ?")) {
+                    DeleteNode(root, &_output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
+                    _message_window("Запись успешно удалена");
+                    int leafount = getLeafCount(root, 0);
+                    int  temp = 0;
+                    _output_mass = _get_output_info(root, _output_mass, &temp);
+                    if (leafount == 0)
+                        _output_mass = NULL;
+                    _info_count = leafount;
+                }
+              }
+
             if (c == KEY_HOME)
             {
                 if (*page > 1) { (*page)--; clear_table(); }

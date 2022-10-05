@@ -13,6 +13,8 @@
 #include "ThreeStruct.h"
 #include "VicMenuDLL.h"
 #include "MenuStruct.h"
+#include "tree_operation.h"
+
 
 #define clearf() system("cls");
 
@@ -21,30 +23,20 @@ const int menu_size = 5;
 HANDLE hConsole;
 //------------------------------------------------------------------- Область функций ----------------------------------------------------------------
 //-----------------------------------функции создания дерева----------------------------------------------
-/// <summary>
-/// Функция добавления элемента в дерево
-/// </summary>
-/// <param name="head">Указатель на корень лерева</param>
-/// <param name="info">Информация которую необходимо сохранить</param>
-void addToTree(abonent** head, const abonent_t* info);
+
 /// <summary>
 /// Функция вывода меню добавления записи
 /// </summary>
 /// <param name="st">Указатель на корень дерева</param>
 /// <returns>При успешном добавлении возвращает 1</returns>
-int аddNewElement(abonent** st,_tabel_metadata *table);
+int аddNewElement(abonent** st, _tabel_metadata *table);
 /// <summary>
 /// Функция реализующая ввод через форму
 /// </summary>
 /// <param name="d">Информационные поля</param>
 /// <returns>Возвращает информационную структуру которую необходимо сохранить</returns>
 abonent_t GetInfoFromKeyboard(abonent_t  d);
-/// <summary>
-/// Отображение структуры дерева
-/// </summary>
-/// <param name="top">Параметр корня дерева/текущей ноды</param>
-/// <param name="otstup">Текущий отступ вывода</param>
-void View(abonent* top, int otstup);
+
 //----------------------------------Функции работы с файлами----------------------------------------------
 /// <summary>
 /// Функция сохранения дерева в файл
@@ -59,12 +51,6 @@ int create_file(FILE* f, abonent* St);
 /// <param name="f">Указатель на файл</param>
 /// <returns>Возвращает указатель на корень дерева</returns>
 abonent* loadFromFile_new(FILE* f);
-/// <summary>
-/// Рекурсивная функция сохранения данных в файл
-/// </summary>
-/// <param name="f">Указатель на файл</param>
-/// <param name="St">Корень дерева/текущая нода</param>
-void printToFile(FILE* f, abonent* St);
 //------------------------------Функции работы с элементами дерева----------------------------------------
 /// <summary>
 /// Основное тело функции редактирования записи по ид
@@ -78,34 +64,10 @@ int correctInfo(abonent* st);
 /// <param name="root">Корень дерева или текущаяя нода</param>
 /// <param name="indexToSerch">Ид который необходимо найти</param>
 /// <returns>Возвращает указатель на элемент с соответствующим ид, иначе NULL</returns>
-abonent* getLeaf(abonent* root, int indexToSerch);//поиск листка по ид
-/// <summary>
-/// Рекурсивная функция удаления дерева из памяти 
-/// </summary>
-/// <param name="st">Корень дерева/текущаяя нода</param>
-/// <returns>Пустой указатель на структуру</returns>
-abonent* deleteThree(abonent* st);
-/// <summary>
-/// Рекурсивная функция поиска и удаления ноды/листа из дерева по ид
-/// </summary>
-/// <param name="root">Корень дерева/текущая нода</param>
-/// <param name="id">Значение которое ищем в дереве</param>
-/// <returns>Корень дерева после изменения</returns>
-abonent* DeleteNode(abonent* root, int id);
-/// <summary>
-/// Рекурсивная функция подсчета количества записей в дереве
-/// </summary>
-/// <param name="root">Корень дерева/текущаяя нода</param>
-/// <param name="count">Используется для рекурсивной передачи данных</param>
-/// <returns>Количество элементво в дереве</returns>
-int getLeafCount(abonent* root, int count);
-/// <summary>
-/// Рекурсивная функция подсчета среднего арефметического по предметам
-/// </summary>
-/// <param name="root">Корень дерева/текущая нода</param>
-/// <param name="summ">Указатель на массив флоат в котором хранятся значения</param>
-/// <returns>Указатель на массив из четырех элементов типа флоат где лежит сумма балов по предметам</returns>
-float* getSerArefm(abonent* root, float* summ);
+
+
+
+
 //--------------------------------Функции вывода списка на экран------------------------------------------
 
 /// <summary>
@@ -113,20 +75,7 @@ float* getSerArefm(abonent* root, float* summ);
 /// </summary>
 /// <param name="st">Корень дерева/текущая нода</param>
 /// <returns>В случае успеха - 1</returns>
-int PrintTreeData(abonent* st);
-/// <summary>
-/// Форма вывода записи на экран
-/// </summary>
-/// <param name="d">Указатель на сируктуру с информационными полями</param>
-/// <param name="index">Текущий номер элемента</param>
 
-int PrintTreeDataNonThree(abonent* root);
-//-------------------------------Вспомогательные функции -------------------------------------------------
-/// <summary>
-/// Функция выбора необходимой операции. Использует для получения вызов библиотеки VicMenuDLL
-/// </summary>
-/// <param name="selector">Индекс выбранного элемента</param>
-/// <param name="f">Указатель на файл</param>
 void MenuSelect(int selector, FILE* f);
 /// <summary>
 /// Функция получения подтверждения от пользователя
@@ -178,7 +127,7 @@ int getLeafCount(abonent* root, int count);
 /// <returns>Указатель на массив из четырех элементов типа флоат где лежит сумма балов по предметам</returns>
 float* getSerArefm(abonent* root, float* summ);
 int GetLeafLevel(abonent* root, int n, int serchID);
-void printINFO(abonent_t* d, int index);
+
 /// <summary>
 /// Рекурсивная функция вывода информации о студентах без троек
 /// </summary>
@@ -192,24 +141,9 @@ void printINFO(abonent_t* d, int index);
 /// 
 _menu_item* _init_menu(_menu_item* menu);
 _tabel_metadata* _init_table(_tabel_metadata* table);
-abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int *index);
 
 
-abonent_t* _get_output_info(abonent* root, abonent_t * _output_memory,int* index) {
-    {
-        if (root) {
-            if (root->left) {
-                _get_output_info(root->left, _output_memory,index);
-            }
-                   _output_memory[*index] = root->info;
-                   (* index)++;
-            if (root->right) {
-                 _get_output_info( root->right,_output_memory,index);
-            }
-            return _output_memory;
-        }
-    }
-}
+
 
 
 /// 
@@ -257,7 +191,7 @@ int main(void) {
         if (leafCount == 0)
             _output_info = NULL;
 
-        MenuSelect(_print_menu(menu, position, menu_size, 5,_output_info,leafCount,table), f,table);
+        MenuSelect(_print_menu(menu, position, menu_size, 5,_output_info,leafCount,table, abonents), f,table);
     }
 }
 int Posid = 1;
@@ -324,16 +258,13 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         break;
     
     case RECORD_LEVEL:
-        _in_window(NULL); int l; scanf("%d", &l); l = GetLeafLevel(abonents, 0, l);
-        sprintf(a,"Уровень элемента --> %d", l);
-            _message_window(a);
-        getch();
+            
         break;
     
     case PRINT_TREE:
         clear();
         Posid = 1;
-        PrintTreeData(abonents);
+        //PrintTreeData(abonents);
         puts("Нажмите любую клавишу");
         getch();
         break;
@@ -413,66 +344,6 @@ int create_file(FILE* f, abonent* root)
     return 0;
 }
 
-void printToFile(FILE* f, abonent* root)
-{
-    if (root) {
-        abonent_t te = root->info;
-        fwrite(&te, size_abonent_t, 1, f);
-        if (root->left) {
-            printToFile(f, root->left);
-        }
-        if (root->right) {
-            printToFile(f, root->right);
-        }
-
-    }
-}
-
-int PrintTreeData(abonent* root) {
-    if (root) {
-        if (root->left) {
-            PrintTreeData(root->left);
-        }
-        printINFO(&root->info, Posid);
-        Posid++;
-        if (root->right) {
-            PrintTreeData(root->right);
-        }
-    }
-    return 0;
-}
-
-abonent* deleteThree(abonent* root) {
-    if (root) {
-        if (root->left) {
-            deleteThree(root->left);
-        }
-        if (root->right) {
-            deleteThree(root->right);
-        }
-        free(root);
-    }
-    return NULL;
-}
-
-void addToTree(abonent** root, const abonent_t* info)
-{
-    if (*root == NULL)
-    {
-        *root = (abonent*)calloc(sizeof(abonent), 1);
-        (*root)->info = *info;
-    }
-    else {
-        if (((*root)->info.id == info->id)) {
-            _message_window("Запись с таким id уже существует"); 
-            return;            
-        }else if (((*root)->info.id > info->id))
-            addToTree(&((*root)->left), info);
-        else
-            addToTree(&((*root)->right), info);
-    }
-}
-
 int аddNewElement(abonent** st,_tabel_metadata* table)
 {
     abonent_t* d; 
@@ -485,27 +356,15 @@ int аddNewElement(abonent** st,_tabel_metadata* table)
     return EXIT_SUCCESS;
 }
 
-void View(abonent* top, int otstup) {
-    if (top) {
-        otstup += 3; //отступ от края экрана
-        View(top->right, otstup); //обход правого поддерева
-        for (int i = 0; i < otstup; i++) printf(" ");
-        printf("|%d\n", top->info.id);
-        View(top->left, otstup); //обход левого поддерева
-    }
-}
-
 abonent* loadFromFile_new(FILE* f)
 {
     abonent_t tmp;
     abonent* head = NULL;
     int count = 1;
-    fseek(f, 0, SEEK_SET);
-    printf("\n");      // printTable();
+    fseek(f, 0, SEEK_SET); 
     while (fread(&tmp, sizeof(abonent_t), 1, f))
     {
         addToTree(&head, &tmp);
-        printINFO(&tmp, count);
         count++;
     }
     _message_window("Данные считаны");
@@ -513,46 +372,6 @@ abonent* loadFromFile_new(FILE* f)
     return head;
 }
 
-abonent* DeleteNode(abonent* root, char id) {
-    if (root == NULL) return root; // выход если пустой узел
-    if (strcmp(root->info.id,  id)) { //найден удал. узел
-        abonent* tmp; // указатель
-        if (root->right == NULL) tmp = root->left;
-        else { // существует правое поддерево
-            abonent* ptr = root->right;
-            if (ptr->left == NULL) { // у правого ПД отсутствует левое ПД
-                ptr->left = root->left;
-                tmp = ptr;
-            }
-            else {
-                abonent* pmin = ptr->left; // поиск самого левого
-                while (pmin->left != NULL) {// узла в правом ПД
-                    ptr = pmin;
-                    pmin = ptr->left;
-                } // найден самый левый узел правого ПП (pmin)
-                ptr->left = pmin->right;
-                pmin->left = root->left;
-                pmin->right = root->right;
-                tmp = pmin;
-            }
-        }
-        free(root);
-        return tmp;
-    }
-    else //бинарный поиск в левом или правом поддереве
-        if (strcmp(id , root->info.id)<0)
-            root->left = DeleteNode(root->left, id);
-        else
-            root->right = DeleteNode(root->right, id);
-    return root;
-}
-
-int getLeafCount(abonent* root, int count) {
-    if (root != NULL)
-        return getLeafCount(root->left, count) + 1 + getLeafCount(root->right, count);
-    else
-        return 0;
-}
 
 
 int PrintTreeDataNonThree(abonent* root) {
@@ -562,7 +381,7 @@ int PrintTreeDataNonThree(abonent* root) {
         }
      //   if ((root->info.marks.fiz > 3) && (root->info.marks.math > 3) && (root->info.marks.it > 3) && (root->info.marks.history > 3))
         {
-            printINFO(&root->info, Posid);
+            //printINFO(&root->info, Posid);
             Posid++;
         }
         if (root->right) {
@@ -572,55 +391,11 @@ int PrintTreeDataNonThree(abonent* root) {
     return Posid;
 }
 
-abonent_t GetInfoFromKeyboard(abonent_t  d)
-{
-    /* Убрать return ниже в случае раскомментирования кода под return'ом. */
-    abonent_t a = {.id = 1};
-    return a;
-
-   
-}
-
-void printINFO(abonent_t* d, int index)
-{
-   
-}
-
 int correctInfo(abonent* st)
 {
    return EXIT_SUCCESS;
 }
 
-abonent* getLeaf(abonent* root, int index)
-{
-    if (root == NULL)
-        return NULL;
-    else if (root->info.id == index)
-        return root;
-    else if (root->info.id < index)
-        return getLeaf(root->right, index);
-    else
-        return getLeaf(root->left, index);
-}
-
-
-
-
-int GetLeafLevel(abonent* root, int n, int serchID) {
-    if (root == NULL)
-        return 0;
-    else if (root->info.id == serchID)
-        return n;
-    else if (root->info.id < serchID) {
-        n++;
-        return n = GetLeafLevel(root->right, n, serchID);
-    }
-    else {
-        n++;
-        return n = GetLeafLevel(root->left, n, serchID);
-    }
-
-}
 
 _menu_item* _init_menu(_menu_item* menu) {
     menu = (_menu_item *) calloc(1, sizeof(_menu_item) * 5);
