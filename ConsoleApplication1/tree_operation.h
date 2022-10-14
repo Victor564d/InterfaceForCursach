@@ -20,12 +20,12 @@ abonent* tree_getLeafById(const abonent* root, const int id);
 abonent* tree_delete(abonent* root);
 
 /// <summary>
-/// Рекурсивная функция поиска и удаления ноды/листа из дерева по ид
+/// Удалить узел дерева по id. 
 /// </summary>
-/// <param name="root">Корень дерева/текущая нода</param>
-/// <param name="id">Значение которое ищем в дереве</param>
-/// <returns>Корень дерева после изменения</returns>
-abonent* deleteNode(abonent* root, int id);
+/// <param name="root">Узел дерева, с которого начинать поиск.</param>
+/// <param name="id">ID искомого узла.</param>
+/// <returns>Корень дерева после изменения.</returns>
+abonent* tree_deleteNodeById(abonent* root, const int id);
 
 /// <summary>
 /// Рекурсивная функция подсчета количества записей в дереве

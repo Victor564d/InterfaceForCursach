@@ -203,7 +203,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case REMOVE_RECORD:
         if (_confirm_window(NULL)) {
             _in_window(); int l; scanf("%d", &l);
-            abonents = deleteNode(abonents, l);
+            abonents = tree_deleteNodeById(abonents, l);
             sprintf(a, "Ветка удалена");
             _message_window(a);
             getch();

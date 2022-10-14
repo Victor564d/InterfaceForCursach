@@ -876,7 +876,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
 
             if (c == KEY_DEL) {
                 if (_confirm_window("Вы действительно хотите удалить запись ?")) {
-                  root =  deleteNode(root, _output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
+                  root =  tree_deleteNodeById(root, _output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
                     _message_window("Запись успешно удалена");
                     int leafcount = getLeafCount(root, 0);
                     int  temp = 0;

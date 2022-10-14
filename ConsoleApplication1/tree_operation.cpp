@@ -18,7 +18,7 @@ abonent* tree_getLeafById(const abonent* root, const int id)
         return tree_getLeafById(root->left, id);
 }
 
-abonent* deleteNode(abonent* root, int id) {
+abonent* tree_deleteNodeById(abonent* root, const int id) {
     if (root == NULL) return root; // выход если пустой узел
     if (root->info.id == id) { //найден удал. узел
         abonent* tmp; // указатель
@@ -47,9 +47,9 @@ abonent* deleteNode(abonent* root, int id) {
     }
     else //бинарный поиск в левом или правом поддереве
         if (root->info.id >id)
-            root->left = deleteNode(root->left, id);
+            root->left = tree_deleteNodeById(root->left, id);
         else
-            root->right = deleteNode(root->right, id);
+            root->right = tree_deleteNodeById(root->right, id);
     return root;
 }
 
