@@ -93,33 +93,6 @@ abonent_t GetInfoFromKeyboard(abonent_t  d);
 /// </summary>
 int correctInfo(abonent* st);
 /// <summary>
-/// Вспомогательная рекурсивная функция поиска необходимого листка/ноды
-/// </summary>
-/// <param name="root">Корень дерева или текущаяя нода</param>
-/// <param name="indexToSerch">Ид который необходимо найти</param>
-/// <returns>Возвращает указатель на элемент с соответствующим ид, иначе NULL</returns>
-abonent* getLeaf(abonent* root, int indexToSerch);//поиск листка по ид
-/// <summary>
-/// Рекурсивная функция удаления дерева из памяти 
-/// </summary>
-/// <param name="st">Корень дерева/текущаяя нода</param>
-/// <returns>Пустой указатель на структуру</returns>
-abonent* deleteTree(abonent* st);
-/// <summary>
-/// Рекурсивная функция поиска и удаления ноды/листа из дерева по ид
-/// </summary>
-/// <param name="root">Корень дерева/текущая нода</param>
-/// <param name="id">Значение которое ищем в дереве</param>
-/// <returns>Корень дерева после изменения</returns>
-abonent* deleteNode(abonent* root, char id);
-/// <summary>
-/// Рекурсивная функция подсчета количества записей в дереве
-/// </summary>
-/// <param name="root">Корень дерева/текущаяя нода</param>
-/// <param name="count">Используется для рекурсивной передачи данных</param>
-/// <returns>Количество элементво в дереве</returns>
-int getLeafCount(abonent* root, int count);
-/// <summary>
 /// Рекурсивная функция подсчета среднего арефметического по предметам
 /// </summary>
 /// <param name="root">Корень дерева/текущая нода</param>
