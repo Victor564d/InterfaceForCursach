@@ -93,33 +93,6 @@ abonent_t GetInfoFromKeyboard(abonent_t  d);
 /// </summary>
 int correctInfo(abonent* st);
 /// <summary>
-/// Вспомогательная рекурсивная функция поиска необходимого листка/ноды
-/// </summary>
-/// <param name="root">Корень дерева или текущаяя нода</param>
-/// <param name="indexToSerch">Ид который необходимо найти</param>
-/// <returns>Возвращает указатель на элемент с соответствующим ид, иначе NULL</returns>
-abonent* getLeaf(abonent* root, int indexToSerch);//поиск листка по ид
-/// <summary>
-/// Рекурсивная функция удаления дерева из памяти 
-/// </summary>
-/// <param name="st">Корень дерева/текущаяя нода</param>
-/// <returns>Пустой указатель на структуру</returns>
-abonent* deleteThree(abonent* st);
-/// <summary>
-/// Рекурсивная функция поиска и удаления ноды/листа из дерева по ид
-/// </summary>
-/// <param name="root">Корень дерева/текущая нода</param>
-/// <param name="id">Значение которое ищем в дереве</param>
-/// <returns>Корень дерева после изменения</returns>
-abonent* DeleteNode(abonent* root, char id);
-/// <summary>
-/// Рекурсивная функция подсчета количества записей в дереве
-/// </summary>
-/// <param name="root">Корень дерева/текущаяя нода</param>
-/// <param name="count">Используется для рекурсивной передачи данных</param>
-/// <returns>Количество элементво в дереве</returns>
-int getLeafCount(abonent* root, int count);
-/// <summary>
 /// Рекурсивная функция подсчета среднего арефметического по предметам
 /// </summary>
 /// <param name="root">Корень дерева/текущая нода</param>
@@ -175,7 +148,7 @@ int main(void) {
     }
     while (1) {//вывод меню и запуск соответствующих функций
         clear();
-        int leafCount = getLeafCount(abonents, 0);
+        int leafCount = tree_getNodeCount(abonents, 0);
         _output_info = (abonent_t*)calloc(leafCount, sizeof(abonent_t));
         int  temp = 0;
         _output_info =  _get_output_info(abonents, _output_info,&temp);
@@ -230,7 +203,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case REMOVE_RECORD:
         if (_confirm_window(NULL)) {
             _in_window(); int l; scanf("%d", &l);
-            abonents = DeleteNode(abonents, l);
+            abonents = tree_deleteNodeById(abonents, l);
             sprintf(a, "Ветка удалена");
             _message_window(a);
             getch();
@@ -241,7 +214,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case CLEAN_TREE:
         size = _get_window_size();
         if (_confirm_window(NULL)) {
-            abonents = deleteThree(abonents);
+            abonents = tree_delete(abonents);
             sprintf(a, "Дерево очищено");
             _message_window( a);
             getch();
@@ -270,7 +243,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     
     case TREE_SIZE:
         if (_confirm_window(NULL)) {
-            sprintf(a, "Дерево содержит %d записей.",getLeafCount(abonents, 0));
+            sprintf(a, "Дерево содержит %d записей.",tree_getNodeCount(abonents, 0));
             _message_window(a);
             getch();
         }
@@ -298,7 +271,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case PROGRAM_EXIT:
         if (_confirm_window(NULL)) {
             if (!abonents) {
-                deleteThree(abonents);
+                tree_delete(abonents);
             }
             exit(666);
         }
@@ -342,7 +315,7 @@ int аddNewElement(abonent** st,_tabel_metadata* table)
          d =   _in_info_window(table, NULL, 1);
          if (!d)   return EXIT_SUCCESS;
          d->id = util_hashCodeFromFio(&d->fio);
-         addToTree(st, d);
+         tree_add(st, d);
               }
     return EXIT_SUCCESS;
 }
@@ -355,7 +328,7 @@ abonent* loadFromFile_new(FILE* f)
     fseek(f, 0, SEEK_SET); 
     while (fread(&tmp, sizeof(abonent_t), 1, f))
     {
-        addToTree(&head, &tmp);
+        tree_add(&head, &tmp);
         count++;
     }
     _message_window("Данные считаны");

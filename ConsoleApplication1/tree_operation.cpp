@@ -6,19 +6,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-abonent* getLeaf(abonent* root, int index)
+abonent* tree_getLeafById(abonent* root, const int id)
 {
     if (root == NULL)
         return NULL;
-    else if (root->info.id == index)
+    else if (root->info.id == id)
         return root;
-    else if (root->info.id < index)
-        return getLeaf(root->right, index);
+    else if (root->info.id < id)
+        return tree_getLeafById(root->right, id);
     else
-        return getLeaf(root->left, index);
+        return tree_getLeafById(root->left, id);
 }
 
-abonent* DeleteNode(abonent* root, int id) {
+abonent* tree_deleteNodeById(abonent* root, const int id) {
     if (root == NULL) return root; // выход если пустой узел
     if (root->info.id == id) { //найден удал. узел
         abonent* tmp; // указатель
@@ -47,57 +47,68 @@ abonent* DeleteNode(abonent* root, int id) {
     }
     else //бинарный поиск в левом или правом поддереве
         if (root->info.id >id)
-            root->left = DeleteNode(root->left, id);
+            root->left = tree_deleteNodeById(root->left, id);
         else
-            root->right = DeleteNode(root->right, id);
+            root->right = tree_deleteNodeById(root->right, id);
     return root;
 }
 
-int getLeafCount(abonent* root, int count) {
+int tree_getNodeCount(const abonent* root, const int accum) {
     if (root != NULL)
-        return getLeafCount(root->left, count) + 1 + getLeafCount(root->right, count);
+        return tree_getNodeCount(root->left, accum) + 1 + tree_getNodeCount(root->right, accum);
     else
         return 0;
 }
 
 
-void View(abonent* top, int otstup) {
-    if (top) {
-        otstup += 3; //отступ от края экрана
-        View(top->right, otstup); //обход правого поддерева
-        for (int i = 0; i < otstup; i++) printf(" ");
+void View(abonent* top, int offset) {
+    if (top)
+    {
+        offset += 3; //отступ от края экрана
+        View(top->right, offset); //обход правого поддерева
+        for (int i = 0; i < offset; i++) printf(" ");
         printf("|%d\n", top->info.id);
-        View(top->left, otstup); //обход левого поддерева
+        View(top->left, offset); //обход левого поддерева
     }
 }
 
-void addToTree(abonent** root, const abonent_t* info)
+void tree_add(abonent** root, const abonent_t* info)
 {
+    if (root == NULL || info == NULL)
+    {
+        return;
+    }
+
     if (*root == NULL)
     {
         *root = (abonent*)calloc(sizeof(abonent), 1);
-        (*root)->info = *info;
+
+        if (*root != NULL)
+        {
+            (*root)->info = *info;
+        }
     }
-    else {
+    else
+    {
         if (((*root)->info.id == info->id)) {
             _message_window("Запись с таким id уже существует\0");
             Sleep(2000);
             return;
         }
         else if (((*root)->info.id > info->id))
-            addToTree(&((*root)->left), info);
+            tree_add(&((*root)->left), info);
         else
-            addToTree(&((*root)->right), info);
+            tree_add(&((*root)->right), info);
     }
 }
 
-abonent* deleteThree(abonent* root) {
+abonent* tree_delete(abonent* root) {
     if (root) {
         if (root->left) {
-            deleteThree(root->left);
+            tree_delete(root->left);
         }
         if (root->right) {
-            deleteThree(root->right);
+            tree_delete(root->right);
         }
         free(root);
     }
