@@ -789,13 +789,13 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
                 SetConsoleOutputCP(1251); //-------
                 sprintf(buff, "%d.%d.%d", _output_mass[j].date_out.d, _output_mass[j].date_out.m, _output_mass[j].date_out.y);
                 if (u8_strlen(buff) > table->_cols[5].size + 2) {
-                    for (int l = 0; l < table->_cols[5].size - 1; l++) {
-                        printf("%c", buff[l]);
-                    }
-                    printf("...");
+for (int l = 0; l < table->_cols[5].size - 1; l++) {
+    printf("%c", buff[l]);
+}
+printf("...");
                 }
                 else
-                    printf("%s", buff);
+                printf("%s", buff);
                 if (u8_strlen(buff) < table->_cols[5].size + 2)
                 {
                     for (int l = 0; l < table->_cols[5].size + 2 - u8_strlen(buff); l++)
@@ -819,24 +819,24 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
                         printf(" ");
                 }
                 SetConsoleOutputCP(65001); //-------
-                printf("│"); 
+                printf("│");
                 if (j == ((*page) - 1) * _col_inpage + row_selection[1] - 1)
                     printf("\x1b[0m");
                 positionCur.Y++;
             }
         }
         else {
-            printf("│");
-            for (int i = 0; i < (width - 12) / 2; i++)
-                printf("-");
-            SetConsoleOutputCP(65001); //-------
-            printf(" Данных нет ");
-            SetConsoleOutputCP(65001); //-------
-            for (int i = 0; i < (width - 12) / 2 - 1; i++)
-                printf("-");
-            if ((width - 12) % 2 == 1) printf("-");
-            printf("│");
-            positionCur.Y++;
+        printf("│");
+        for (int i = 0; i < (width - 12) / 2; i++)
+            printf("-");
+        SetConsoleOutputCP(65001); //-------
+        printf(" Данных нет ");
+        SetConsoleOutputCP(65001); //-------
+        for (int i = 0; i < (width - 12) / 2 - 1; i++)
+            printf("-");
+        if ((width - 12) % 2 == 1) printf("-");
+        printf("│");
+        positionCur.Y++;
         }
 
         _set_cur_to_pos(hConsole, positionCur);
@@ -864,14 +864,14 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
         {
             char c = getch();
 
-             if (c == KEY_ENTER) {
-                 _in_info_window(table, &_output_mass[((*page) - 1) * height + row_selection[1] - 1], 0);
+            if (c == KEY_ENTER) {
+                _in_info_window(table, &_output_mass[((*page) - 1) * height + row_selection[1] - 1], 0);
             }
 
 
             if (c == KEY_ESC || c == KEY_TAB)
             {
-                *_table_focus_flag = 0;  
+                *_table_focus_flag = 0;
             }
 
             if (c == KEY_DEL) {
@@ -884,6 +884,16 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
                     if (leafcount == 0)
                         _output_mass = NULL;
                     *_info_count = leafcount;
+                    if (*_info_count < ((*page) * height)) {
+                        clear_table();
+                        if ((((*page) - 1) * height + row_selection[1] - 1) > *_info_count) {
+                            row_selection[1] = *_info_count - ((*page) - 1) * height;
+                        }
+                        if (((*_info_count) * (*page)) % height == 0){
+                            if (*page > 1) { (*page)--; clear_table(); }
+}
+                    
+                 }
                 }
               }
 

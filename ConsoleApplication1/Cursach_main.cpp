@@ -474,7 +474,7 @@ _tabel_metadata* _init_table(_tabel_metadata* table) {
     table->_cols[5].size = u8_strlen(table->_cols[5].name);
     //-------------------------------------------------------------------------------------------//
     table->_cols[6].name = (char*)calloc(sizeof(char), 40);
-    strcpy(table->_cols[6].name, "Стоимость");
+    strcpy(table->_cols[6].name, "Стоимость,р.");
     table->_cols[6].resizebl = 0;
     table->_cols[6].size = u8_strlen(table->_cols[6].name);
     //-------------------------------------------------------------------------------------------//
