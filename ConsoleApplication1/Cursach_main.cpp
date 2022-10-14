@@ -214,7 +214,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case CLEAN_TREE:
         size = _get_window_size();
         if (_confirm_window(NULL)) {
-            abonents = deleteTree(abonents);
+            abonents = tree_delete(abonents);
             sprintf(a, "Дерево очищено");
             _message_window( a);
             getch();
@@ -271,7 +271,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case PROGRAM_EXIT:
         if (_confirm_window(NULL)) {
             if (!abonents) {
-                deleteTree(abonents);
+                tree_delete(abonents);
             }
             exit(666);
         }

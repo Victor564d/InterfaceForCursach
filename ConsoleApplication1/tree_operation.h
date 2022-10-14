@@ -13,11 +13,11 @@
 abonent* tree_getLeafById(const abonent* root, const int id);
 
 /// <summary>
-/// Рекурсивная функция удаления дерева из памяти.
+/// Удалить дерево или часть дерева. Также удалить все поддеревья, относящиеся к данному узлу.
 /// </summary>
 /// <param name="st">Корень дерева/текущаяя нода</param>
 /// <returns>Пустой указатель на структуру</returns>
-abonent* deleteTree(abonent* st);
+abonent* tree_delete(abonent* root);
 
 /// <summary>
 /// Рекурсивная функция поиска и удаления ноды/листа из дерева по ид

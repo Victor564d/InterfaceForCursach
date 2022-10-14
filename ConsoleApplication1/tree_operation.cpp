@@ -91,13 +91,13 @@ void addToTree(abonent** root, const abonent_t* info)
     }
 }
 
-abonent* deleteTree(abonent* root) {
+abonent* tree_delete(abonent* root) {
     if (root) {
         if (root->left) {
-            deleteTree(root->left);
+            tree_delete(root->left);
         }
         if (root->right) {
-            deleteTree(root->right);
+            tree_delete(root->right);
         }
         free(root);
     }
