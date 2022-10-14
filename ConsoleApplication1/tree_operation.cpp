@@ -61,13 +61,14 @@ int tree_getNodeCount(const abonent* root, const int accum) {
 }
 
 
-void View(abonent* top, int otstup) {
-    if (top) {
-        otstup += 3; //отступ от края экрана
-        View(top->right, otstup); //обход правого поддерева
-        for (int i = 0; i < otstup; i++) printf(" ");
+void View(abonent* top, int offset) {
+    if (top)
+    {
+        offset += 3; //отступ от края экрана
+        View(top->right, offset); //обход правого поддерева
+        for (int i = 0; i < offset; i++) printf(" ");
         printf("|%d\n", top->info.id);
-        View(top->left, otstup); //обход левого поддерева
+        View(top->left, offset); //обход левого поддерева
     }
 }
 

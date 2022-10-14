@@ -45,7 +45,7 @@ void tree_add(abonent** head, const abonent_t* info);
 
 void printToFile(FILE* f, abonent* St);
 
-void View(abonent* top, int otstup);
+void View(abonent* top, int offset);
 
 abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int* index);
 
