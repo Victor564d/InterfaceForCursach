@@ -315,7 +315,7 @@ int аddNewElement(abonent** st,_tabel_metadata* table)
          d =   _in_info_window(table, NULL, 1);
          if (!d)   return EXIT_SUCCESS;
          d->id = util_hashCodeFromFio(&d->fio);
-         addToTree(st, d);
+         tree_add(st, d);
               }
     return EXIT_SUCCESS;
 }
@@ -328,7 +328,7 @@ abonent* loadFromFile_new(FILE* f)
     fseek(f, 0, SEEK_SET); 
     while (fread(&tmp, sizeof(abonent_t), 1, f))
     {
-        addToTree(&head, &tmp);
+        tree_add(&head, &tmp);
         count++;
     }
     _message_window("Данные считаны");

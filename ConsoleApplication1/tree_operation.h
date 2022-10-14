@@ -35,15 +35,17 @@ abonent* tree_deleteNodeById(abonent* root, const int id);
 /// <returns>Количество элементво в дереве.</returns>
 int tree_getNodeCount(const abonent* root, const int accum);
 
+/// <summary>
+/// Вставить элемент в дерево.
+/// </summary>
+/// <param name="head">Указатель на указатель дерева.</param>
+/// <param name="info">Вставляемый элемент.</param>
+void tree_add(abonent** head, const abonent_t* info);
+
 
 void printToFile(FILE* f, abonent* St);
 
-
 void View(abonent* top, int otstup);
-
-
-void addToTree(abonent** head, const abonent_t* info);
-
 
 abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int* index);
 
