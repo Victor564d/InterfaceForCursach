@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-abonent* tree_getLeafById(const abonent* root, const int id)
+abonent* tree_getLeafById(abonent* root, const int id)
 {
     if (root == NULL)
         return NULL;

@@ -10,7 +10,7 @@
 /// <param name="root">Корень дерева или текущаяя нода</param>
 /// <param name="indexToSerch">Ид который необходимо найти</param>
 /// <returns>Возвращает указатель на элемент с соответствующим ид, иначе NULL</returns>
-abonent* tree_getLeafById(const abonent* root, const int id);
+abonent* tree_getLeafById(abonent* root, const int id);
 
 /// <summary>
 /// Удалить дерево или часть дерева. Также удалить все поддеревья, относящиеся к данному узлу.
