@@ -10,7 +10,7 @@
 /// <param name="root">Корень дерева или текущаяя нода</param>
 /// <param name="indexToSerch">Ид который необходимо найти</param>
 /// <returns>Возвращает указатель на элемент с соответствующим ид, иначе NULL</returns>
-abonent* getLeaf(abonent* root, int indexToSerch);
+abonent* tree_getLeafById(const abonent* root, const int id);
 
 /// <summary>
 /// Рекурсивная функция удаления дерева из памяти.

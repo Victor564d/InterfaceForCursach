@@ -6,16 +6,16 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-abonent* getLeaf(abonent* root, int index)
+abonent* tree_getLeafById(const abonent* root, const int id)
 {
     if (root == NULL)
         return NULL;
-    else if (root->info.id == index)
+    else if (root->info.id == id)
         return root;
-    else if (root->info.id < index)
-        return getLeaf(root->right, index);
+    else if (root->info.id < id)
+        return tree_getLeafById(root->right, id);
     else
-        return getLeaf(root->left, index);
+        return tree_getLeafById(root->left, id);
 }
 
 abonent* deleteNode(abonent* root, int id) {
