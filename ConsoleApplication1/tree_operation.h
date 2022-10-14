@@ -28,12 +28,12 @@ abonent* tree_delete(abonent* root);
 abonent* tree_deleteNodeById(abonent* root, const int id);
 
 /// <summary>
-/// Рекурсивная функция подсчета количества записей в дереве
+/// Подсчитать количество узлов в дереве.
 /// </summary>
-/// <param name="root">Корень дерева/текущаяя нода</param>
-/// <param name="count">Используется для рекурсивной передачи данных</param>
-/// <returns>Количество элементво в дереве</returns>
-int getLeafCount(abonent* root, int count);
+/// <param name="root">Узел дерева, с которого начинать подсчёт.</param>
+/// <param name="count">Стартовое значение счётчика.</param>
+/// <returns>Количество элементво в дереве.</returns>
+int tree_getNodeCount(const abonent* root, const int accum);
 
 
 void printToFile(FILE* f, abonent* St);

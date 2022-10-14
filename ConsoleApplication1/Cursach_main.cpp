@@ -148,7 +148,7 @@ int main(void) {
     }
     while (1) {//вывод меню и запуск соответствующих функций
         clear();
-        int leafCount = getLeafCount(abonents, 0);
+        int leafCount = tree_getNodeCount(abonents, 0);
         _output_info = (abonent_t*)calloc(leafCount, sizeof(abonent_t));
         int  temp = 0;
         _output_info =  _get_output_info(abonents, _output_info,&temp);
@@ -243,7 +243,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     
     case TREE_SIZE:
         if (_confirm_window(NULL)) {
-            sprintf(a, "Дерево содержит %d записей.",getLeafCount(abonents, 0));
+            sprintf(a, "Дерево содержит %d записей.",tree_getNodeCount(abonents, 0));
             _message_window(a);
             getch();
         }

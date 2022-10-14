@@ -53,9 +53,9 @@ abonent* tree_deleteNodeById(abonent* root, const int id) {
     return root;
 }
 
-int getLeafCount(abonent* root, int count) {
+int tree_getNodeCount(const abonent* root, const int accum) {
     if (root != NULL)
-        return getLeafCount(root->left, count) + 1 + getLeafCount(root->right, count);
+        return tree_getNodeCount(root->left, accum) + 1 + tree_getNodeCount(root->right, accum);
     else
         return 0;
 }
