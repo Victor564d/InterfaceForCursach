@@ -104,14 +104,14 @@ abonent* getLeaf(abonent* root, int indexToSerch);//поиск листка по
 /// </summary>
 /// <param name="st">Корень дерева/текущаяя нода</param>
 /// <returns>Пустой указатель на структуру</returns>
-abonent* deleteThree(abonent* st);
+abonent* deleteTree(abonent* st);
 /// <summary>
 /// Рекурсивная функция поиска и удаления ноды/листа из дерева по ид
 /// </summary>
 /// <param name="root">Корень дерева/текущая нода</param>
 /// <param name="id">Значение которое ищем в дереве</param>
 /// <returns>Корень дерева после изменения</returns>
-abonent* DeleteNode(abonent* root, char id);
+abonent* deleteNode(abonent* root, char id);
 /// <summary>
 /// Рекурсивная функция подсчета количества записей в дереве
 /// </summary>
@@ -230,7 +230,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case REMOVE_RECORD:
         if (_confirm_window(NULL)) {
             _in_window(); int l; scanf("%d", &l);
-            abonents = DeleteNode(abonents, l);
+            abonents = deleteNode(abonents, l);
             sprintf(a, "Ветка удалена");
             _message_window(a);
             getch();
@@ -241,7 +241,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case CLEAN_TREE:
         size = _get_window_size();
         if (_confirm_window(NULL)) {
-            abonents = deleteThree(abonents);
+            abonents = deleteTree(abonents);
             sprintf(a, "Дерево очищено");
             _message_window( a);
             getch();
@@ -298,7 +298,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case PROGRAM_EXIT:
         if (_confirm_window(NULL)) {
             if (!abonents) {
-                deleteThree(abonents);
+                deleteTree(abonents);
             }
             exit(666);
         }

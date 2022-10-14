@@ -3,8 +3,8 @@
 #ifndef TREE_OPERATION
 #define TREE_OPERATION
 abonent* getLeaf(abonent* root, int indexToSerch);//поиск листка по ид
-abonent* deleteThree(abonent* st);
-abonent* DeleteNode(abonent* root, int id);
+abonent* deleteTree(abonent* st);
+abonent* deleteNode(abonent* root, int id);
 int getLeafCount(abonent* root, int count);
 void printToFile(FILE* f, abonent* St);
 void View(abonent* top, int otstup);
