@@ -18,15 +18,15 @@ abonent* tree_getLeafById(abonent* root, const int id)
         return tree_getLeafById(root->left, id);
 }
 
-abonent* tree_deleteNodeById(abonent* root, const int id) {
-    if (root == NULL) return root; // выход если пустой узел
-    if (root->info.id == id) { //найден удал. узел
+abonent** tree_deleteNodeById(abonent** root, const int id) {
+    if (*(root) == NULL) return root; // выход если пустой узел
+    if (( * (root))->info.id == id) { //найден удал. узел
         abonent* tmp; // указатель
-        if (root->right == NULL) tmp = root->left;
+        if ((*(root))->right == NULL) tmp = (*(root))->left;
         else { // существует правое поддерево
-            abonent* ptr = root->right;
+            abonent* ptr = (*(root))->right;
             if (ptr->left == NULL) { // у правого ПД отсутствует левое ПД
-                ptr->left = root->left;
+                ptr->left = (*(root))->left;
                 tmp = ptr;
             }
             else {
@@ -36,26 +36,26 @@ abonent* tree_deleteNodeById(abonent* root, const int id) {
                     pmin = ptr->left;
                 } // найден самый левый узел правого ПП (pmin)
                 ptr->left = pmin->right;
-                pmin->left = root->left;
-                pmin->right = root->right;
+                pmin->left = (*(root))->left;
+                pmin->right = (*(root))->right;
                 tmp = pmin;
             }
         }
-        free(root);
-        root = NULL;
-        return tmp;
+        free(*root);
+        *root = NULL;
+        return &tmp;
     }
     else //бинарный поиск в левом или правом поддереве
-        if (root->info.id >id)
-            root->left = tree_deleteNodeById(root->left, id);
+        if ((*(root))->info.id >id)
+            (*(root))->left = *(tree_deleteNodeById((&(*(root))->left), id));
         else
-            root->right = tree_deleteNodeById(root->right, id);
+            (*(root))->right = *(tree_deleteNodeById((&(*(root))->right), id));
     return root;
 }
 
 int tree_getNodeCount(const abonent* root, const int accum) {
     if (root != NULL)
-        return tree_getNodeCount(root->left, accum) + 1 + tree_getNodeCount(root->right, accum);
+       return tree_getNodeCount(root->left, accum) + 1 + tree_getNodeCount(root->right, accum);
     else
         return 0;
 }

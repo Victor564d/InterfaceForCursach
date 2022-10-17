@@ -13,19 +13,8 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 
 
 int _print_menu(_menu_item* _menu, int* position, int _menu_size, int Colums, abonent_t* _output_mas,
-    int _output_colcount, _tabel_metadata* table, abonent* root);
-
-
-
-int _print_menu_with_table(_menu_item* _menu, int* position, int _menu_size, int Colums, abonent_t* _output_mas,
-    int _output_colcount, _tabel_metadata* table, abonent* root);
-
-
+    int _output_colcount, _tabel_metadata* table, abonent** root);
 void animatedNeko();
-
-
-
-
 void _print_bakground(int _window_w, int _window_h);
 void clear();
 void _print_border(int _window_w, int _window_h);
@@ -35,7 +24,7 @@ void _window(int _window_w, int _window_h,char * title);
 void clear_for_info();
 void _in_window();
 void _message_window( char* message);
-int _table_window(_tabel_metadata* table, abonent_t* _output_mass, int* _info_count, int* page, int* _table_focus_flag,abonent * root);
+int _table_window(_tabel_metadata* table, abonent_t* _output_mass, int* _info_count, int* page, int* _table_focus_flag,abonent ** root);
 void _big_window(char* title);
 abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass,int);                                                                    
 

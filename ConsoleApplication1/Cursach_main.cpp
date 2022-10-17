@@ -155,7 +155,7 @@ int main(void) {
         if (leafCount == 0)
             _output_info = NULL;
 
-        MenuSelect(_print_menu(menu, position, menu_size, 5,_output_info,leafCount,table, abonents), f,table);
+        MenuSelect(_print_menu(menu, position, menu_size, 5,_output_info,leafCount,table, &abonents), f,table);
     }
 }
 int Posid = 1;

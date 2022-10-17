@@ -120,31 +120,15 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 /// <param name="MenuSize">Колличество элементов в массиве наименований</param>
 /// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
 /// <returns>Индекс выбранного пункта меню</returns>
-int _print_menu(_menu_item * _menu, int* position, int _menu_size, int Colums, abonent_t* _output_mas,
-    int _output_colcount, _tabel_metadata * table, abonent* root)
-{
-    return _print_menu_with_table (_menu, position, _menu_size, Colums, _output_mas, _output_colcount,table,root);
-}
 
-/// <summary>
-/// Функция построения меню. Вызывается если нам  нужно вывести перед этим какую-то информацию.
-/// </summary>
-/// <param name="Menu">Указатель на массив из наименований пунктов меню</param>
-/// <param name="position">Указатель на двумерный массив (x,y)</param>
-/// <param name="MenuSize">Колличество элементов в массиве наименований</param>
-/// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
-/// <param name="funcptr">Указатель на функцию вывода данных экран</param>
-/// <param name="Dataptr">Указатель на информационное поле</param>
-/// <param name="num">Указатель на номер элемента при выводе</param>
-/// <returns>Индекс выбранного пункта меню</returns>
-int _print_menu_with_table(_menu_item* _menu //Массив объектов  меню
+int _print_menu(_menu_item* _menu //Массив объектов  меню
     , int* position //Массив текущей позиции x и y
     , int _menu_size  //Колличество элементов в массиве объектов меню
     , int _menu_buttons,//Количество кнопок меню  
     abonent_t * _output_mas,
     int _output_colcount,
     _tabel_metadata * table,
-    abonent* root
+    abonent** root
 )
 {
     int  table_focus_flag = 0;
@@ -597,7 +581,7 @@ void _message_window(char* message) {
 
 }
 
-int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info_count, int*  page, int * _table_focus_flag, abonent* root) {
+int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info_count, int*  page, int * _table_focus_flag, abonent** root) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO structCursorInfo;
     GetConsoleCursorInfo(hConsole, &structCursorInfo);
@@ -789,10 +773,10 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
                 SetConsoleOutputCP(1251); //-------
                 sprintf(buff, "%d.%d.%d", _output_mass[j].date_out.d, _output_mass[j].date_out.m, _output_mass[j].date_out.y);
                 if (u8_strlen(buff) > table->_cols[5].size + 2) {
-for (int l = 0; l < table->_cols[5].size - 1; l++) {
-    printf("%c", buff[l]);
-}
-printf("...");
+                    for (int l = 0; l < table->_cols[5].size - 1; l++) {
+                        printf("%c", buff[l]);
+                    }
+                    printf("...");
                 }
                 else
                 printf("%s", buff);
@@ -878,9 +862,9 @@ printf("...");
                 if (_confirm_window("Вы действительно хотите удалить запись ?")) {
                   root =  tree_deleteNodeById(root, _output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
                     _message_window("Запись успешно удалена");
-                    int leafcount = tree_getNodeCount(root, 0);
+                    int leafcount = tree_getNodeCount(*root, 0);
                     int  temp = 0;
-                    _output_mass = _get_output_info(root, _output_mass, &temp);
+                    _output_mass = _get_output_info(*root, _output_mass, &temp);
                     if (leafcount == 0)
                         _output_mass = NULL;
                     *_info_count = leafcount;
