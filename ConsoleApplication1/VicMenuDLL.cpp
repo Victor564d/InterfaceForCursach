@@ -860,7 +860,8 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
 
             if (c == KEY_DEL) {
                 if (_confirm_window("Вы действительно хотите удалить запись ?")) {
-                  root =  tree_deleteNodeById(root, _output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
+                 // root =  tree_deleteNodeById(root, _output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
+                    tree_deleteNodeById(root, _output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
                     _message_window("Запись успешно удалена");
                     int leafcount = tree_getNodeCount(*root, 0);
                     int  temp = 0;
@@ -982,7 +983,7 @@ void _big_window(char* title) {
 abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _cycle_in_flag) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     int* _size_n = NULL; abonent_t *  _temp_info;
-    if (_output_info) {
+    if (_output_info ) {
         _temp_info = (abonent_t*)calloc(1, sizeof(abonent_t));
         *_temp_info = *_output_info;
     }

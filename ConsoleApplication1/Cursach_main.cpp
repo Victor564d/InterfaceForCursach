@@ -203,7 +203,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case REMOVE_RECORD:
         if (_confirm_window(NULL)) {
             _in_window(); int l; scanf("%d", &l);
-            abonents = tree_deleteNodeById(abonents, l);
+           // abonents = tree_deleteNodeById(abonents, l);
             sprintf(a, "Ветка удалена");
             _message_window(a);
             getch();
@@ -443,37 +443,37 @@ _tabel_metadata* _init_table(_tabel_metadata* table) {
     table->_col_count = 7;
     table->_cols = (_table_col*)calloc(sizeof(_table_col) , table->_col_count);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[0].name = (char*)calloc(sizeof(char), 40);
+    table->_cols[0].name = (char*)calloc(sizeof(char), 60);
     strcpy(table->_cols[0].name, "№");
     table->_cols[0].resizebl = 0;
     table->_cols[0].size = u8_strlen(table->_cols[0].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[1].name = (char*)calloc(sizeof(char), 40);
+    table->_cols[1].name = (char*)calloc(sizeof(char), 60);
     strcpy(table->_cols[1].name, "ФИО абонента");
     table->_cols[1].resizebl = 1;
     table->_cols[1].size = u8_strlen(table->_cols[1].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[2].name = (char*)calloc(sizeof(char), 40);
+    table->_cols[2].name = (char*)calloc(sizeof(char), 60);
     strcpy(table->_cols[2].name, "Автор книги");
     table->_cols[2].resizebl = 0; 
     table->_cols[2].size = u8_strlen(table->_cols[2].name); table->_cols[2].size =18;
     //-------------------------------------------------------------------------------------------//
-    table->_cols[3].name = (char*)calloc(sizeof(char), 40);
+    table->_cols[3].name = (char*)calloc(sizeof(char), 60);
     strcpy(table->_cols[3].name, "Название книги");
     table->_cols[3].resizebl = 1;
     table->_cols[3].size = u8_strlen(table->_cols[3].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[4].name = (char*)calloc(sizeof(char), 40);
+    table->_cols[4].name = (char*)calloc(sizeof(char), 60);
     strcpy(table->_cols[4].name, "Издательство");
     table->_cols[4].resizebl = 0;
     table->_cols[4].size = u8_strlen(table->_cols[4].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[5].name = (char*)calloc(sizeof(char), 40);
+    table->_cols[5].name = (char*)calloc(sizeof(char), 60);
     strcpy(table->_cols[5].name, "Дата выдачи");
     table->_cols[5].resizebl = 0;
     table->_cols[5].size = u8_strlen(table->_cols[5].name);
     //-------------------------------------------------------------------------------------------//
-    table->_cols[6].name = (char*)calloc(sizeof(char), 40);
+    table->_cols[6].name = (char*)calloc(sizeof(char), 60);
     strcpy(table->_cols[6].name, "Стоимость,р.");
     table->_cols[6].resizebl = 0;
     table->_cols[6].size = u8_strlen(table->_cols[6].name);

@@ -1,19 +1,19 @@
 #pragma once
 typedef struct {
-    char name[60];
-    char surname[60];
-    char secondname[60];
+    char name[80];
+    char surname[80];
+    char secondname[80];
 }fio_t;
 
 typedef struct {
     unsigned int id;
     fio_t fio;
     struct {
-        char surname[40];
-        char inicial[5];
+        char surname[60];
+        char inicial[20];
     }autor;
-    char book_name[140];
-    char izd[50];
+    char book_name[160];
+    char izd[70];
     struct {
         int d;
         int m;

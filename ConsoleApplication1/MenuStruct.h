@@ -3,7 +3,7 @@
 
 typedef struct {
     int _menu_size;
-    char _name[60];
+    char _name[80];
     char** _sub_menu;
     int* _sub_menu_lenght;
     int _max_sub_lenght;

@@ -25,8 +25,8 @@ abonent* tree_delete(abonent* root);
 /// <param name="root">”зел дерева, с которого начинать поиск.</param>
 /// <param name="id">ID искомого узла.</param>
 /// <returns> орень дерева после изменени€.</returns>
-abonent** tree_deleteNodeById(abonent** root, const int id);
-
+//abonent** tree_deleteNodeById(abonent** root, const int id);
+ void tree_deleteNodeById(abonent** root, const int id);
 /// <summary>
 /// ѕодсчитать количество узлов в дереве.
 /// </summary>
