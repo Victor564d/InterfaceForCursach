@@ -87,6 +87,7 @@ int input_string(char* input_buff, int buff_size, int mode)
 
         }
     }
+    SetConsoleCP(1251);
     CONSOLE_SCREEN_BUFFER_INFO con_inf; _get_con_info_local(&con_inf);
     int current_pos = 0;
     int in_sym_count = 0;
@@ -96,14 +97,27 @@ int input_string(char* input_buff, int buff_size, int mode)
     COORD positionCur_start = { 0,0 };
     positionCur = con_inf.dwCursorPosition;
     positionCur_start = con_inf.dwCursorPosition;
-    char c;
+    if (u8_strlen(input_buff) > 0) {
+        int k = u8_strlen(input_buff);
+        current_pos = k;
+        in_sym_count = k;
+        printf("%s", input_buff);
+        positionCur = con_inf.dwCursorPosition;
+    }
+    int c;
     while (1) {
-        c = _getch();
+       // flushall();
+        c = _getch(); 
+        if (c == 244)
+            c = _getch();
+        else c = (char)c;
         switch (c)
         {
         case KEY_ENTER:
-            printf(" ");
-            return KEY_ENTER;
+            if (in_sym_count > 0) {
+                printf(" ");
+                return KEY_ENTER;
+            }
             break;
         case KEY_ESC:
             input_buff = old_info;
@@ -116,6 +130,9 @@ int input_string(char* input_buff, int buff_size, int mode)
         case KEY_ARROW_DOWN:
             input_buff = old_info;
             return KEY_ARROW_DOWN;
+            break;
+        case KEY_ARROW_LEFT:
+        case KEY_ARROW_RIGHT:
             break;
         case KEY_BACKSPACE:
             if (mode != INICIAL) {

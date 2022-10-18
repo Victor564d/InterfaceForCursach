@@ -449,6 +449,7 @@ void _window(int _window_w, int _window_h, char* title) {
 
 int _confirm_window(char * message)
 {
+    SetConsoleOutputCP(65001);
     if (!message)  message = "Выполнить операцию ?";
     int* _size_n = NULL;
     _size_n = _get_window_size(_size_n);
@@ -709,7 +710,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
 
                 sprintf(buff, "%s %s %s", _output_mass[j].fio.surname, _output_mass[j].fio.name, _output_mass[j].fio.secondname);
                 if (u8_strlen(buff) > table->_cols[1].size + 2) {
-                    sprintf(buff, "%s %c.%c", _output_mass[j].fio.surname, _output_mass[j].fio.name[0], _output_mass[j].fio.secondname[1]);
+                    sprintf(buff, "%s %c.%c", _output_mass[j].fio.surname, _output_mass[j].fio.name[0], _output_mass[j].fio.secondname[0]);
                 }
                 SetConsoleOutputCP(1251); //-------
                 printf("%s", buff);
@@ -1147,7 +1148,10 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             positionCur.Y = _center_y + height / 2 - 2;
             positionCur.X = _center_x - u8_strlen(mes)/2;
             _set_cur_to_pos(hConsole, positionCur);
-            printf("%s", mes);      
+            printf("%s", mes);    
+            int cur_step = 1; int cur_key = 0; int step_compl = 0;
+            COORD last_cord = { 0,0 };
+            CONSOLE_SCREEN_BUFFER_INFO con_inf; 
             CONSOLE_CURSOR_INFO structCursorInfo;
             GetConsoleCursorInfo(hConsole, &structCursorInfo);
             structCursorInfo.bVisible = TRUE;
@@ -1156,47 +1160,272 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             positionCur.Y = _center_y - height / 2 + 4;
             _set_cur_to_pos(hConsole, positionCur);
             SetConsoleOutputCP(1251); //-------
-            if (input_string(_temp_info->fio.surname, 40, PERSONAL) == KEY_ESC) {
-                SetConsoleOutputCP(65001); //-------
-                return NULL; }
-            if (input_string(_temp_info->fio.name, 40, PERSONAL) == KEY_ESC) {
-                SetConsoleOutputCP(65001); //-------
-                return NULL;
+            while (cur_step <= 9) {
+                switch (cur_step)
+                {
+                case 1: {
+                    cur_key = input_string(_temp_info->fio.surname, 40, PERSONAL);
+                    switch (cur_key)
+                    {
+                    case KEY_ENTER:
+                        cur_step++;
+                        step_compl++; 
+                        _get_con_info(&con_inf);
+                        last_cord = con_inf.dwCursorPosition;
+                        break;
+                    case KEY_ARROW_UP:
+                        if (cur_step > 1) {
+                            cur_step--;
+                        }
+                        break;
+                    case KEY_ARROW_DOWN:
+                        if (cur_step < step_compl)
+                            cur_step++;
+                        break;
+                    case KEY_ESC:
+                        if (_confirm_window("Вы действительно хотите отменить ввод?")) {
+                            SetConsoleOutputCP(65001); //-------
+                            return NULL;
+                        }
+                        else SetConsoleOutputCP(1251);
+                        break;
+                    default:
+                        break;
+                    }
+                  break;
+                }
+                case 2: {
+                    cur_key = input_string(_temp_info->fio.name, 40, PERSONAL);
+                    switch (cur_key)
+                    {
+                    case KEY_ENTER:
+                        cur_step++;
+                        step_compl++;
+                        _get_con_info(&con_inf);
+                        last_cord = con_inf.dwCursorPosition;
+                        break;
+                    case KEY_ARROW_UP:
+                        if (cur_step > 1) {
+                            cur_step--;
+                        }
+                        break;
+                    case KEY_ARROW_DOWN:
+                        if (cur_step < step_compl)
+                            cur_step++;
+                        break;
+                    case KEY_ESC:
+                        if (_confirm_window("Вы действительно хотите отменить ввод?")) {
+                            SetConsoleOutputCP(65001); //-------
+                            return NULL;
+                        }
+                        else SetConsoleOutputCP(1251);
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+                case 3: {
+                    cur_key = input_string(_temp_info->fio.secondname, 40, PERSONAL);
+                    switch (cur_key)
+                    {
+                    case KEY_ENTER:
+                        _get_con_info(&con_inf);
+                        last_cord = con_inf.dwCursorPosition;
+                        cur_step++;
+                        step_compl++;
+                        positionCur.Y += y_modifire;
+                        _set_cur_to_pos(hConsole, positionCur);
+                        break;
+                    case KEY_ARROW_UP:
+                        if (cur_step > 1) {
+                            cur_step--;
+                        }
+                        break;
+                    case KEY_ARROW_DOWN:
+                        if (cur_step < step_compl)
+                            cur_step++;
+                        break;
+                    case KEY_ESC:
+                        if (_confirm_window("Вы действительно хотите отменить ввод?")) {
+                            SetConsoleOutputCP(65001); //-------
+                            return NULL;
+                        }
+                        else SetConsoleOutputCP(1251);
+                        break;
+                    default:
+                        break;
+                    }
+                   
+                    break;
+                }
+                case 4: {
+                    cur_key = input_string(_temp_info->autor.surname, 40, PERSONAL);
+                    switch (cur_key)
+                    {
+                    case KEY_ENTER:
+                        _get_con_info(&con_inf);
+                        last_cord = con_inf.dwCursorPosition;
+                        cur_step++;
+                        step_compl++;
+                        break;
+                    case KEY_ARROW_UP:
+                        if (cur_step > 1) {
+                            cur_step--;
+                            positionCur.Y -= y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        break;
+                    case KEY_ARROW_DOWN:
+                        if (cur_step < step_compl)
+                            cur_step++;
+                        break;
+                    case KEY_ESC:
+                        if (_confirm_window("Вы действительно хотите отменить ввод?")) {
+                            SetConsoleOutputCP(65001); //-------
+                            return NULL;
+                        }
+                        else SetConsoleOutputCP(1251);
+                        break;
+                    default:
+                        break;
+                    }
+                   break;
+                }
+                case 5: {
+                    cur_key = input_string(_temp_info->autor.inicial, 3, INICIAL);
+                    switch (cur_key)
+                    {
+                    case KEY_ENTER:
+                        _get_con_info(&con_inf);
+                        last_cord = con_inf.dwCursorPosition;
+                        cur_step++;
+                        step_compl++;
+                        positionCur.Y += y_modifire;
+                        _set_cur_to_pos(hConsole, positionCur);
+                        break;
+                    case KEY_ARROW_UP:
+                        if (cur_step > 1) {
+                            cur_step--;
+                        }
+                        break;
+                    case KEY_ARROW_DOWN:
+                        if (cur_step < step_compl) {
+                            cur_step++;
+                            positionCur.Y += y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        break;
+                    case KEY_ESC:
+                        if (_confirm_window("Вы действительно хотите отменить ввод?")) {
+                            SetConsoleOutputCP(65001); //-------
+                            return NULL;
+                        }
+                        else SetConsoleOutputCP(1251);
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+                case 6: {
+                    cur_key = input_string(_temp_info->book_name, 100, NORMAL);
+                    switch (cur_key)
+                    {
+                    case KEY_ENTER:
+                        _get_con_info(&con_inf);
+                        last_cord = con_inf.dwCursorPosition;
+                        cur_step++;
+                        step_compl++;
+                        positionCur.Y += y_modifire;
+                        _set_cur_to_pos(hConsole, positionCur);
+                        break;
+                    case KEY_ARROW_UP:
+                        if (cur_step > 1) {
+                            cur_step--;
+                            positionCur.Y -= y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        break;
+                    case KEY_ARROW_DOWN:
+                        if (cur_step < step_compl) {
+                            cur_step++;
+                            positionCur.Y += y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        break;
+                    case KEY_ESC:
+                        if (_confirm_window("Вы действительно хотите отменить ввод?")) {
+                            SetConsoleOutputCP(65001); //-------
+                            return NULL;
+                        }
+                        else SetConsoleOutputCP(1251);
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+                case 7: {
+                    cur_key = input_string(_temp_info->izd, 60, NORMAL);
+                    switch (cur_key)
+                    {
+                    case KEY_ENTER:
+                        _get_con_info(&con_inf);
+                        last_cord = con_inf.dwCursorPosition;
+                        cur_step++;
+                        step_compl++;
+                        positionCur.Y += y_modifire;
+                        _set_cur_to_pos(hConsole, positionCur);
+                        break;
+                    case KEY_ARROW_UP:
+                        if (cur_step > 1) {
+                            cur_step--;
+                            positionCur.Y -= y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        break;
+                    case KEY_ARROW_DOWN:
+                        if (cur_step < step_compl) {
+                            cur_step++;
+                            positionCur.Y += y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        break;
+                    case KEY_ESC:
+                        if (_confirm_window("Вы действительно хотите отменить ввод?")) {
+                            SetConsoleOutputCP(65001); //-------
+                            return NULL;
+                        }
+                        else SetConsoleOutputCP(1251);
+                        break;
+                    default:
+                        break;
+                    }
+                    break;
+                }
+                case 8: {
+                    _get_con_info(&con_inf);
+                    last_cord = con_inf.dwCursorPosition;
+                    scanf("%d", &_temp_info->date_out.d);
+                    scanf("%d", &_temp_info->date_out.m);
+                    scanf("%d", &_temp_info->date_out.y);
+                    positionCur.Y += y_modifire;
+                    cur_step++;
+                    _set_cur_to_pos(hConsole, positionCur);
+                    break;
+                }
+                case 9: {
+                    _get_con_info(&con_inf);
+                    last_cord = con_inf.dwCursorPosition;
+                    cur_step++;
+                    scanf("%f", &_temp_info->cost);
+                    break;
+                }
+                default:
+                    break;
+                }
             }
-            if (input_string(_temp_info->fio.secondname, 40, PERSONAL) == KEY_ESC) {
-                SetConsoleOutputCP(65001); //-------
-                return NULL;
-            }
-            positionCur.Y += y_modifire;
-            _set_cur_to_pos(hConsole, positionCur);
-            if (input_string(_temp_info->autor.surname, 40, PERSONAL) == KEY_ESC) {
-                SetConsoleOutputCP(65001); //-------
-                return NULL;
-            }
-            if (input_string(_temp_info->autor.inicial, 3, INICIAL) == KEY_ESC) {
-                SetConsoleOutputCP(65001); //-------
-                return NULL;
-            }
-            positionCur.Y += y_modifire;
-            _set_cur_to_pos(hConsole, positionCur);
-            if (input_string(_temp_info->book_name, 100, NORMAL) == KEY_ESC) {
-                SetConsoleOutputCP(65001); //-------
-                return NULL;
-            }
-            positionCur.Y += y_modifire;
-            _set_cur_to_pos(hConsole, positionCur);
-            if (input_string(_temp_info->izd, 60, NORMAL) == KEY_ESC) {
-                SetConsoleOutputCP(65001); //-------
-                return NULL;
-            }
-            positionCur.Y += y_modifire;
-            _set_cur_to_pos(hConsole, positionCur);
-            scanf("%d", &_temp_info->date_out.d);
-            scanf("%d", &_temp_info->date_out.m);
-            scanf("%d", &_temp_info->date_out.y);
-            positionCur.Y += y_modifire;
-            _set_cur_to_pos(hConsole, positionCur);
-            scanf("%f", &_temp_info->cost);
             SetConsoleOutputCP(65001);
             _message_window("Запись успешно добавлена");
             Sleep(3000);
