@@ -13,6 +13,7 @@
 #include "VicMenuDLL.h"
 #include "MenuStruct.h"
 #include "tree_operation.h"
+#include "input_utils.h"
 
 const int _otstup = 3;
 const int _interval = 3;
@@ -1142,7 +1143,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             _men_position = _get_curent_selection(c, _men_position, table->_col_count + 1, 1, 1);
         }
         else {
-            char mes[] = "Для выхода, введите '0 0 0' в поле ФИО";
+            char mes[] = "Для выхода нажмите ESC";
             positionCur.Y = _center_y + height / 2 - 2;
             positionCur.X = _center_x - u8_strlen(mes)/2;
             _set_cur_to_pos(hConsole, positionCur);
@@ -1154,22 +1155,40 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             positionCur.X = _center_x - width / 2 + 4 + max_lenght + 6;
             positionCur.Y = _center_y - height / 2 + 4;
             _set_cur_to_pos(hConsole, positionCur);
-
-            scanf("%s", _temp_info->fio.surname);
-            scanf("%s", _temp_info->fio.name);
-            scanf("%s", _temp_info->fio.secondname);
-            if (u8_strlen(_temp_info->fio.surname) == 1 && u8_strlen(_temp_info->fio.name) == 1 && u8_strlen(_temp_info->fio.secondname) == 1)
+            SetConsoleOutputCP(1251); //-------
+            if (input_string(_temp_info->fio.surname, 40, PERSONAL) == KEY_ESC) {
+                SetConsoleOutputCP(65001); //-------
+                return NULL; }
+            if (input_string(_temp_info->fio.name, 40, PERSONAL) == KEY_ESC) {
+                SetConsoleOutputCP(65001); //-------
                 return NULL;
+            }
+            if (input_string(_temp_info->fio.secondname, 40, PERSONAL) == KEY_ESC) {
+                SetConsoleOutputCP(65001); //-------
+                return NULL;
+            }
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
-            scanf("%s", _temp_info->autor.surname);
-            scanf("%s", _temp_info->autor.inicial);
+            if (input_string(_temp_info->autor.surname, 40, PERSONAL) == KEY_ESC) {
+                SetConsoleOutputCP(65001); //-------
+                return NULL;
+            }
+            if (input_string(_temp_info->autor.inicial, 3, INICIAL) == KEY_ESC) {
+                SetConsoleOutputCP(65001); //-------
+                return NULL;
+            }
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
-            scanf("%s", _temp_info->book_name);
+            if (input_string(_temp_info->book_name, 100, NORMAL) == KEY_ESC) {
+                SetConsoleOutputCP(65001); //-------
+                return NULL;
+            }
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
-            scanf("%s", _temp_info->izd);
+            if (input_string(_temp_info->izd, 60, NORMAL) == KEY_ESC) {
+                SetConsoleOutputCP(65001); //-------
+                return NULL;
+            }
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             scanf("%d", &_temp_info->date_out.d);
@@ -1178,6 +1197,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             scanf("%f", &_temp_info->cost);
+            SetConsoleOutputCP(65001);
             _message_window("Запись успешно добавлена");
             Sleep(3000);
             structCursorInfo.bVisible = FALSE;

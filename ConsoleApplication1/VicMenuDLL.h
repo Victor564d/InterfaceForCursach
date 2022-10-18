@@ -28,6 +28,11 @@ int _table_window(_tabel_metadata* table, abonent_t* _output_mass, int* _info_co
 void _big_window(char* title);
 abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass,int);                                                                    
 
+
+#endif
+
+#ifndef KEYCODE
+#define KEYCODE
 enum KeyboardCodes
 {
     KEY_ARROW_UP = 72,
@@ -36,12 +41,10 @@ enum KeyboardCodes
     KEY_ARROW_RIGHT = 77,
     KEY_TAB = 9,
     KEY_HOME = 71,
-    KEY_END  = 79,
+    KEY_END = 79,
     KEY_ENTER = 13,
-    KEY_ESC  = 27,
-    KEY_DEL = 83
+    KEY_ESC = 27,
+    KEY_DEL = 83,
+    KEY_BACKSPACE = 8
 };
-
 #endif
-
-
