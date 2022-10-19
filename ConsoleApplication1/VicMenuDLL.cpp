@@ -997,7 +997,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
     int height = _window_h / 2; int width = _window_w / 2;
     int _center_x = _window_w / 2; int flag_clear = 0;
     int _center_y = _window_h / 2; char* title = NULL;
-    if (_cycle_in_flag) title = "Око ввода информации"; else title = "Окно редактирования информации";
+    if (_cycle_in_flag) title = "Окно ввода информации"; else title = "Окно редактирования информации";
     _big_window(title);
     int max_lenght = 0; int y_modifire = 1;
     if (height > 20) y_modifire = 2;
@@ -1144,9 +1144,10 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             _men_position = _get_curent_selection(c, _men_position, table->_col_count + 1, 1, 1);
         }
         else {
-            char mes[] = "Для выхода нажмите ESC";
+          // 
+            char mes[] = "\x1b[45mESC\x1b[0m:Выход  \x1b[45mENTER\x1b[0m:Ввод  \x1b[45mСТРЕЛКИ\x1b[0m: Переключение поля"; //51
             positionCur.Y = _center_y + height / 2 - 2;
-            positionCur.X = _center_x - u8_strlen(mes)/2;
+            positionCur.X = _center_x - 50/2;
             _set_cur_to_pos(hConsole, positionCur);
             printf("%s", mes);    
             int cur_step = 1; int cur_key = 0; int step_compl = 0;

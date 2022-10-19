@@ -302,14 +302,17 @@ int in_date(int* d, int*m,int *y) {
     COORD positionCur = { 0,0 };
     COORD positionCur_start = { 0,0 };
     positionCur = con_inf.dwCursorPosition;
+    printf("___________");
+    _set_cur_to_pos_local(positionCur);
     positionCur_start = con_inf.dwCursorPosition;
     int c;
     while (1) 
     {
         c = _getwch();
-        if (c == 224) {
+      /*  if (c == 224) 
+        {
             c = getch();
-        }
+        }*/
         switch (c)
         {
         case KEY_ENTER:
