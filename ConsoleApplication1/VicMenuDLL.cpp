@@ -1150,7 +1150,6 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             _set_cur_to_pos(hConsole, positionCur);
             printf("%s", mes);    
             int cur_step = 1; int cur_key = 0; int step_compl = 0;
-            COORD last_cord = { 0,0 };
             CONSOLE_SCREEN_BUFFER_INFO con_inf; 
             CONSOLE_CURSOR_INFO structCursorInfo;
             GetConsoleCursorInfo(hConsole, &structCursorInfo);
@@ -1159,8 +1158,11 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
             positionCur.X = _center_x - width / 2 + 4 + max_lenght + 6;
             positionCur.Y = _center_y - height / 2 + 4;
             _set_cur_to_pos(hConsole, positionCur);
+            COORD lastcord = {0,0};
             SetConsoleOutputCP(1251); //-------
             while (cur_step <= 9) {
+                _get_con_info(&con_inf);
+                lastcord = con_inf.dwCursorPosition;
                 switch (cur_step)
                 {
                 case 1: {
@@ -1170,17 +1172,23 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     case KEY_ENTER:
                         cur_step++;
                         step_compl++; 
-                        _get_con_info(&con_inf);
-                        last_cord = con_inf.dwCursorPosition;
+
                         break;
                     case KEY_ARROW_UP:
-                        if (cur_step > 1) {
-                            cur_step--;
+                        _set_cur_to_pos(hConsole, positionCur);
+                        for (int j = 0; j < (width / 2 - padding - 8); j++) {
+                            printf("_");
                         }
+                        _set_cur_to_pos(hConsole, positionCur);
                         break;
                     case KEY_ARROW_DOWN:
-                        if (cur_step < step_compl)
+                        if (cur_step < step_compl) {
                             cur_step++;
+                            printf(" ");
+                        }
+                        else {
+                            _set_cur_to_pos(hConsole, lastcord);
+                        }
                         break;
                     case KEY_ESC:
                         if (_confirm_window("Вы действительно хотите отменить ввод?")) {
@@ -1201,17 +1209,25 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     case KEY_ENTER:
                         cur_step++;
                         step_compl++;
-                        _get_con_info(&con_inf);
-                        last_cord = con_inf.dwCursorPosition;
                         break;
                     case KEY_ARROW_UP:
                         if (cur_step > 1) {
-                            cur_step--;
+                            cur_step=1;
                         }
+                        _set_cur_to_pos(hConsole, positionCur);
+                        for (int j = 0; j < (width / 2 - padding - 8); j++) {
+                            printf("_");
+                        }
+                        _set_cur_to_pos(hConsole, positionCur);
                         break;
                     case KEY_ARROW_DOWN:
-                        if (cur_step < step_compl)
+                        if (cur_step < step_compl) {
                             cur_step++;
+                            printf(" ");
+                        }
+                        else {
+                            _set_cur_to_pos(hConsole, lastcord);
+                        }
                         break;
                     case KEY_ESC:
                         if (_confirm_window("Вы действительно хотите отменить ввод?")) {
@@ -1230,8 +1246,6 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     switch (cur_key)
                     {
                     case KEY_ENTER:
-                        _get_con_info(&con_inf);
-                        last_cord = con_inf.dwCursorPosition;
                         cur_step++;
                         step_compl++;
                         positionCur.Y += y_modifire;
@@ -1239,12 +1253,24 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                         break;
                     case KEY_ARROW_UP:
                         if (cur_step > 1) {
-                            cur_step--;
+                            cur_step = 1;
                         }
+                        _set_cur_to_pos(hConsole, positionCur);
+                        for (int j = 0; j < (width / 2 - padding - 8); j++) {
+                            printf("_");
+                        }
+                        _set_cur_to_pos(hConsole, positionCur);
                         break;
                     case KEY_ARROW_DOWN:
-                        if (cur_step < step_compl)
+                        if (cur_step < step_compl) {
                             cur_step++;
+                            printf(" ");
+                            positionCur.Y += y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        else {
+                            _set_cur_to_pos(hConsole, lastcord);
+                        }
                         break;
                     case KEY_ESC:
                         if (_confirm_window("Вы действительно хотите отменить ввод?")) {
@@ -1264,21 +1290,28 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     switch (cur_key)
                     {
                     case KEY_ENTER:
-                        _get_con_info(&con_inf);
-                        last_cord = con_inf.dwCursorPosition;
                         cur_step++;
                         step_compl++;
                         break;
                     case KEY_ARROW_UP:
                         if (cur_step > 1) {
-                            cur_step--;
+                            cur_step=1; 
                             positionCur.Y -= y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                            for (int j = 0; j < (width / 2 - padding - 8); j++) {
+                                printf("_");
+                            }
                             _set_cur_to_pos(hConsole, positionCur);
                         }
                         break;
                     case KEY_ARROW_DOWN:
-                        if (cur_step < step_compl)
+                        if (cur_step < step_compl) {
+                            printf(" ");
                             cur_step++;
+                        }
+                        else {
+                            _set_cur_to_pos(hConsole, lastcord);
+                        }
                         break;
                     case KEY_ESC:
                         if (_confirm_window("Вы действительно хотите отменить ввод?")) {
@@ -1297,8 +1330,6 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     switch (cur_key)
                     {
                     case KEY_ENTER:
-                        _get_con_info(&con_inf);
-                        last_cord = con_inf.dwCursorPosition;
                         cur_step++;
                         step_compl++;
                         positionCur.Y += y_modifire;
@@ -1306,14 +1337,22 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                         break;
                     case KEY_ARROW_UP:
                         if (cur_step > 1) {
-                            cur_step--;
+                            cur_step=4;
+                            _set_cur_to_pos(hConsole, positionCur);
+                            for (int j = 0; j < (width / 2 - padding - 8); j++) {
+                                printf("_");
+                            }
+                            _set_cur_to_pos(hConsole, positionCur);
                         }
                         break;
                     case KEY_ARROW_DOWN:
                         if (cur_step < step_compl) {
-                            cur_step++;
+                            cur_step++; printf(" ");
                             positionCur.Y += y_modifire;
                             _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        else {
+                            _set_cur_to_pos(hConsole, lastcord);
                         }
                         break;
                     case KEY_ESC:
@@ -1333,17 +1372,20 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     switch (cur_key)
                     {
                     case KEY_ENTER:
-                        _get_con_info(&con_inf);
-                        last_cord = con_inf.dwCursorPosition;
                         cur_step++;
                         step_compl++;
+                        _get_con_info(&con_inf);
                         positionCur.Y += y_modifire;
                         _set_cur_to_pos(hConsole, positionCur);
                         break;
                     case KEY_ARROW_UP:
                         if (cur_step > 1) {
-                            cur_step--;
+                            cur_step=4;
                             positionCur.Y -= y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                            for (int j = 0; j < (width / 2 - padding - 8); j++) {
+                                printf("_");
+                            }
                             _set_cur_to_pos(hConsole, positionCur);
                         }
                         break;
@@ -1352,6 +1394,9 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             cur_step++;
                             positionCur.Y += y_modifire;
                             _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        else {
+                            _set_cur_to_pos(hConsole, lastcord);
                         }
                         break;
                     case KEY_ESC:
@@ -1371,10 +1416,9 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     switch (cur_key)
                     {
                     case KEY_ENTER:
-                        _get_con_info(&con_inf);
-                        last_cord = con_inf.dwCursorPosition;
                         cur_step++;
                         step_compl++;
+                        _get_con_info(&con_inf);
                         positionCur.Y += y_modifire;
                         _set_cur_to_pos(hConsole, positionCur);
                         break;
@@ -1391,6 +1435,9 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             positionCur.Y += y_modifire;
                             _set_cur_to_pos(hConsole, positionCur);
                         }
+                        else {
+                            _set_cur_to_pos(hConsole, lastcord);
+                        }
                         break;
                     case KEY_ESC:
                         if (_confirm_window("Вы действительно хотите отменить ввод?")) {
@@ -1405,20 +1452,20 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     break;
                 }
                 case 8: {
+                    cur_step++;
+                    step_compl++;
                     _get_con_info(&con_inf);
-                    last_cord = con_inf.dwCursorPosition;
                     scanf("%d", &_temp_info->date_out.d);
                     scanf("%d", &_temp_info->date_out.m);
                     scanf("%d", &_temp_info->date_out.y);
                     positionCur.Y += y_modifire;
-                    cur_step++;
                     _set_cur_to_pos(hConsole, positionCur);
                     break;
                 }
                 case 9: {
-                    _get_con_info(&con_inf);
-                    last_cord = con_inf.dwCursorPosition;
                     cur_step++;
+                    step_compl++;
+                    _get_con_info(&con_inf);
                     scanf("%f", &_temp_info->cost);
                     break;
                 }

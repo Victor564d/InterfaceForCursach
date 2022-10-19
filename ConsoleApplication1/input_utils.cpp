@@ -88,6 +88,7 @@ int input_string(char* input_buff, int buff_size, int mode)
         }
     }
     SetConsoleCP(1251);
+    //SetConsoleOutputCP(1251);
     CONSOLE_SCREEN_BUFFER_INFO con_inf; _get_con_info_local(&con_inf);
     int current_pos = 0;
     int in_sym_count = 0;
@@ -101,14 +102,15 @@ int input_string(char* input_buff, int buff_size, int mode)
         int k = u8_strlen(input_buff);
         current_pos = k;
         in_sym_count = k;
+       // positionCur.X = positionCur.X - k;
+        _set_cur_to_pos_local(positionCur);
         printf("%s", input_buff);
         positionCur = con_inf.dwCursorPosition;
     }
     int c;
     while (1) {
-       // flushall();
         c = _getch(); 
-        if (c == 244)
+        if (c == 224)
             c = _getch();
         else c = (char)c;
         switch (c)
