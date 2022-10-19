@@ -1512,6 +1512,12 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
         }
         }
     }
+
+
+
+int print_help(char * help_message) {
+
+}
        
     
 
