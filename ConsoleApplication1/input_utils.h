@@ -10,18 +10,26 @@
 /// <param name="mode">Режим работы, от которого зависят допустимые символы.  0 - разрешение на ввод всего, кроме спец символов, 1- для реализации ввода Фамилии\имени\Отчества\Издательства(не допускаются цифры и т.д),2 - Ввод инициалов</param>
 /// <returns></returns>
 int input_string(char* input_buff, int buff_size, int mode);
+int in_date(int* d, int* m, int* y);
 
 
+typedef struct {
+    int d;
+    int m;
+    int y;
+}date;
 
 enum WorkingMode
 {
     NORMAL = 0,
     PERSONAL = 1,
-    INICIAL = 2
+    INICIAL = 2,
+    DATA = 3,
+    COST = 4
+
 };
 
 #endif // !input_utils
-
 
 #ifndef KEYCODE
 #define KEYCODE

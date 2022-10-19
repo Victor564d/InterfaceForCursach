@@ -1452,14 +1452,43 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                     break;
                 }
                 case 8: {
-                    cur_step++;
-                    step_compl++;
-                    _get_con_info(&con_inf);
-                    scanf("%d", &_temp_info->date_out.d);
-                    scanf("%d", &_temp_info->date_out.m);
-                    scanf("%d", &_temp_info->date_out.y);
-                    positionCur.Y += y_modifire;
-                    _set_cur_to_pos(hConsole, positionCur);
+                    cur_key = in_date(&_temp_info->date_out.d, &_temp_info->date_out.m, &_temp_info->date_out.y);
+                    switch (cur_key)
+                    {
+                    case KEY_ENTER:
+                        cur_step++;
+                        step_compl++;
+                        _get_con_info(&con_inf);
+                        positionCur.Y += y_modifire;
+                        _set_cur_to_pos(hConsole, positionCur);
+                        break;
+                    case KEY_ARROW_UP:
+                        if (cur_step > 1) {
+                            cur_step--;
+                            positionCur.Y -= y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        break;
+                    case KEY_ARROW_DOWN:
+                        if (cur_step < step_compl) {
+                            cur_step++;
+                            positionCur.Y += y_modifire;
+                            _set_cur_to_pos(hConsole, positionCur);
+                        }
+                        else {
+                            _set_cur_to_pos(hConsole, lastcord);
+                        }
+                        break;
+                    case KEY_ESC:
+                        if (_confirm_window("Вы действительно хотите отменить ввод?")) {
+                            SetConsoleOutputCP(65001); //-------
+                            return NULL;
+                        }
+                        else SetConsoleOutputCP(1251);
+                        break;
+                    default:
+                        break;
+                    }
                     break;
                 }
                 case 9: {

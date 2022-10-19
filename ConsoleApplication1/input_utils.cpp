@@ -18,6 +18,25 @@ BOOL _set_cur_to_pos_local(COORD cor) {
 }
 
 
+
+char convert_u8_to_1251(int c) {
+    wchar_t s[2];
+    s[0] = (wchar_t)c; s[1] = '\0';
+    char utf8[20];
+    wchar_t wstr[20];
+    char s1251[20];
+    WideCharToMultiByte(CP_UTF8, 0, s, -1, utf8, 100, NULL, NULL);
+    utf8[WideCharToMultiByte(CP_UTF8, 0, s, -1, utf8, 0, NULL, NULL)] = '\0';
+    // Подготовили строку UTF8 дальше идет ее преобразование в 1251
+    MultiByteToWideChar(CP_UTF8, 0, utf8, -1, wstr, 100);
+    wstr[MultiByteToWideChar(CP_UTF8, 0, utf8, -1, wstr, 0)];
+    WideCharToMultiByte(1251, 0, wstr, -1, s1251, 100, NULL, NULL);
+    s1251[WideCharToMultiByte(1251, 0, wstr, -1, s1251, 0, NULL, NULL)] = '\0';
+    return s1251[0];
+}
+
+
+
 /// <summary>
 /// Ввод любых строковых данных
 /// </summary>
@@ -87,13 +106,14 @@ int input_string(char* input_buff, int buff_size, int mode)
 
         }
     }
-    SetConsoleCP(1251);
-    //SetConsoleOutputCP(1251);
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(1251);
     CONSOLE_SCREEN_BUFFER_INFO con_inf; _get_con_info_local(&con_inf);
     int current_pos = 0;
     int in_sym_count = 0;
     char* old_info = (char*)calloc(buff_size, sizeof(char));
-    old_info = *input_buff;
+    strcpy(old_info, input_buff);
+    //old_info = *input_buff;
     COORD positionCur = { 0,0 };
     COORD positionCur_start = { 0,0 };
     positionCur = con_inf.dwCursorPosition;
@@ -109,10 +129,11 @@ int input_string(char* input_buff, int buff_size, int mode)
     }
     int c;
     while (1) {
-        c = _getch(); 
-        if (c == 224)
-            c = _getch();
-        else c = (char)c;
+        c = _getwch(); 
+        //c = _getch();
+        //if (c == 224)
+         //   c = _getch();
+        //else c = (char)c;
         switch (c)
         {
         case KEY_ENTER:
@@ -122,19 +143,38 @@ int input_string(char* input_buff, int buff_size, int mode)
             }
             break;
         case KEY_ESC:
-            input_buff = old_info;
+            strcpy(input_buff, old_info);
             return KEY_ESC;
             break;
         case KEY_ARROW_UP:
-            input_buff = old_info;
-            return KEY_ARROW_UP;
+            if (in_sym_count > 0) {
+                strcpy(input_buff, old_info);
+                _get_con_info_local(&con_inf);
+                positionCur.X = con_inf.dwCursorPosition.X;
+                positionCur.X--; _set_cur_to_pos_local(positionCur);
+                printf(" ");
+                _set_cur_to_pos_local(positionCur);
+                return KEY_ARROW_UP;
+            }
             break;
         case KEY_ARROW_DOWN:
-            input_buff = old_info;
-            return KEY_ARROW_DOWN;
+            if (in_sym_count > 0) {
+                strcpy(input_buff, old_info);
+                _get_con_info_local(&con_inf);
+                positionCur.X = con_inf.dwCursorPosition.X;
+                positionCur.X--; _set_cur_to_pos_local(positionCur);
+                printf(" ");
+                _set_cur_to_pos_local(positionCur);
+                return KEY_ARROW_DOWN;
+            }
             break;
         case KEY_ARROW_LEFT:
         case KEY_ARROW_RIGHT:
+            _get_con_info_local(&con_inf);
+            positionCur.X = con_inf.dwCursorPosition.X;
+            positionCur.X--; _set_cur_to_pos_local(positionCur);
+            printf(" ");
+            _set_cur_to_pos_local(positionCur);
             break;
         case KEY_BACKSPACE:
             if (mode != INICIAL) {
@@ -178,6 +218,7 @@ int input_string(char* input_buff, int buff_size, int mode)
                 }
             break;
         default:
+            c = convert_u8_to_1251(c);
             if (mode == INICIAL) {
                 int flag = 0;
                 for (int i = 0; i < n_count; i++)
@@ -212,6 +253,13 @@ int input_string(char* input_buff, int buff_size, int mode)
                         break;
                     }
                 }
+                if (c == ' ' && mode == PERSONAL)
+                {
+                    if (in_sym_count > 0) {
+                        printf(" ");
+                        return KEY_ENTER;
+                    }
+                }
                 if (!flag) {
                     if (in_sym_count < buff_size) {
                         input_buff[in_sym_count] = c;
@@ -225,4 +273,160 @@ int input_string(char* input_buff, int buff_size, int mode)
         }
     }
 }
+
+int in_date(int* d, int*m,int *y) {
+    int n_count;
+    char* correct_sym;
+    int temp = 0;
+    n_count = 10;
+    char buff[10] = "";
+    correct_sym = (char*)calloc(n_count, sizeof(char));
+    for (int i = 48; i < 59; i++) {
+        correct_sym[temp] = i;
+        temp++;
+    }
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(1251);
+    CONSOLE_SCREEN_BUFFER_INFO con_inf; _get_con_info_local(&con_inf);
+    int current_pos = 0;
+    int in_sym_count = 0;
+    int cur_selector = 1;
+    int old_d, old_m, old_y;
+    if (d) old_d = *d;
+    if(m)old_m = *m;
+     if (y) old_y = *y;
+    COORD positionCur = { 0,0 };
+    COORD positionCur_start = { 0,0 };
+    positionCur = con_inf.dwCursorPosition;
+    positionCur_start = con_inf.dwCursorPosition;
+    int c;
+    while (1) 
+    {
+        c = _getwch();
+        if (c == 224) {
+            c = getch();
+        }
+        switch (c)
+        {
+        case KEY_ENTER:
+            if (cur_selector > 3) {
+                printf(" ");
+                return KEY_ENTER;
+            }
+            break;
+        case KEY_ESC:
+            //  strcpy(input_buff, old_info);
+            return KEY_ESC;
+            break;
+        case KEY_ARROW_UP:
+            if (in_sym_count > 0) {
+                _get_con_info_local(&con_inf);
+                positionCur.X = con_inf.dwCursorPosition.X;
+                positionCur.X--; _set_cur_to_pos_local(positionCur);
+                printf(" ");
+                _set_cur_to_pos_local(positionCur);
+                return KEY_ARROW_UP;
+            }
+            break;
+        case KEY_ARROW_DOWN:
+            if (in_sym_count > 0) {
+                _get_con_info_local(&con_inf);
+                positionCur.X = con_inf.dwCursorPosition.X;
+                positionCur.X--; _set_cur_to_pos_local(positionCur);
+                printf(" ");
+                _set_cur_to_pos_local(positionCur);
+                return KEY_ARROW_DOWN;
+            }
+            break;
+        case KEY_ARROW_LEFT:
+        case KEY_ARROW_RIGHT:
+            _get_con_info_local(&con_inf);
+            positionCur.X = con_inf.dwCursorPosition.X;
+            positionCur.X--; _set_cur_to_pos_local(positionCur);
+            printf(" ");
+            _set_cur_to_pos_local(positionCur);
+            break;
+        case KEY_BACKSPACE:
+        {
+            if (current_pos > 0 && in_sym_count > 0) {
+                {
+                    buff[current_pos] = '\0';
+                    current_pos--;
+                    in_sym_count--; int flag = 0;
+                    if (current_pos <= 4 && current_pos > 2) {
+                        if (cur_selector > 2) {
+                            cur_selector--;
+                            flag = 1;
+                        }
+                    }
+                    else if (current_pos <= 2) {
+                        if (cur_selector > 1) {
+                            cur_selector--;
+                            flag = 1;
+                        }
+                    }
+                    _get_con_info_local(&con_inf);
+                    positionCur.X = con_inf.dwCursorPosition.X;
+                    if (flag) {
+                        positionCur.X--;  positionCur.X--; _set_cur_to_pos_local(positionCur);
+                        printf(" ");  printf(" ");
+                        _set_cur_to_pos_local(positionCur);
+                    }
+                    else {
+                        positionCur.X--;  _set_cur_to_pos_local(positionCur);
+                        printf(" ");
+                        _set_cur_to_pos_local(positionCur);
+                    }
+
+                }
+            }
+        }
+        break;
+        default: {
+            c = convert_u8_to_1251(c);
+            int flag = 0;
+            for (int i = 0; i < n_count; i++)
+            {
+                if (c == correct_sym[i]) {
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag) {
+                if (cur_selector < 4) {
+                    if (in_sym_count >= 2 && in_sym_count < 4) {
+                        buff[in_sym_count-2] = c;
+                    }
+                    else if (in_sym_count >= 4){
+                        buff[in_sym_count-4] = c;
+                    }
+                    else
+                    buff[in_sym_count] = c;
+                    printf("%c", c);
+                    in_sym_count++;
+                    if (in_sym_count == 2) {
+                        printf(".");
+                        *d = atoi(buff);
+                        memset(buff, 0, strlen(buff));
+                        cur_selector++;
+                    }
+                    else if (in_sym_count == 4) {
+                        printf(".");
+                        *m = atoi(buff);
+                        memset(buff, 0, strlen(buff));
+                        cur_selector++;
+                    }
+                    else if (in_sym_count == 8) {
+                        // printf(".");
+                        *y = atoi(buff);
+                        return KEY_ENTER;
+                    }
+                    current_pos++;
+                }
+            }
+        }
+               break;
+        }
+      }
+    }
 
