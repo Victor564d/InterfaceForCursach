@@ -4,7 +4,11 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <Windows.h>
+#include <time.h>
+
+
 #include "utf8.h"
+
 
 #include "input_utils.h"
 
@@ -405,20 +409,47 @@ int in_date(int* d, int*m,int *y) {
                     printf("%c", c);
                     in_sym_count++;
                     if (in_sym_count == 2) {
-                        printf(".");
                         *d = atoi(buff);
+                        if (*d > 31) { 
+                        *d = 31; 
+                            _get_con_info_local(&con_inf);
+                            positionCur.X = con_inf.dwCursorPosition.X;
+                            positionCur.X--;  positionCur.X--; _set_cur_to_pos_local(positionCur);
+                            printf(" ");  printf(" ");
+                            _set_cur_to_pos_local(positionCur);
+                            printf("%d", *d);
+                        }
+                        printf(".");
                         memset(buff, 0, strlen(buff));
                         cur_selector++;
                     }
                     else if (in_sym_count == 4) {
-                        printf(".");
                         *m = atoi(buff);
+                        if (*m > 12) { *m = 12; 
+                        _get_con_info_local(&con_inf);
+                        positionCur.X = con_inf.dwCursorPosition.X;
+                        positionCur.X--;  positionCur.X--; _set_cur_to_pos_local(positionCur);
+                        printf(" ");  printf(" ");
+                        _set_cur_to_pos_local(positionCur);
+                        printf("%d", *m);
+                        }
+                        printf(".");
                         memset(buff, 0, strlen(buff));
                         cur_selector++;
                     }
                     else if (in_sym_count == 8) {
                         // printf(".");
                         *y = atoi(buff);
+                        time_t  now = time(0);
+                        struct tm* ltm = localtime(&now);
+                        if (*y > ltm->tm_year + 1900) { *y = ltm->tm_year + 1900; 
+                        _get_con_info_local(&con_inf);
+                        positionCur.X = con_inf.dwCursorPosition.X;
+                        positionCur.X-=4; _set_cur_to_pos_local(positionCur);
+                        printf("    ");
+                        _set_cur_to_pos_local(positionCur);
+                        printf("%d", *y);
+                        }
                         return KEY_ENTER;
                     }
                     current_pos++;

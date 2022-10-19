@@ -1494,7 +1494,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                 case 9: {
                     cur_step++;
                     step_compl++;
-                    _get_con_info(&con_inf);
+                   // _get_con_info(&con_inf);
                     scanf("%f", &_temp_info->cost);
                     break;
                 }
