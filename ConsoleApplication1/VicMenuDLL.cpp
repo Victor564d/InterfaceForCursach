@@ -208,6 +208,9 @@ int _print_menu(_menu_item* _menu //Массив объектов  меню
             positionCur.Y -= 1; positionCur.X = _new_padding + 1;
             _set_cur_to_pos(hConsole, positionCur);
         }
+        if (!table_focus_flag) 
+        print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Ввод \x1b[45mСТРЕЛКИ\x1b[0m: Переключение селектора меню \x1b[45mTAB\x1b[0m:Переключить фокус на таблицу ");
+        else  print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Редактировать \x1b[45mСТРЕЛКИ\x1b[0m:Навигация  \x1b[45mTAB\x1b[0m:Фокус на меню \x1b[45mDEL\x1b[0m: Удалить запись \x1b[45mHOME|END\x1b[0m:Смена страницы");
         _table_window(table,_output_mas,&_output_colcount,&page,&table_focus_flag,root);    
         char c = getch();
         if (c == KEY_TAB) { table_focus_flag = 1; } else 
@@ -988,8 +991,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
     if (_output_info ) {
         _temp_info = (abonent_t*)calloc(1, sizeof(abonent_t));
         *_temp_info = *_output_info;
-    }
-       
+    } 
     else _temp_info = (abonent_t*)calloc(1, sizeof(abonent_t));
     _size_n = _get_window_size(_size_n);
     int _window_w = _size_n[0]; int  _window_h = _size_n[1];
@@ -997,6 +999,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
     int height = _window_h / 2; int width = _window_w / 2;
     int _center_x = _window_w / 2; int flag_clear = 0;
     int _center_y = _window_h / 2; char* title = NULL;
+start:
     if (_cycle_in_flag) title = "Окно ввода информации"; else title = "Окно редактирования информации";
     _big_window(title);
     int max_lenght = 0; int y_modifire = 1;
@@ -1196,7 +1199,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             SetConsoleOutputCP(65001); //-------
                             return NULL;
                         }
-                        else SetConsoleOutputCP(1251);
+                        else { SetConsoleOutputCP(65001); goto start; }
                         break;
                     default:
                         break;
@@ -1235,7 +1238,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             SetConsoleOutputCP(65001); //-------
                             return NULL;
                         }
-                        else SetConsoleOutputCP(1251);
+                        else { SetConsoleOutputCP(65001); goto start; }
                         break;
                     default:
                         break;
@@ -1278,7 +1281,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             SetConsoleOutputCP(65001); //-------
                             return NULL;
                         }
-                        else SetConsoleOutputCP(1251);
+                        else { SetConsoleOutputCP(65001); goto start; }
                         break;
                     default:
                         break;
@@ -1319,7 +1322,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             SetConsoleOutputCP(65001); //-------
                             return NULL;
                         }
-                        else SetConsoleOutputCP(1251);
+                        else { SetConsoleOutputCP(65001); goto start; }
                         break;
                     default:
                         break;
@@ -1361,7 +1364,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             SetConsoleOutputCP(65001); //-------
                             return NULL;
                         }
-                        else SetConsoleOutputCP(1251);
+                        else { SetConsoleOutputCP(65001); goto start; }
                         break;
                     default:
                         break;
@@ -1405,7 +1408,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             SetConsoleOutputCP(65001); //-------
                             return NULL;
                         }
-                        else SetConsoleOutputCP(1251);
+                        else { SetConsoleOutputCP(65001); goto start; }
                         break;
                     default:
                         break;
@@ -1445,7 +1448,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             SetConsoleOutputCP(65001); //-------
                             return NULL;
                         }
-                        else SetConsoleOutputCP(1251);
+                        else { SetConsoleOutputCP(65001); goto start; }
                         break;
                     default:
                         break;
@@ -1485,7 +1488,7 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
                             SetConsoleOutputCP(65001); //-------
                             return NULL;
                         }
-                        else SetConsoleOutputCP(1251);
+                        else { SetConsoleOutputCP(65001); goto start; }
                         break;
                     default:
                         break;
@@ -1516,6 +1519,24 @@ abonent_t* _in_info_window(_tabel_metadata* table, abonent_t *_output_info,int _
 
 
 int print_help(char * help_message) {
+    int* _size_now = NULL; //текущий размер окна 
+    _size_now = _get_window_size(_size_now);
+    CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    _get_con_info(&info_x);
+    COORD last_cord = info_x.dwCursorPosition;
+    COORD positionCur = { _otstup,_size_now[1] - _interval - 2 };
+    _set_cur_to_pos(hConsole, positionCur);
+    printf("├");
+    for (int i = 0; i < _size_now[0] - _otstup*2 - 1; i++) {
+        printf("─");
+    }
+    printf("┤");
+    positionCur.Y++; positionCur.X++;
+    _set_cur_to_pos(hConsole, positionCur);
+    for (int i = 0; i < _size_now[0] - _otstup * 2 - 1; i++)
+        printf(" ");
+    _set_cur_to_pos(hConsole, positionCur);
+    printf("%s", help_message);
 
 }
        

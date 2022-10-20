@@ -21,104 +21,16 @@
 const int size_abonent_t = sizeof(abonent_t);
 const int menu_size = 5;
 HANDLE hConsole;
-//------------------------------------------------------------------- Область функций ----------------------------------------------------------------
-//-----------------------------------функции создания дерева----------------------------------------------
 
-/// <summary>
-/// Функция вывода меню добавления записи
-/// </summary>
-/// <param name="st">Указатель на корень дерева</param>
-/// <returns>При успешном добавлении возвращает 1</returns>
 int аddNewElement(abonent** st, _tabel_metadata *table);
-/// <summary>
-/// Функция реализующая ввод через форму
-/// </summary>
-/// <param name="d">Информационные поля</param>
-/// <returns>Возвращает информационную структуру которую необходимо сохранить</returns>
-abonent_t GetInfoFromKeyboard(abonent_t  d);
-
-//----------------------------------Функции работы с файлами----------------------------------------------
-/// <summary>
-/// Функция сохранения дерева в файл
-/// </summary>
-/// <param name="f">Указатель на файл</param>
-/// <param name="St">Корень дерева</param>
-/// <returns>В случае успеха вернет 1</returns>
 int create_file(FILE* f, abonent* St);
-/// <summary>
-/// Функция загрузки данных из файла в дерево
-/// </summary>
-/// <param name="f">Указатель на файл</param>
-/// <returns>Возвращает указатель на корень дерева</returns>
 abonent* loadFromFile_new(FILE* f);
-//------------------------------Функции работы с элементами дерева----------------------------------------
-/// <summary>
-/// Основное тело функции редактирования записи по ид
-/// </summary>
-/// <param name="st">Указатель на корень дерева</param>
-/// <returns>В случае успеха - 1</returns>
 int correctInfo(abonent* st);
-/// <summary>
-/// Вспомогательная рекурсивная функция поиска необходимого листка/ноды
-/// </summary>
-/// <param name="root">Корень дерева или текущаяя нода</param>
-/// <param name="indexToSerch">Ид который необходимо найти</param>
-/// <returns>Возвращает указатель на элемент с соответствующим ид, иначе NULL</returns>
-
-
-
-
-//--------------------------------Функции вывода списка на экран------------------------------------------
-
-/// <summary>
-/// Рекурсивная функция печати информации из дерева на экран. Обход с лева на право.
-/// </summary>
-/// <param name="st">Корень дерева/текущая нода</param>
-/// <returns>В случае успеха - 1</returns>
-
-void MenuSelect(int selector, FILE* f);
-/// <summary>
-/// Функция получения подтверждения от пользователя
-/// </summary>
-/// <returns>Если подвердили - вернет 1</returns>
-int getResponse();
-/// <summary>
-/// Функция реализующая ввод через форму
-/// </summary>
-/// <param name="d">Информационные поля</param>
-/// <returns>Возвращает информационную структуру которую необходимо сохранить</returns>
-abonent_t GetInfoFromKeyboard(abonent_t  d);
-/// <summary>
-/// Заголовок таблицы
-/// </summary>
+void MenuSelect(int selector, FILE* f, _tabel_metadata* table);
 int correctInfo(abonent* st);
-/// <summary>
-/// Рекурсивная функция подсчета среднего арефметического по предметам
-/// </summary>
-/// <param name="root">Корень дерева/текущая нода</param>
-/// <param name="summ">Указатель на массив флоат в котором хранятся значения</param>
-/// <returns>Указатель на массив из четырех элементов типа флоат где лежит сумма балов по предметам</returns>
-float* getSerArefm(abonent* root, float* summ);
-int GetLeafLevel(abonent* root, int n, int serchID);
-
-/// <summary>
-/// Рекурсивная функция вывода информации о студентах без троек
-/// </summary>
-/// <param name="root">Корень дерева/текущая нода</param>
-/// <returns>В случае успеха - значение > 1 </returns>
-/// 
-/// 
-/// 
-/// 
-/// 
-/// 
 _menu_item* _init_menu(_menu_item* menu);
 _tabel_metadata* _init_table(_tabel_metadata* table);
-
-//------------------------------------------------------------------- Конец области функций ---------------------------------------------------------
-
 abonent* abonents = NULL;
-//abonent* root = NULL;
 int position[] = { 1,1 };
 int* size;
 

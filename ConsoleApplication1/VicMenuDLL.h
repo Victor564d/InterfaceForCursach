@@ -26,7 +26,8 @@ void _in_window();
 void _message_window( char* message);
 int _table_window(_tabel_metadata* table, abonent_t* _output_mass, int* _info_count, int* page, int* _table_focus_flag,abonent ** root);
 void _big_window(char* title);
-abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass,int);                                                                    
+abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass,int);   
+int print_help(char* help_message);
 
 
 #endif
