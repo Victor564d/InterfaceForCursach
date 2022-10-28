@@ -213,7 +213,13 @@ int _print_menu(_menu_item* _menu //Массив объектов  меню
         else  print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Редактировать \x1b[45mСТРЕЛКИ\x1b[0m:Навигация  \x1b[45mTAB\x1b[0m:Фокус на меню \x1b[45mDEL\x1b[0m: Удалить запись \x1b[45mHOME|END\x1b[0m:Смена страницы");
         _table_window(table,_output_mas,&_output_colcount,&page,&table_focus_flag,root);    
         char c = getch();
-        if (c == KEY_TAB) { table_focus_flag = 1; } else 
+        if (c == KEY_TAB) {  
+            if (_output_mas && _output_colcount != 0)
+                table_focus_flag = 1; else {
+                print_help("\x1b[41mДанных для вывода нет. Невозможно переключиться на таблицу.\x1b[0m");
+                Sleep(1000);
+            }
+        } else 
         if (c == KEY_ENTER) {
             if (_menu[position[0] - 1]._menu_size > 0) {
                 position[1] = 1;
@@ -597,7 +603,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
     _size_n = _get_window_size(_size_n);
      int _window_w = _size_n[0]; int _window_h = _size_n[1];
     int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
-    int _size_delta = 0;
+    int _size_delta = 0; static int last_sel = 0;
     for (int i = 0; i < table->_col_count; i++) {
         _size_delta += table->_cols[i].size;
     }
@@ -605,7 +611,6 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
     _size_delta = (width -2) - _size_delta - table->_col_count*2-5 ;
     do {
     COORD positionCur = { _otstup+2,_interval+3}; //позиция x и y 
-    
     _set_cur_to_pos(hConsole, positionCur);
     for (int i = 0; i < width; i++) {
         if (i == 0) {
@@ -683,24 +688,22 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
     positionCur.X = _otstup + 2;
     _set_cur_to_pos(hConsole, positionCur);
    
-        if (_output_mass) {
-
-
+        if (_output_mass && *_info_count!=0) {
             int _col_inpage = height;
             int _diap[2] = { 0,0 };
             _diap[0] = ((*page) - 1) * _col_inpage;
             _diap[1] = _diap[0] + _col_inpage;
-
+          //  if (row_selection[1]== last_sel)
             for (int j = _diap[0]; j < _diap[1]; j++)
             {
                 if (*_info_count <= j) break;
                 _set_cur_to_pos(hConsole, positionCur);
                 if (*_table_focus_flag)
                     if (j == ((*page) - 1) * _col_inpage + row_selection[1]-1)
-                        printf("\x1b[43m");
+                        printf("\x1b[42m");
                 printf("│");
                 char buff[400] = { "" };
-                sprintf(buff, "%d", j); 
+                sprintf(buff, "%d", j+1); 
                 SetConsoleOutputCP(1251); //-------
                 printf("%s", buff);
                 if (u8_strlen(buff) < 3)
@@ -826,6 +829,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
         if ((width - 12) % 2 == 1) printf("-");
         printf("│");
         positionCur.Y++;
+        *_table_focus_flag = 0;
         }
 
         _set_cur_to_pos(hConsole, positionCur);
@@ -847,6 +851,13 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
                 else
                     printf("─");
         }
+        COORD temp_cord = positionCur;
+        temp_cord.Y++;
+        _set_cur_to_pos(hConsole,temp_cord);
+        char message[200] = "";
+        //if(( * _info_count) != 0)
+        sprintf(message, "Страница %d из %d",*page,(*_info_count/height)+1);
+        printf(message);
 
 
         if (*_table_focus_flag)
@@ -854,13 +865,18 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
             char c = getch();
 
             if (c == KEY_ENTER) {
-                _in_info_window(table, &_output_mass[((*page) - 1) * height + row_selection[1] - 1], 0);
+                _output_mass[((*page) - 1) * height + row_selection[1] - 1] = *_in_info_window(table, &_output_mass[((*page) - 1) * height + row_selection[1] - 1], 0);
+                tree_deleteNodeById(root, _output_mass[((*page) - 1) * height + row_selection[1] - 1].id);
+                _output_mass[((*page) - 1) * height + row_selection[1] - 1].id = util_hashCodeFromFio(&_output_mass[((*page) - 1) * height + row_selection[1] - 1].fio);
+                tree_add(root, &_output_mass[((*page) - 1) * height + row_selection[1] - 1]);
+                clear_table();
             }
 
 
             if (c == KEY_ESC || c == KEY_TAB)
             {
                 *_table_focus_flag = 0;
+                break;
             }
 
             if (c == KEY_DEL) {
@@ -1003,7 +1019,7 @@ start:
     if (_cycle_in_flag) title = "Окно ввода информации"; else title = "Окно редактирования информации";
     _big_window(title);
     int max_lenght = 0; int y_modifire = 1;
-    if (height > 20) y_modifire = 2;
+    if (height >= 20) y_modifire = 2;
     for (int i = 1; i < table->_col_count; i++) {
         if (u8_strlen(table->_cols[i].name) > max_lenght)
             max_lenght = u8_strlen(table->_cols[i].name);
@@ -1058,6 +1074,7 @@ start:
         positionCur.Y = _center_y - height / 2 + 4;
         _set_cur_to_pos(hConsole, positionCur);
         if (!_cycle_in_flag) {
+            COORD fild_cords[6];
             SetConsoleOutputCP(1251); //-------
             if (u8_strlen(_temp_info->fio.surname) > 0)
                 printf(" %s ", _temp_info->fio.surname);
@@ -1065,36 +1082,40 @@ start:
                 printf(" %s ", _temp_info->fio.name);
             if (u8_strlen(_temp_info->fio.secondname) > 0)
                 printf(" %s ", _temp_info->fio.secondname);
+            fild_cords[0] = positionCur;
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             if (u8_strlen(_temp_info->autor.surname) > 0)
                 printf(" %s ", _temp_info->autor.surname);
             if (u8_strlen(_temp_info->autor.inicial) > 0)
                 printf(" %s ", _temp_info->autor.inicial);
+            fild_cords[1] = positionCur;
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             if (u8_strlen(_temp_info->book_name) > 0) {
                 printf(" %s ", _temp_info->book_name);
             }
+            fild_cords[2] = positionCur;
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             if (u8_strlen(_temp_info->izd) > 0) {
                 printf(" %s ", _temp_info->izd);
             }
+            fild_cords[3] = positionCur;
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             if (_temp_info->date_out.d > 0) {
-                printf(" %d ", _temp_info->date_out.d);
-                printf(" %d ", _temp_info->date_out.m);
-                printf(" %d ", _temp_info->date_out.y);
+                printf(" %d.", _temp_info->date_out.d);
+                printf("%d.", _temp_info->date_out.m);
+                printf("%d ", _temp_info->date_out.y);
             }
+            fild_cords[4] = positionCur;
             positionCur.Y += y_modifire;
             _set_cur_to_pos(hConsole, positionCur);
             if (_temp_info->cost > 0) {
                 printf(" %f ", _temp_info->cost);
             }
-
-
+            fild_cords[5] = positionCur;
             positionCur.X = _center_x - width / 2 + 4;
             positionCur.Y = _center_y + height / 2 - 2;
             SetConsoleOutputCP(65001); //-------
@@ -1118,6 +1139,16 @@ start:
                 {
                     if (_confirm_window("Отменить операцию ?"))
                     {
+                        return _output_info;
+                    }
+                    else
+                    {
+                        flag_clear = 1;
+                    }
+                }else if (_men_position[1] == table->_col_count)
+                {
+                    if (_confirm_window("Сохранить данные ?"))
+                    {
                         return _temp_info;
                     }
                     else
@@ -1125,25 +1156,64 @@ start:
                         flag_clear = 1;
                     }
                 }
-            }
-
-            if (c == KEY_ENTER) {
-                if (_men_position[1] == table->_col_count)
+                else 
                 {
-                    if (_confirm_window("Сохранить данные ?"))
+                    switch (_men_position[1])
                     {
-                        return _output_info;
+                    case 1: {
+                        _set_cur_to_pos(hConsole, fild_cords[0]);
+                        for (int i = 0; i < width / 2 - padding - 8; i++) { printf("_"); }
+                        _set_cur_to_pos(hConsole, fild_cords[0]);
+                        input_string(_temp_info->fio.surname, 40, PERSONAL);
+                        input_string(_temp_info->fio.name, 40, PERSONAL);
+                        input_string(_temp_info->fio.secondname, 40, PERSONAL);
+                        SetConsoleOutputCP(65001); //-------
+                        break;
                     }
-                    else
-                    {
-                        flag_clear = 1;
+                    case 2: {
+                        _set_cur_to_pos(hConsole, fild_cords[1]);
+                        for (int i = 0; i < width / 2 - padding - 8; i++) { printf("_"); }
+                        _set_cur_to_pos(hConsole, fild_cords[1]);
+                        input_string(_temp_info->autor.surname, 40, PERSONAL);
+                        input_string(_temp_info->autor.inicial, 3, INICIAL);
+                        SetConsoleOutputCP(65001); //-------
+                        break;
+                    }
+                    case 3: {
+                        _set_cur_to_pos(hConsole, fild_cords[2]);
+                        for (int i = 0; i < width / 2 - padding - 8; i++) { printf("_"); }
+                        _set_cur_to_pos(hConsole, fild_cords[2]);
+                        input_string(_temp_info->book_name, width / 2 - padding - 8, NORMAL);
+                        SetConsoleOutputCP(65001); //-------
+                        break;
+                    }
+                    case 4: {
+                        _set_cur_to_pos(hConsole, fild_cords[3]);
+                        for (int i = 0; i < width / 2 - padding - 8; i++) { printf("_"); }
+                        _set_cur_to_pos(hConsole, fild_cords[3]);
+                        input_string(_temp_info->izd, width / 2 - padding - 8, NORMAL);
+                        SetConsoleOutputCP(65001); //-------
+                        break;
+                    }
+                    case 5: {
+                        _set_cur_to_pos(hConsole, fild_cords[4]);
+                        for (int i = 0; i < width / 2 - padding - 8; i++) { printf("_"); }
+                        _set_cur_to_pos(hConsole, fild_cords[4]);
+                        in_date(&_temp_info->date_out.d, &_temp_info->date_out.m, &_temp_info->date_out.y);
+                        SetConsoleOutputCP(65001); //-------
+                        break;
+                    }
+                    default:
+                        break;
                     }
                 }
             }
             if (c == KEY_ESC)
             {
-                break;  return _output_info;
+                return _output_info;
+                break;
             }
+
             _men_position = _get_curent_selection(c, _men_position, table->_col_count + 1, 1, 1);
         }
         else {

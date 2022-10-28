@@ -136,15 +136,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case RECORD_LEVEL:
             
         break;
-    
-    case PRINT_TREE:
-        clear();
-        Posid = 1;
-        //PrintTreeData(abonents);
-        puts("Нажмите любую клавишу");
-        getch();
-        break;
-    
+   
     case PRINT_TREE_STRUCT:
         clear();
         printf("---------------------------------------------- Структура дерева -----------------------------------------\n");
@@ -214,7 +206,7 @@ int create_file(FILE* f, abonent* root)
     printToFile(f, root);
     
     clear();
-    puts("Данные сохранены. Нажмите любую кнопку ....");
+    _message_window("Данные успешно сохранены...");
     getch();
     
     return 0;
@@ -293,7 +285,7 @@ _menu_item* _init_menu(_menu_item* menu) {
 //--------------------------------------------------------------------------------------------------------- 
         strcpy(menu[1]._name, "Работа с данными");
         menu[1]._menu_name_lenght = 17;
-        menu[1]._menu_size = 4;
+        menu[1]._menu_size = 2;
             //"Редактировать запись",
             //"Удалить элемент(любой)",
             //"Очистить дерево",
@@ -303,14 +295,12 @@ _menu_item* _init_menu(_menu_item* menu) {
             menu[1]._sub_menu[i] = (char*)calloc(90, sizeof(char)); 
         }
         menu[1]._sub_menu_lenght = (int*)calloc(4, sizeof(int));
-        strcpy(menu[1]._sub_menu[0], "Редактировать запись");   menu[1]._sub_menu_lenght[0] = 21;
-        strcpy(menu[1]._sub_menu[1], "Удалить элемент(любой)"); menu[1]._sub_menu_lenght[1] = 23;
-        strcpy(menu[1]._sub_menu[2], "Очистить дерево");        menu[1]._sub_menu_lenght[2] = 16;
-        strcpy(menu[1]._sub_menu[3], "Уровень элемента по ид"); menu[1]._sub_menu_lenght[3] = 23;
+        strcpy(menu[1]._sub_menu[0], "Очистить дерево");        menu[1]._sub_menu_lenght[0] = 16;
+        strcpy(menu[1]._sub_menu[1], "Уровень элемента по ид"); menu[1]._sub_menu_lenght[1] = 23;
 //--------------------------------------------------------------------------------------------------------- 
         strcpy(menu[2]._name, "Статистика");
         menu[2]._menu_name_lenght = 11;
-        menu[2]._menu_size = 5;
+        menu[2]._menu_size = 2;
             //"Вывод данных в списке",  
             //"Отобразить структуру дерева",
             //"Колличество элементов в дереве",
@@ -322,11 +312,8 @@ _menu_item* _init_menu(_menu_item* menu) {
            
         }
         menu[2]._sub_menu_lenght = (int*)calloc(5, sizeof(int));
-        strcpy(menu[2]._sub_menu[0], "Вывод данных в списке");    menu[2]._sub_menu_lenght[0] = 22;
-        strcpy(menu[2]._sub_menu[1], "Отобразить структуру дерева");  menu[2]._sub_menu_lenght[1] = 28;
-        strcpy(menu[2]._sub_menu[2], "Колличество элементов в дереве");         menu[2]._sub_menu_lenght[2] = 31;
-        strcpy(menu[2]._sub_menu[3], "Отобр. всех зап. в ко-ых ниодной тройки");  menu[2]._sub_menu_lenght[3] = 40;
-        strcpy(menu[2]._sub_menu[4], "Ср. арифм. по всем предметам");  menu[2]._sub_menu_lenght[4] = 29;
+        strcpy(menu[2]._sub_menu[0], "Отобразить структуру дерева");  menu[2]._sub_menu_lenght[0] = 28;
+        strcpy(menu[2]._sub_menu[1], "Колличество элементов в дереве");         menu[2]._sub_menu_lenght[1] = 31;
 //--------------------------------------------------------------------------------------------------------- 
         strcpy(menu[3]._name, "Прочее");
         menu[3]._menu_name_lenght = 7;
