@@ -4,6 +4,11 @@
 #ifndef VicMenuDLL
 #define VicMenuDLL
 
+typedef struct {
+    int sort_f;
+    int sort_t;
+}sort_struct;
+
 int* _get_curent_selection(char  c // Символ клавиатуры
     , int* position // Массив в котором хранятся x и y
     , int MaxY // Максимальный количество строк 
@@ -13,7 +18,7 @@ int* _get_curent_selection(char  c // Символ клавиатуры
 
 
 int _print_menu(_menu_item* _menu, int* position, int _menu_size, int Colums, abonent_t* _output_mas,
-    int _output_colcount, _tabel_metadata* table, abonent** root);
+    int _output_colcount, _tabel_metadata* table, abonent** root, sort_struct* sort);
 void animatedNeko();
 void _print_bakground(int _window_w, int _window_h);
 void clear();
@@ -24,10 +29,15 @@ void _window(int _window_w, int _window_h,char * title);
 void clear_for_info();
 void _in_window();
 void _message_window( char* message);
-int _table_window(_tabel_metadata* table, abonent_t* _output_mass, int* _info_count, int* page, int* _table_focus_flag,abonent ** root);
+int _table_window(_tabel_metadata* table, abonent_t* _output_mass, int* _info_count, int* page, int* _table_focus_flag,abonent ** root, sort_struct* sort);
 void _big_window(char* title);
 abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass,int);   
 int print_help(char* help_message);
+abonent_t* _sort_output(abonent_t*, int *,sort_struct *);
+
+
+
+
 
 
 #endif
@@ -46,6 +56,23 @@ enum KeyboardCodes
     KEY_ENTER = 13,
     KEY_ESC = 27,
     KEY_DEL = 83,
-    KEY_BACKSPACE = 8
+    KEY_BACKSPACE = 8,
+    KEY_PGUP = 73,
+    KEY_PGDOWN = 81
 };
 #endif
+
+enum sort_fild {
+    DEF,
+    FIO,
+    AUTHOR,
+    BOOK_NAME,
+    IZD,
+    DATE_OUT,
+    COST,
+    ZADANIE
+};
+enum sort_type {
+    UP,
+    DOWN
+};

@@ -25,7 +25,6 @@ enum WorkingMode
     PERSONAL = 1,
     INICIAL = 2,
     DATA = 3,
-    COST = 4
 
 };
 

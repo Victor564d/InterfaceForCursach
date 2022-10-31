@@ -24,17 +24,15 @@ typedef struct {
 enum MenuItemCodes
 {
     ADD_NEW_RECORD = 1,
-    LOAD_FROM_FILE = 2,
-    SAVE_TO_FILE = 3,
-    EDIT_RECORD = 4,
-    REMOVE_RECORD = 5,
-    CLEAN_TREE = 6,
-    RECORD_LEVEL = 7,
-    PRINT_TREE_STRUCT = 8,
-    TREE_SIZE = 10,
-    PROCESS_1 = 11,
-    PRINT_HORRIBLE_ANIMATION = 13,
-    PROGRAM_EXIT = 16
+    LOAD_FROM_FILE_TYPE = 2,
+    LOAD_FROM_FILE = 3,
+    SAVE_TO_FILE_TYPE = 4,
+    SAVE_TO_FILE = 5,
+    TREE_SIZE = 6,
+    PRINT_TREE_STRUCT = 7,
+    CLEAN_TREE = 8,
+    PRINT_HORRIBLE_ANIMATION = 9,
+    PROGRAM_EXIT = 10
 };
 
 #endif //! MenuStruct

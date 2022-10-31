@@ -366,7 +366,7 @@ int in_date(int* d, int*m,int *y) {
                             flag = 1;
                         }
                     }
-                    else if (current_pos <= 2) {
+                    else if (current_pos < 2) {
                         if (cur_selector > 1) {
                             cur_selector--;
                             flag = 1;
@@ -375,7 +375,7 @@ int in_date(int* d, int*m,int *y) {
                     _get_con_info_local(&con_inf);
                     positionCur.X = con_inf.dwCursorPosition.X;
                     if (flag) {
-                        positionCur.X--;  positionCur.X--; _set_cur_to_pos_local(positionCur);
+                        positionCur.X--;  positionCur.X--; _set_cur_to_pos_local(positionCur);                
                         printf(" ");  printf(" ");
                         _set_cur_to_pos_local(positionCur);
                     }

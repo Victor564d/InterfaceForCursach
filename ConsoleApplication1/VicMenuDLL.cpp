@@ -50,6 +50,7 @@ void clear() {
 }
 
 
+
 void clear_table() {
     positionCur.X = _otstup + 2;  positionCur.Y = _interval + 3;
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -129,7 +130,8 @@ int _print_menu(_menu_item* _menu //Массив объектов  меню
     abonent_t * _output_mas,
     int _output_colcount,
     _tabel_metadata * table,
-    abonent** root
+    abonent** root,
+    sort_struct* sort
 )
 {
     int  table_focus_flag = 0;
@@ -211,8 +213,12 @@ int _print_menu(_menu_item* _menu //Массив объектов  меню
         if (!table_focus_flag) 
         print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Ввод \x1b[45mСТРЕЛКИ\x1b[0m: Переключение селектора меню \x1b[45mTAB\x1b[0m:Переключить фокус на таблицу ");
         else  print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Редактировать \x1b[45mСТРЕЛКИ\x1b[0m:Навигация  \x1b[45mTAB\x1b[0m:Фокус на меню \x1b[45mDEL\x1b[0m: Удалить запись \x1b[45mHOME|END\x1b[0m:Смена страницы");
-        _table_window(table,_output_mas,&_output_colcount,&page,&table_focus_flag,root);    
+        _table_window(table,_output_mas,&_output_colcount,&page,&table_focus_flag,root,sort);    
         char c = getch();
+        //char buf[100];
+       // sprintf(buf, "%d", c);
+       // _message_window(&buf);
+       // Sleep(500);
         if (c == KEY_TAB) {  
             if (_output_mas && _output_colcount != 0)
                 table_focus_flag = 1; else {
@@ -299,7 +305,7 @@ int _print_menu(_menu_item* _menu //Массив объектов  меню
                     position = _get_curent_selection(c, position, _menu[position[0] - 1]._menu_size, _menu_buttons, 1);
                 }
             }
-            else return 16;          
+            else return PROGRAM_EXIT;          
             }
         else {
             position = _get_curent_selection(c, position, 1, _menu_buttons, 0);    
@@ -435,7 +441,7 @@ void _window(int _window_w, int _window_h, char* title) {
     positionCur.X = _center_x - width / 2 + 1;
     positionCur.Y = _center_y - height / 2 + 1;
     _set_cur_to_pos(hConsole, positionCur);
-    int _temp_ots;
+    int _temp_ots=0;
     if (title) _temp_ots = (width - 2 - u8_strlen(title)) / 2;
     for (int j = 0; j < _temp_ots; j++) {
         printf(" ");
@@ -592,7 +598,7 @@ void _message_window(char* message) {
 
 }
 
-int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info_count, int*  page, int * _table_focus_flag, abonent** root) {
+int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info_count, int*  page, int * _table_focus_flag, abonent** root, sort_struct* sort) {
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_CURSOR_INFO structCursorInfo;
     GetConsoleCursorInfo(hConsole, &structCursorInfo);
@@ -627,7 +633,11 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
     for (int i = 0; i < table->_col_count; i++) {
          _get_con_info(&info_x);
         _padding = info_x.dwCursorPosition.X - 1;
-         printf(" %s ", table->_cols[i].name);
+        if (i == sort->sort_f && i!=0)
+           if (sort->sort_t == UP)
+              printf(" \x1b[44m%s\x1b[0m ", table->_cols[i].name);
+           else printf(" \x1b[43m%s\x1b[0m ", table->_cols[i].name);
+        else printf(" %s ", table->_cols[i].name);
         if (table->_cols[i].resizebl) {
             if (!_mn_size_flag) {
                 int _tmp_padding = _size_delta / 3;
@@ -689,6 +699,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
     _set_cur_to_pos(hConsole, positionCur);
    
         if (_output_mass && *_info_count!=0) {
+
             int _col_inpage = height;
             int _diap[2] = { 0,0 };
             _diap[0] = ((*page) - 1) * _col_inpage;
@@ -905,21 +916,46 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
 
             if (c == KEY_HOME)
             {
-                if (*page > 1) { (*page)--; clear_table(); }
- 
+                if (sort->sort_f > 0) {
+                    sort->sort_f--;
+                    _output_mass = _sort_output(_output_mass, _info_count, sort);
+                }
             }
             if (c == KEY_END)
             {
-                if (*_info_count > ((*page) * height)) { 
-                    (*page)++; 
-                    clear_table(); 
+                if (sort->sort_f < ZADANIE-1) {
+                    sort->sort_f++;
+                    _output_mass = _sort_output(_output_mass, _info_count, sort);
+                }
+            }
+            if (c == KEY_PGUP)
+            {
+                sort->sort_t = UP;
+                    _output_mass = _sort_output(_output_mass, _info_count, sort);
+            }
+            if (c == KEY_PGDOWN)
+            {
+                 sort->sort_t = DOWN;
+                    _output_mass = _sort_output(_output_mass, _info_count, sort);
+                
+            }
+            if (c == KEY_ARROW_LEFT)
+            {
+                if (*page > 1) { (*page)--; clear_table(); }
+
+            }
+            if (c == KEY_ARROW_RIGHT)
+            {
+                if (*_info_count > ((*page) * height)) {
+                    (*page)++;
+                    clear_table();
                     if ((((*page) - 1) * height + row_selection[1] - 1) > *_info_count) {
-                        row_selection[1] = *_info_count - ((*page) - 1) * height ;
+                        row_selection[1] = *_info_count - ((*page) - 1) * height;
                     }
                 }
             }
             int* temp = (int*)calloc(2, sizeof(int));
-            temp = _get_curent_selection(c, row_selection, height, 1, 1);           
+            temp = _get_curent_selection(c, row_selection, height, 1, 0);           
             row_selection[1] = temp[1];
             if ((((*page) - 1) * height + row_selection[1] - 1) == *_info_count) {
                 row_selection[1] = row_selection[1] - 1;
@@ -1608,9 +1644,191 @@ int print_help(char * help_message) {
     _set_cur_to_pos(hConsole, positionCur);
     printf("%s", help_message);
 
+} 
+
+abonent_t* _sort_output(abonent_t* _output_mass, int* filds_count, sort_struct* sorts)
+{
+    if (!sorts) return _output_mass;
+    switch (sorts->sort_f)
+    {
+    case DEF:
+        return _output_mass;
+        break;
+    case FIO:
+                if (sorts->sort_t == UP){
+                    for (int write = 0; write < *filds_count; write++) {
+                        for (int sort = 0; sort < *filds_count - 1; sort++) {
+                            if (_output_mass[sort].id > _output_mass[sort + 1].id) {
+                                abonent_t temp = _output_mass[sort + 1];
+                                _output_mass[sort + 1] = _output_mass[sort];
+                                _output_mass[sort] = temp;
+                            }
+                        }
+                    }
+                  }
+                 else {
+                    for (int write = 0; write < *filds_count; write++) {
+                        for (int sort = 0; sort < *filds_count - 1; sort++) {
+                            if (_output_mass[sort].id < _output_mass[sort + 1].id) {
+                                abonent_t temp = _output_mass[sort + 1];
+                                _output_mass[sort + 1] = _output_mass[sort];
+                                _output_mass[sort] = temp;
+                            }
+                        }
+                    }
+                }
+        break;
+    case AUTHOR:
+        if (sorts->sort_t == UP) {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (strcmp(_output_mass[sort].autor.surname, _output_mass[sort + 1].autor.surname) == 1) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        else {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (strcmp(_output_mass[sort].autor.surname, _output_mass[sort + 1].autor.surname) == -1) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        break;
+    case BOOK_NAME:
+        if (sorts->sort_t == UP) {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (strcmp(_output_mass[sort].book_name, _output_mass[sort + 1].book_name) == 1) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        else {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (strcmp(_output_mass[sort].book_name, _output_mass[sort + 1].book_name) == -1) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        break;
+    case DATE_OUT:
+        if (sorts->sort_t == UP) {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (_output_mass[sort].date_out.y > _output_mass[sort+1].date_out.y) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                    else if (_output_mass[sort].date_out.m > _output_mass[sort + 1].date_out.m && _output_mass[sort].date_out.y == _output_mass[sort+1].date_out.y)
+                    {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                    else if (_output_mass[sort].date_out.m == _output_mass[sort + 1].date_out.m && _output_mass[sort].date_out.y == _output_mass[sort + 1].date_out.y && _output_mass[sort].date_out.d > _output_mass[sort + 1].date_out.d) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        else {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (_output_mass[sort].date_out.y < _output_mass[sort + 1].date_out.y) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                    else if (_output_mass[sort].date_out.m < _output_mass[sort + 1].date_out.m && _output_mass[sort].date_out.y == _output_mass[sort + 1].date_out.y)
+                    {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                    else if (_output_mass[sort].date_out.m == _output_mass[sort + 1].date_out.m && _output_mass[sort].date_out.y == _output_mass[sort + 1].date_out.y && _output_mass[sort].date_out.d < _output_mass[sort + 1].date_out.d) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+    case IZD:
+        if (sorts->sort_t == UP) {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (strcmp(_output_mass[sort].izd, _output_mass[sort + 1].izd) == 1) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        else {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (strcmp(_output_mass[sort].izd, _output_mass[sort + 1].izd) == -1) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        break;
+    case COST:
+        if (sorts->sort_t == UP) {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (_output_mass[sort].cost > _output_mass[sort + 1].cost) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        else {
+            for (int write = 0; write < *filds_count; write++) {
+                for (int sort = 0; sort < *filds_count - 1; sort++) {
+                    if (_output_mass[sort].cost < _output_mass[sort + 1].cost) {
+                        abonent_t temp = _output_mass[sort + 1];
+                        _output_mass[sort + 1] = _output_mass[sort];
+                        _output_mass[sort] = temp;
+                    }
+                }
+            }
+        }
+        break;
+    case ZADANIE:
+        if (sorts->sort_t == DEF) return _output_mass;
+        break;
+    default:
+        break;
+    }
+    return _output_mass;
 }
-       
-    
+
+
 
 
 
