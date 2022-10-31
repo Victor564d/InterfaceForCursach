@@ -1730,12 +1730,12 @@ abonent_t* _sort_output(abonent_t* _output_mass, int* filds_count, sort_struct* 
         if (sorts->sort_t == UP) {
             for (int write = 0; write < *filds_count; write++) {
                 for (int sort = 0; sort < *filds_count - 1; sort++) {
-                    if (_output_mass[sort].date_out.y > _output_mass[sort+1].date_out.y) {
+                    if (_output_mass[sort].date_out.y > _output_mass[sort + 1].date_out.y) {
                         abonent_t temp = _output_mass[sort + 1];
                         _output_mass[sort + 1] = _output_mass[sort];
                         _output_mass[sort] = temp;
                     }
-                    else if (_output_mass[sort].date_out.m > _output_mass[sort + 1].date_out.m && _output_mass[sort].date_out.y == _output_mass[sort+1].date_out.y)
+                    else if (_output_mass[sort].date_out.m > _output_mass[sort + 1].date_out.m && _output_mass[sort].date_out.y == _output_mass[sort + 1].date_out.y)
                     {
                         abonent_t temp = _output_mass[sort + 1];
                         _output_mass[sort + 1] = _output_mass[sort];
@@ -1771,6 +1771,8 @@ abonent_t* _sort_output(abonent_t* _output_mass, int* filds_count, sort_struct* 
                 }
             }
         }
+        break;
+
     case IZD:
         if (sorts->sort_t == UP) {
             for (int write = 0; write < *filds_count; write++) {
