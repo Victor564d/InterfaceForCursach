@@ -25,6 +25,7 @@ HANDLE hConsole;
 int аddNewElement(abonent** st, _tabel_metadata *table);
 int create_file_type(FILE* f, abonent* St);
 abonent* loadFromFile_new_type(FILE* f);
+abonent* loadFromFile_new_text(FILE* f);
 int correctInfo(abonent* st);
 void MenuSelect(int selector, FILE* f, _tabel_metadata* table);
 int correctInfo(abonent* st);
@@ -136,6 +137,29 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
     case PRINT_HORRIBLE_ANIMATION:
         animatedNeko();
         break;
+    case LOAD_FROM_FILE:
+        if (_confirm_window(NULL)) {
+            _in_window();
+            char a[90]; scanf("%s", a);
+            sprintf(a, "%s.txt", a);
+            FILE* text = fopen(a, "rt");
+            if (!text) break;
+            abonents = loadFromFile_new_text(text);
+            fclose(text);
+        }       
+        break;
+    case SAVE_TO_FILE:
+        if (_confirm_window(NULL)) {
+            _in_window();
+            char a[90]; scanf("%s", a);
+            sprintf(a, "%s.txt", a);
+            FILE* text = fopen(a, "wt");
+            if (!text) break;
+            printToFile_Text(text, abonents);
+            fclose(text);
+            
+        }
+            break;
     case PROGRAM_EXIT:
         if (_confirm_window(NULL)) {
             if (!abonents) {
@@ -185,12 +209,43 @@ int аddNewElement(abonent** st,_tabel_metadata* table)
     return EXIT_SUCCESS;
 }
 
+abonent* loadFromFile_new_text(FILE* f)
+{
+    abonent_t tmp;
+    abonent* head = NULL;
+    int count = 1;
+    while (1) {
+        fscanf(f, "%s %s %s", tmp.fio.surname, tmp.fio.name, tmp.fio.secondname);
+        //fscanf(f, "%s", tmp.book_name, "\n");
+        fgets(tmp.book_name, 200, f);
+        fscanf(f, "%s %s", tmp.autor.surname, tmp.autor.inicial);
+        fgets(tmp.izd, 200, f);
+        fscanf(f, "%d %d %d", &(tmp.date_out.d), &(tmp.date_out.m), &(tmp.date_out.y));
+        fscanf(f, "%f", &(tmp.cost));
+        if (feof(f)) break;
+        for (int i = 0; i < strlen(tmp.book_name); i++) {
+            if (tmp.book_name[i] == '\n') tmp.book_name[i] = '\0';
+        }
+        for (int i = 0; i < strlen(tmp.izd); i++) {
+            if (tmp.izd[i] == '\n') tmp.izd[i] = '\0';
+        }
+        
+        tmp.id = util_hashCodeFromFio(&tmp.fio);
+        tree_add(&head, &tmp);
+        count++;
+        // fprintf(f, "%s %s %s\n%s\n%s %s\n%s\n%d %d %d %f\n", te.fio.surname, te.fio.name, te.fio.secondname, te.book_name, te.autor.surname, te.autor.inicial, te.izd, te.date_out.d, te.date_out.m, te.date_out.y, te.cost);
+    }
+    _message_window("Данные считаны");
+    Sleep(2000);
+    return head;
+}
+
 abonent* loadFromFile_new_type(FILE* f)
 {
     abonent_t tmp;
     abonent* head = NULL;
     int count = 1;
-    fseek(f, 0, SEEK_SET); 
+    fseek(f, 0, SEEK_SET);
     while (fread(&tmp, sizeof(abonent_t), 1, f))
     {
         tree_add(&head, &tmp);
@@ -200,8 +255,6 @@ abonent* loadFromFile_new_type(FILE* f)
     Sleep(2000);
     return head;
 }
-
-
 
 int PrintTreeDataNonThree(abonent* root) {
     if (root) {

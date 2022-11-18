@@ -146,6 +146,23 @@ void printToFile(FILE* f, abonent* root)
     }
 }
 
+void printToFile_Text(FILE* f, abonent* root)
+{
+    if (root) {
+        abonent_t te = root->info;
+        fprintf(f, "%s %s %s %s\n%s %s %s\n%d %d %d %f\n", te.fio.surname, te.fio.name, te.fio.secondname, te.book_name, te.autor.surname, te.autor.inicial, te.izd, te.date_out.d, te.date_out.m, te.date_out.y, te.cost);
+        if (root->left) {
+            printToFile_Text(f, root->left);
+        }
+        if (root->right) {
+            printToFile_Text(f, root->right);
+        }
+
+    }
+}
+
+
+
 
 abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int* index) {
     {

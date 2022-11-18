@@ -212,7 +212,7 @@ int _print_menu(_menu_item* _menu //Массив объектов  меню
         }
         if (!table_focus_flag) 
         print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Ввод \x1b[45mСТРЕЛКИ\x1b[0m: Переключение селектора меню \x1b[45mTAB\x1b[0m:Переключить фокус на таблицу ");
-        else  print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Редактировать \x1b[45mСТРЕЛКИ\x1b[0m:Навигация  \x1b[45mTAB\x1b[0m:Фокус на меню \x1b[45mDEL\x1b[0m: Удалить запись \x1b[45mHOME|END\x1b[0m:Смена страницы");
+        else  print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Редактировать \x1b[45mСТРЕЛКИ\x1b[0m:Навигация  \x1b[45mTAB\x1b[0m:Фокус на меню \x1b[45mDEL\x1b[0m: Удалить запись \x1b[45mHOME|END|PgUp|PgDown\x1b[0m:Сортировка");
         _table_window(table,_output_mas,&_output_colcount,&page,&table_focus_flag,root,sort);    
         char c = getch();
         //char buf[100];
@@ -1829,10 +1829,6 @@ abonent_t* _sort_output(abonent_t* _output_mass, int* filds_count, sort_struct* 
     }
     return _output_mass;
 }
-
-
-
-
 
 // 
 //puts("┌──────┬─────┬────────────────────┬────────────┬───────────────┬──────┬──────────┬───────────┬───────┐");
