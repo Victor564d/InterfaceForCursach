@@ -2053,7 +2053,7 @@ void dolgiWindow(abonent ** root) {
                         else
                             printf("─");
                 }
-                if (_center_y + height / 2 - 2 - PosCur.Y > 2) {
+                if (_center_y + height / 2 - 2 - PosCur.Y > 1) {
                     for (; _center_y + height / 2 - 2 - PosCur.Y > 2;) {
                         PosCur.Y++; _set_cur_to_pos(hConsole, PosCur);
                         for (int i = PosCur.X; i < _center_x + width / 2 - 4; i++) {
