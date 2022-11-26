@@ -160,6 +160,13 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
             
         }
             break;
+    case DOLGNIKI_WINDWO:
+        if (_confirm_window(NULL)) {
+            dolgiWindow(&abonents);
+            
+
+        }
+        break;
     case PROGRAM_EXIT:
         if (_confirm_window(NULL)) {
             if (!abonents) {
@@ -317,7 +324,7 @@ _menu_item* _init_menu(_menu_item* menu) {
         strcpy(menu[2]._sub_menu[0], "Отобразить структуру дерева");  menu[2]._sub_menu_lenght[0] = 28;
         strcpy(menu[2]._sub_menu[1], "Колличество элементов в дереве");         menu[2]._sub_menu_lenght[1] = 31;
         strcpy(menu[2]._sub_menu[2], "Очистить дерево");  menu[2]._sub_menu_lenght[2] = 16;
-        strcpy(menu[2]._sub_menu[3], "ЗАПАСНОЕ ПОЛЕ");         menu[2]._sub_menu_lenght[3] = 14;
+        strcpy(menu[2]._sub_menu[3], "Список должников");         menu[2]._sub_menu_lenght[3] = 14;
 //--------------------------------------------------------------------------------------------------------- 
         strcpy(menu[3]._name, "Прочее");
         menu[3]._menu_name_lenght = 7;

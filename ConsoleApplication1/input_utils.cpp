@@ -41,6 +41,103 @@ char convert_u8_to_1251(int c) {
 
 
 
+int input_float(float * info) {
+    int flag_point = 0;
+    char correct_sym[] = { '0','1','2','3' ,'4','5' ,'6','7' ,'8','9','.' };
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(1251);
+    CONSOLE_SCREEN_BUFFER_INFO con_inf; _get_con_info_local(&con_inf);
+    int current_pos = 0;
+    int in_sym_count = 0;
+    char input_buff[400] = {""};
+    float old_info = *info;
+    COORD positionCur = { 0,0 };
+    COORD positionCur_start = { 0,0 };
+    positionCur = con_inf.dwCursorPosition;
+    positionCur_start = con_inf.dwCursorPosition;
+    if (u8_strlen(input_buff) > 0) {
+        int k = u8_strlen(input_buff);
+        current_pos = k;
+        in_sym_count = k;
+        // positionCur.X = positionCur.X - k;
+        _set_cur_to_pos_local(positionCur);
+        printf("%s", input_buff);
+        positionCur = con_inf.dwCursorPosition;
+    }
+    int c;
+    while (1) {
+        c = _getwch();
+        switch (c)
+        {
+        case KEY_ENTER:
+            if (in_sym_count > 0) {
+                printf(" ");
+                *info = atof(input_buff);
+                return KEY_ENTER;
+            }
+            break;
+        case KEY_ESC:
+            //Вернуть старую инфу 
+            return KEY_ESC;
+            break;
+        case KEY_BACKSPACE:
+        {
+            if (current_pos > 0 && in_sym_count > 0) {
+                if (current_pos > 0)
+                {
+                    if (input_buff[current_pos-1] == '.') flag_point = 0;
+                    input_buff[current_pos-1] = '\0';
+                    current_pos--;  in_sym_count--;
+                    _get_con_info_local(&con_inf);
+                    positionCur.X = con_inf.dwCursorPosition.X;
+                    positionCur.X--; _set_cur_to_pos_local(positionCur);
+                    printf(" ");
+                    _set_cur_to_pos_local(positionCur);
+                }
+                
+            }
+        }
+        break;
+        default:
+            c = convert_u8_to_1251(c);
+             {
+                int flag = 1;
+                for (int i = 0; i < 11; i++)
+                {
+                    if (c == correct_sym[i]) {
+                        flag = 0;
+                        break;
+                    }
+                }
+                if (c == '.' && flag_point) flag = 1;
+                if (c == '.') {
+                    flag_point = 1;
+                }
+                if (c == ' ' )
+                {
+                    if (in_sym_count > 0) {
+                        printf(" ");
+                        return KEY_ENTER;
+                    }
+                }
+                if (!flag) {
+                    
+                    if (in_sym_count < 400) {
+                        input_buff[in_sym_count] = c;
+                        printf("%c", c);
+                        in_sym_count++;
+                        current_pos++;
+                    }
+                }
+            }
+            break;
+        }
+    }
+}
+
+
+
+
 /// <summary>
 /// Ввод любых строковых данных
 /// </summary>
@@ -134,10 +231,6 @@ int input_string(char* input_buff, int buff_size, int mode)
     int c;
     while (1) {
         c = _getwch(); 
-        //c = _getch();
-        //if (c == 224)
-         //   c = _getch();
-        //else c = (char)c;
         switch (c)
         {
         case KEY_ENTER:
@@ -309,10 +402,6 @@ int in_date(int* d, int*m,int *y) {
     while (1) 
     {
         c = _getwch();
-      /*  if (c == 224) 
-        {
-            c = getch();
-        }*/
         switch (c)
         {
         case KEY_ENTER:
@@ -322,7 +411,6 @@ int in_date(int* d, int*m,int *y) {
             }
             break;
         case KEY_ESC:
-            //  strcpy(input_buff, old_info);
             return KEY_ESC;
             break;
         case KEY_ARROW_UP:

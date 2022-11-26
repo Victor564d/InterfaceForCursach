@@ -51,7 +51,7 @@ void View(abonent* top, int offset);
 
 abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int* index);
 
-
+dolgi_pers_t_obr* _get_dolgi_info(abonent* root, dolgi_pers_t_obr* _output_memory, int d, int m, int y);
 
 
 

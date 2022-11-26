@@ -1239,6 +1239,15 @@ start:
                         SetConsoleOutputCP(65001); //-------
                         break;
                     }
+                    case 6: {
+                        _set_cur_to_pos(hConsole, fild_cords[5]);
+                        for (int i = 0; i < width / 2 - padding - 8; i++) { printf("_"); }
+                        _set_cur_to_pos(hConsole, fild_cords[5]);
+                        input_float(&_temp_info->cost);
+                        //scanf("%f", &_temp_info->cost);
+                        SetConsoleOutputCP(65001); //-------
+                        break;
+                    }
                     default:
                         break;
                     }
@@ -1829,6 +1838,279 @@ abonent_t* _sort_output(abonent_t* _output_mass, int* filds_count, sort_struct* 
     }
     return _output_mass;
 }
+
+
+
+void dolgiWindow(abonent ** root) {
+    _big_window("Должники");
+    CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    int* _size_n = NULL;
+    _size_n = _get_window_size(_size_n);
+    int _window_w = _size_n[0]; int  _window_h = _size_n[1];
+    int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
+    int height = _window_h / 2; int width = _window_w / 2;
+    int _center_x = _window_w / 2; int flag_clear = 0;
+    int _center_y = _window_h / 2;
+    int refresh_flag = 1;
+    time_t  now = time(0);
+    struct tm* ltm = localtime(&now);
+    int d, y, m;
+    y = ltm->tm_year + 1900;
+    m = ltm->tm_mon+1;
+    d = ltm->tm_mday;
+    dolgi_pers_t_obr* dolgniki = (dolgi_pers_t_obr*)calloc(sizeof(dolgi_pers_t_obr), 1);
+    dolgniki->count = 0;
+    dolgniki = _get_dolgi_info(*root, dolgniki, d, m, y);
+    COORD positionCur; 
+    positionCur.X = _center_x - width / 2 + 4;
+    positionCur.Y = _center_y - height / 2 + 4;
+    int* _men_position = (int*)calloc(2, sizeof(int));
+    _men_position[0] = 1; _men_position[1] = 1;
+    _set_cur_to_pos(hConsole, positionCur);    
+    _tabel_metadata * table = (_tabel_metadata*)calloc(sizeof(_tabel_metadata), 1);
+    table->_col_count = 2;
+    table->_cols = (_table_col*)calloc(sizeof(_table_col), table->_col_count);
+    //-------------------------------------------------------------------------------------------//
+    table->_cols[0].name = (char*)calloc(sizeof(char), 60);
+    strcpy(table->_cols[0].name, "ФИО абонента-должника");
+    table->_cols[0].resizebl = 1;
+    table->_cols[0].size = u8_strlen(table->_cols[0].name);
+    //-------------------------------------------------------------------------------------------//
+    table->_cols[1].name = (char*)calloc(sizeof(char), 60);
+    strcpy(table->_cols[1].name, "Кол. книг");
+    table->_cols[1].resizebl = 0;
+    table->_cols[1].size = u8_strlen(table->_cols[1].name);
+    //-------------------------------------------------------------------------------------------//
+    COORD PosCur = { _center_x - width / 2 + 4,_center_y - height / 2 + 3 }; //позиция x и y 
+    int _size_delta = 0;
+    for (int i = 0; i < table->_col_count; i++) {
+        _size_delta += table->_cols[i].size;
+    }
+    _size_delta = (width - 2) - _size_delta - ((table->_col_count )* 2) - 10;
+    _set_cur_to_pos(hConsole, PosCur);
+    int size_w = 0;
+    for (int i = 0; i < table->_col_count; i++) {
+        size_w += table->_cols[i].size;
+    }
+
+
+
+    for (int i = 0; i < size_w+ (table->_col_count)+3 + _size_delta; i++) {
+        if (i == 0) {
+            printf("┌");
+        }
+        if (i == width - 1) {
+            printf("┐");
+        }
+        else
+            printf("─");
+    }
+    PosCur.Y++; //positionCur.X++;
+    _set_cur_to_pos(hConsole, PosCur);
+    printf("│");
+    for (int i = 0; i < table->_col_count; i++) {
+        _get_con_info(&info_x);
+        _padding = info_x.dwCursorPosition.X - 1;
+        printf(" %s ", table->_cols[i].name);
+        if (table->_cols[i].resizebl) {
+            {
+                if ((u8_strlen(table->_cols[i].name) + _size_delta) != table->_cols[i].size) {
+                    table->_cols[i].size += _size_delta;
+                }
+            }
+        }
+        if (u8_strlen(table->_cols[i].name) != table->_cols[i].size) {
+            int _sim_padding = table->_cols[i].size - u8_strlen(table->_cols[i].name);
+            for (int i = 0; i < _sim_padding; i++) {
+                printf(" ");
+            }
+        }
+
+        printf("│");
+        _get_con_info(&info_x);
+        PosCur.X = info_x.dwCursorPosition.X - 1;
+        _new_padding = info_x.dwCursorPosition.X - 1;
+        PosCur.Y -= 1;
+        _set_cur_to_pos(hConsole, PosCur);
+        if (i == table->_col_count - 1) {
+            printf("┐");
+        }
+        else
+            printf("┬");
+        _get_con_info(&info_x);
+        PosCur.Y += 2; PosCur.X = _padding;
+        _set_cur_to_pos(hConsole, PosCur);
+        if (_padding == _center_x - width / 2 + 4 )
+        {
+            printf("├"); PosCur.X++;
+        }
+        else {
+            PosCur.X++;
+            _set_cur_to_pos(hConsole, PosCur);
+        }
+        for (int j = PosCur.X; j < _new_padding; j++) {
+            printf("─");
+        }
+        if (i == table->_col_count - 1) {
+            printf("┤");
+        }
+        else
+            printf("┼");
+        PosCur.Y -= 1; PosCur.X = _new_padding + 1;
+        _set_cur_to_pos(hConsole, PosCur);
+    }
+    PosCur.Y += 2;
+    PosCur.X = _center_x - width / 2 + 4;
+    int page = 1;
+    int cor_X, cor_Y; cor_X = PosCur.X; cor_Y = PosCur.Y;
+        SetConsoleOutputCP(65001); //-------
+        while (1) {
+            PosCur.X = cor_X; PosCur.Y = cor_Y;
+            if (refresh_flag) {
+                if ((dolgniki->count)) {
+                    int _col_inpage = height - 10;
+                    int _diap[2] = { 0,0 };
+                    _diap[0] = ((page)-1) * _col_inpage;
+                    _diap[1] = _diap[0] + _col_inpage;
+                    for (int j = _diap[0]; j < _diap[1]; j++)
+                    {
+                        if (dolgniki->count <= j) {
+                            break;
+                        }
+                        _set_cur_to_pos(hConsole, PosCur);
+                        char buff[400] = { "" };
+                        SetConsoleOutputCP(65001); //-------
+                        printf("│");
+
+                        sprintf(buff, "%s %s %s", dolgniki->info_mass[j].fio.surname, dolgniki->info_mass[j].fio.name, dolgniki->info_mass[j].fio.secondname);
+                        if (u8_strlen(buff) > table->_cols[0].size + 2) {
+                            sprintf(buff, "%s %c.%c", dolgniki->info_mass[j].fio.surname, dolgniki->info_mass[j].fio.name[0], dolgniki->info_mass[j].fio.secondname[0]);
+                        }
+                        SetConsoleOutputCP(1251); //-------
+                        printf("%s", buff);
+                        if (u8_strlen(buff) < table->_cols[0].size + 2)
+                        {
+                            for (int l = 0; l < table->_cols[0].size + 2 - u8_strlen(buff); l++)
+                                printf(" ");
+                        }
+                        SetConsoleOutputCP(65001); //-------
+                        printf("│");
+                        SetConsoleOutputCP(1251); //-------
+                        sprintf(buff, "%d", dolgniki->info_mass[j].count_dolg_books);
+                        if (u8_strlen(buff) > table->_cols[1].size + 2) {
+                            for (int l = 0; l < table->_cols[1].size - 1; l++) {
+                                printf("%c", buff[l]);
+                            }
+                            printf("...");
+                        }
+                        else
+                            printf("%s", buff);
+                        if (u8_strlen(buff) < table->_cols[1].size + 2)
+                        {
+                            for (int l = 0; l < table->_cols[1].size + 2 - u8_strlen(buff); l++)
+                                printf(" ");
+                        }
+                        SetConsoleOutputCP(65001); //-------
+                        printf("│");
+                        SetConsoleOutputCP(1251); //-------
+                        PosCur.Y++;
+                    }
+                    refresh_flag = 0;
+                }
+                else
+                {
+                    _set_cur_to_pos(hConsole, PosCur);
+                    printf("│");
+                    for (int i = 0; i < (width - 21) / 2; i++)
+                        printf("-");
+                    SetConsoleOutputCP(65001); //-------
+                    printf(" Данных нет ");
+                    SetConsoleOutputCP(65001); //-------
+                    for (int i = 0; i < (width - 21) / 2 - 1; i++)
+                        printf("-");
+                    if ((width - 6) % 2 == 1) printf("-");
+                    printf("│");
+                    PosCur.Y++;
+                    refresh_flag = 0;
+                }
+                SetConsoleOutputCP(65001); //-------
+                _set_cur_to_pos(hConsole, PosCur);
+                int _row_num = 0; int _padd_border = table->_cols[_row_num].size + 2;
+                for (int i = 0; i < width - 10; i++) {
+                    if (i == 0) {
+                        printf("└");
+                    }
+                    if (i == width - 11) {
+                        printf("┘");
+                    }
+                    else
+                        if (i == _padd_border) {
+                            _row_num++;
+                            if (_row_num < table->_col_count)
+                                _padd_border += table->_cols[_row_num].size + 3;
+                            printf("┴");
+                        }
+                        else
+                            printf("─");
+                }
+                if (_center_y + height / 2 - 2 - PosCur.Y > 2) {
+                    for (; _center_y + height / 2 - 2 - PosCur.Y > 2;) {
+                        PosCur.Y++; _set_cur_to_pos(hConsole, PosCur);
+                        for (int i = PosCur.X; i < _center_x + width / 2 - 4; i++) {
+                            printf(" ");
+                        }
+                    }
+               }
+            }
+            
+            positionCur.X = _center_x - width / 2 + 4;
+            positionCur.Y = _center_y + height / 2 - 2;
+            _set_cur_to_pos(hConsole, positionCur);
+            if (_men_position[0] == 1) {
+                printf("\x1b[43mПред.страница\x1b[0m");
+            }
+            else printf("Пред.страница");
+            positionCur.X = 3+  width / 2 + 4 + u8_strlen("Пред.страница");
+            _set_cur_to_pos(hConsole, positionCur);
+            if (_men_position[0] == 2) {
+                printf("\x1b[43mСлед.страница\x1b[0m");
+            }
+            else printf("След.страница");
+            positionCur.X = _center_x + (width / 2 - u8_strlen("Выход") - 3);
+            _set_cur_to_pos(hConsole, positionCur);
+            if (_men_position[0] == 3) {
+                printf("\x1b[43mВыход\x1b[0m");
+            }
+            else printf("Выход");
+            char c = getch();
+
+            if (c == KEY_ENTER)
+            {
+                if (_men_position[0] == 1)
+                {
+                    if (page > 1) { page--; refresh_flag = 1; }
+                }
+                if (_men_position[0] == 2)
+                {
+                    if (dolgniki->count>((page)  * (height - 10))) {
+                        page++;
+                        refresh_flag = 1;
+                    }
+                }
+                if (_men_position[0] == 3)
+                {
+                    return;
+                }
+            }
+            if (c == KEY_ESC)
+            
+                return;
+                _men_position = _get_curent_selection(c, _men_position, 2, 3, 0);
+            
+        }
+}
+
+
 
 // 
 //puts("┌──────┬─────┬────────────────────┬────────────┬───────────────┬──────┬──────────┬───────────┬───────┐");

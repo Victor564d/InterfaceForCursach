@@ -11,7 +11,7 @@
 /// <returns></returns>
 int input_string(char* input_buff, int buff_size, int mode);
 int in_date(int* d, int* m, int* y);
-
+int input_float(float* info);
 
 typedef struct {
     int d;

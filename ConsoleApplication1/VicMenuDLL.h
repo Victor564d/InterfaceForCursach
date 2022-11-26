@@ -34,7 +34,7 @@ void _big_window(char* title);
 abonent_t* _in_info_window(_tabel_metadata* table, abonent_t* _output_mass,int);   
 int print_help(char* help_message);
 abonent_t* _sort_output(abonent_t*, int *,sort_struct *);
-
+void dolgiWindow(abonent** root);
 
 
 

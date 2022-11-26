@@ -21,6 +21,19 @@ typedef struct {
     }date_out;
     float cost;
 } abonent_t;
+
+typedef struct {
+    unsigned int id;
+    fio_t fio;
+    int count_dolg_books;
+}dolgi_pers_t;
+
+typedef struct {
+    dolgi_pers_t* info_mass;
+    int count;
+}dolgi_pers_t_obr;
+
+
 /// <summary>
 /// Структура ноды дерева
 /// </summary>

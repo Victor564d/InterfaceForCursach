@@ -31,8 +31,9 @@ enum MenuItemCodes
     TREE_SIZE = 6,
     PRINT_TREE_STRUCT = 7,
     CLEAN_TREE = 8,
-    PRINT_HORRIBLE_ANIMATION = 9,
-    PROGRAM_EXIT = 10
+    DOLGNIKI_WINDWO = 9,
+    PRINT_HORRIBLE_ANIMATION = 10,
+    PROGRAM_EXIT = 11
 };
 
 #endif //! MenuStruct

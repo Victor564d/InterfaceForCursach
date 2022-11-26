@@ -106,12 +106,13 @@ void tree_add(abonent** root, const abonent_t* info)
     }
     else
     {
-        if (((*root)->info.id == info->id)) {
+        /*if (((*root)->info.id == info->id)) {
             _message_window("Запись с таким id уже существует\0");
             Sleep(2000);
             return;
         }
-        else if (((*root)->info.id > info->id))
+        else */
+        if (((*root)->info.id > info->id))
             tree_add(&((*root)->left), info);
         else
             tree_add(&((*root)->right), info);
@@ -162,8 +163,6 @@ void printToFile_Text(FILE* f, abonent* root)
 }
 
 
-
-
 abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int* index) {
     {
         if (root) {
@@ -177,6 +176,50 @@ abonent_t* _get_output_info(abonent* root, abonent_t* _output_memory, int* index
             }
             return _output_memory;
         }
+    }
+}
+
+
+
+
+dolgi_pers_t_obr* _get_dolgi_info(abonent* root, dolgi_pers_t_obr* _output_memory, int d, int m, int y) {
+    {
+        if (root) {
+            if (root->left) {
+                _get_dolgi_info(root->left, _output_memory, d, m, y);
+            }
+            if ((((y * 365) + (m * 31) + d) - ((root->info.date_out.y) * 365) - ((root->info.date_out.m) * 31) - (root->info.date_out.d)) > 90 ){
+                if (!_output_memory) {
+                   
+                    _output_memory->info_mass = (dolgi_pers_t*)calloc(sizeof(dolgi_pers_t), 1);
+                    _output_memory->info_mass[0].id = root->info.id;
+                    _output_memory->info_mass[0].fio = root->info.fio;
+                    _output_memory->info_mass[0].count_dolg_books++;
+                    _output_memory->count++;
+                }
+                else {
+                    int flag = 0;
+                    for (int i = 0; i < _output_memory->count; i++ ) {
+                        if (_output_memory->info_mass[i].id == root->info.id) {
+                            _output_memory->info_mass[i].count_dolg_books++;
+                            flag = 1;
+                        }
+                    }
+                    if (!flag) {
+                        _output_memory->info_mass = (dolgi_pers_t*)realloc(_output_memory->info_mass, sizeof(dolgi_pers_t) * ((_output_memory->count) + 1));
+                        _output_memory->count++;
+                        _output_memory->info_mass[(_output_memory->count) - 1].count_dolg_books = 1;
+                        _output_memory->info_mass[(_output_memory->count) - 1].fio = root->info.fio;
+                        _output_memory->info_mass[(_output_memory->count) - 1].id = root->info.id;
+                    }
+                }
+            }        
+            if (root->right) {
+                _get_dolgi_info(root->right, _output_memory, d,m,y);
+            }
+            //return _output_memory;
+        }
+        return _output_memory;
     }
 }
 
