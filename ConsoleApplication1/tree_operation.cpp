@@ -106,12 +106,6 @@ void tree_add(abonent** root, const abonent_t* info)
     }
     else
     {
-        /*if (((*root)->info.id == info->id)) {
-            _message_window("Запись с таким id уже существует\0");
-            Sleep(2000);
-            return;
-        }
-        else */
         if (((*root)->info.id > info->id))
             tree_add(&((*root)->left), info);
         else

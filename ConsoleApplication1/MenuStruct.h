@@ -1,27 +1,27 @@
 #ifndef MenuStruct
 #define MenuStruct
 
-typedef struct {
-    int _menu_size;
-    char _name[80];
-    char** _sub_menu;
-    int* _sub_menu_lenght;
-    int _max_sub_lenght;
-    int _menu_name_lenght;
+typedef struct { // структура одного элемента меню
+    int _menu_size; //размер меню 
+    char _name[80]; //наименование пункта меню
+    char** _sub_menu; //указатель на массив сабменю
+    int* _sub_menu_lenght; //количество элементов сабменю
+    int _max_sub_lenght; //длина самой большого элемента в сабменю
+    int _menu_name_lenght; //длина имени меню
     } _menu_item;
 
-typedef struct {
-    char* name;
-    int size;
-    int resizebl;
+typedef struct { // структура хранящая данные столбца таблицы
+    char* name; //имя столбца
+    int size; //его размер 
+    int resizebl; //флаг, можно ли изменять ее размер ? 
 }_table_col;
 
-typedef struct {
-    _table_col* _cols;
-    int _col_count;
+typedef struct { // структура для хранения метаданных таблицы
+    _table_col* _cols; //массив столбцов
+    int _col_count; //количество столбцов
 }_tabel_metadata;
 
-enum MenuItemCodes
+enum MenuItemCodes //Коды для обработки вызовов меню
 {
     ADD_NEW_RECORD = 1,
     LOAD_FROM_FILE_TYPE = 2,

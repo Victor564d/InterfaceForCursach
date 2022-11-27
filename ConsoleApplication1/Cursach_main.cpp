@@ -1,4 +1,5 @@
-﻿#pragma warning(disable : 4996);
+﻿
+#pragma warning(disable : 4996);
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,23 +76,6 @@ int main(void) {
 }
 int Posid = 1;
 
-//"Добавить новый элемент", 1
-//"Загрузить из файла", 2
-//"Записать все в файл ", 3
-//"Редактировать запись", 4
-//"Удалить элемент(любой)", 5
-//"Очистить дерево", 6
-//"Уровень элемента по ид", 7 
-//"Вывод данных в списке",  8 
-//"Отобразить структуру дерева", 9 
-//"Колличество элементов в дереве", 10 
-//"Отобр. всех зап. в ко-ых нет ниодной тройки", 11
-//"Ср. арифм. по всем предметам", 12
-//"Анимация", 13
-//"Картинка", 14 
-//"Выход" 16 
-
-
 void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
 {
     char* a = (char*)calloc(200, sizeof(char));
@@ -112,7 +96,7 @@ void MenuSelect(int selector, FILE* f,_tabel_metadata *table )
         create_file_type(f, abonents);
         break;
     case CLEAN_TREE:
-        size = _get_window_size();
+        size = _get_window_size(size);
         if (_confirm_window(NULL)) {
             abonents = tree_delete(abonents);
             sprintf(a, "Дерево очищено");
@@ -223,10 +207,9 @@ abonent* loadFromFile_new_text(FILE* f)
     int count = 1;
     while (1) {
         fscanf(f, "%s %s %s", tmp.fio.surname, tmp.fio.name, tmp.fio.secondname);
-        //fscanf(f, "%s", tmp.book_name, "\n");
-        fgets(tmp.book_name, 200, f);
+        fgets(tmp.book_name, 160, f);
         fscanf(f, "%s %s", tmp.autor.surname, tmp.autor.inicial);
-        fgets(tmp.izd, 200, f);
+        fgets(tmp.izd, 70, f);
         fscanf(f, "%d %d %d", &(tmp.date_out.d), &(tmp.date_out.m), &(tmp.date_out.y));
         fscanf(f, "%f", &(tmp.cost));
         if (feof(f)) break;
@@ -240,7 +223,6 @@ abonent* loadFromFile_new_text(FILE* f)
         tmp.id = util_hashCodeFromFio(&tmp.fio);
         tree_add(&head, &tmp);
         count++;
-        // fprintf(f, "%s %s %s\n%s\n%s %s\n%s\n%d %d %d %f\n", te.fio.surname, te.fio.name, te.fio.secondname, te.book_name, te.autor.surname, te.autor.inicial, te.izd, te.date_out.d, te.date_out.m, te.date_out.y, te.cost);
     }
     _message_window("Данные считаны");
     Sleep(2000);
@@ -261,23 +243,6 @@ abonent* loadFromFile_new_type(FILE* f)
     _message_window("Данные считаны");
     Sleep(2000);
     return head;
-}
-
-int PrintTreeDataNonThree(abonent* root) {
-    if (root) {
-        if (root->left) {
-            PrintTreeDataNonThree(root->left);
-        }
-     //   if ((root->info.marks.fiz > 3) && (root->info.marks.math > 3) && (root->info.marks.it > 3) && (root->info.marks.history > 3))
-        {
-            //printINFO(&root->info, Posid);
-            Posid++;
-        }
-        if (root->right) {
-            PrintTreeDataNonThree(root->right);
-        }
-    }
-    return Posid;
 }
 
 int correctInfo(abonent* st)
@@ -324,7 +289,7 @@ _menu_item* _init_menu(_menu_item* menu) {
         strcpy(menu[2]._sub_menu[0], "Отобразить структуру дерева");  menu[2]._sub_menu_lenght[0] = 28;
         strcpy(menu[2]._sub_menu[1], "Колличество элементов в дереве");         menu[2]._sub_menu_lenght[1] = 31;
         strcpy(menu[2]._sub_menu[2], "Очистить дерево");  menu[2]._sub_menu_lenght[2] = 16;
-        strcpy(menu[2]._sub_menu[3], "Список должников");         menu[2]._sub_menu_lenght[3] = 14;
+        strcpy(menu[2]._sub_menu[3], "Список должников");         menu[2]._sub_menu_lenght[3] = 17;
 //--------------------------------------------------------------------------------------------------------- 
         strcpy(menu[3]._name, "Прочее");
         menu[3]._menu_name_lenght = 7;
@@ -391,20 +356,3 @@ _tabel_metadata* _init_table(_tabel_metadata* table) {
     return table;
 }
 
-
-
-//"Добавить новый элемент",
-//"Загрузить из файла",
-//"Записать все в файл ",
-//"Редактировать запись",
-//"Удалить элемент(любой)",
-//"Очистить дерево",
-//"Уровень элемента по ид",
-//"Вывод данных в списке",  
-//"Отобразить структуру дерева",
-//"Колличество элементов в дереве",
-//"Отобр. всех зап. в ко-ых нет ниодной тройки",
-//"Ср. арифм. по всем предметам",
-//"Анимация",
-//"Картинка",
-//"Выход"

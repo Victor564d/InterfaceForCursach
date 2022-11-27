@@ -15,80 +15,71 @@
 #include "tree_operation.h"
 #include "input_utils.h"
 
-const int _otstup = 3;
-const int _interval = 3;
-int* _window_size;
-int _first_start = 1;
-int x, y; 
-COORD positionCur = {4,4};
+const int _otstup = 3; //Хранит отступ слева и справа в окне
+const int _interval = 3; //хранит интервал сверху и снизу окна
+int* _window_size; //указатель на массив размера 
+int _first_start = 1; //флаг первого запуска.
+COORD positionCur = {4,4}; //Хранит текущую позицию курсора 
 
-#define clearf() system("cls");
-#define KEY_ENTER 13
+#define clearf() system("cls"); // Полная очистка экрана
+#define KEY_ENTER 13 // дефайны для кнопок 
 #define KEY_ESC 27
 
-int page = 1;
+int page = 1; // хранит текущую страницу.
 
-BOOL _get_con_info(CONSOLE_SCREEN_BUFFER_INFO* x)
+BOOL _get_con_info(CONSOLE_SCREEN_BUFFER_INFO* x) //Внутренняя функция, получает информацию из буфера экрана. 
 {
     return GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), x);
 }
 
-BOOL _set_cur_to_pos(HANDLE h, COORD cor) {
+BOOL _set_cur_to_pos(HANDLE h, COORD cor) { //Устанавливает курсор на необходимую позицию 
     return SetConsoleCursorPosition(h, cor);
 }
 
 
-void clear() {
-    positionCur.X = _otstup + 1;  positionCur.Y = _interval + 1;
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    int* temp_window_size = NULL;
+void clear() { //функция кастомной очистки , чистит только окно 
+    positionCur.X = _otstup + 1;  positionCur.Y = _interval + 1; //установить стартовые позиции 
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); //получить хендлер консоли
+    int* temp_window_size = NULL; //получить размеры окна
     temp_window_size = _get_window_size(temp_window_size);
-    _set_cur_to_pos(hConsole, positionCur);
-    _print_border(temp_window_size[0], temp_window_size[1]);
-    positionCur.X = _otstup + 1;  positionCur.Y = _interval + 1;
-        _set_cur_to_pos(hConsole, positionCur);
+    _set_cur_to_pos(hConsole, positionCur); // установить курсор в позицию
+    _print_border(temp_window_size[0], temp_window_size[1]); // напечатать внутренний бордер
+    positionCur.X = _otstup + 1;  positionCur.Y = _interval + 1; //данные курсора обнулить в исходное состояние
+        _set_cur_to_pos(hConsole, positionCur); // установить курсор в исходное состояние
 }
 
 
 
-void clear_table() {
-    positionCur.X = _otstup + 2;  positionCur.Y = _interval + 3;
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    int* temp_window_size = NULL;
+void clear_table() { //Внутренняя функция очистки таблицы 
+    positionCur.X = _otstup + 2;  positionCur.Y = _interval + 3; //ставим курсор согласно параметрам положения таблицы
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); //получаем хендлер консоли
+    int* temp_window_size = NULL; // получаем размер кона
     temp_window_size = _get_window_size(temp_window_size);
     _set_cur_to_pos(hConsole, positionCur); int _window_h = temp_window_size[1];
-    int _window_w = temp_window_size[0];
-    for (int y = _interval+3; y <= _window_h - _interval-3; y++) {
+    int _window_w = temp_window_size[0]; //запомнинаем рахмеры , ставим курсор в нужную позицию
+    for (int y = _interval+3; y <= _window_h - _interval-3; y++) { // цикл очистки таблицы
         _set_cur_to_pos(hConsole, positionCur);
         for (int x = _otstup + 2; x < _window_w - _otstup-1; x++) {
              printf(" "); //_otstup+2,_interval+3
         }
-        
         positionCur.Y++;
     }
 }
 
 
 
-void clear_for_info() {
+void clear_for_info() { //установка курсора в позицию для вывода информации
     positionCur.X = _otstup + 4;  positionCur.Y = _interval + 4;
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     _set_cur_to_pos(hConsole, positionCur);
 }
 
-/// <summary>
-/// Функция получения новой позиции селектора на основе старой
-/// </summary>
-/// <param name="c">Код нажатого символа</param>
-/// <param name="position">Указатель на массив из двух элементво (x,y)</param>
-/// <param name="MaxY">Максимальная высота(глубина) списка(Макс смещение по вертикали)</param>
-/// <param name="Colums">Ширина(максимальное смещение указателя по горизонтали)</param>
-/// <returns>Указатель на двумерный массив, с измененными параметрами</returns>
+
 int* _get_curent_selection(char  c // Символ клавиатуры
     ,int * position // Массив в котором хранятся x и y
     ,int MaxY // Максимальный количество строк 
     , int Colums  // Количество столбцов, по умолчанию - 1
-    ,int _flag_x_readonly
+    ,int _flag_x_readonly //можно ли менять x?
 ) 
 {
     int x = position[0]; int y = position[1];
@@ -114,27 +105,19 @@ int* _get_curent_selection(char  c // Символ клавиатуры
     position[1] = y;//позиция по строке
     return position;
 }
-/// <summary>
-/// Функция построения меню. Вызывается если нам не нужно вывести перед этим какую-то информацию.
-/// </summary>
-/// <param name="Menu">Указатель на массив из наименований пунктов меню</param>
-/// <param name="position">Указатель на двумерный массив (x,y)</param>
-/// <param name="MenuSize">Колличество элементов в массиве наименований</param>
-/// <param name="Colums">Количество стобцов которое необходимо построить. Принимает значения 1,2,3</param>
-/// <returns>Индекс выбранного пункта меню</returns>
 
 int _print_menu(_menu_item* _menu //Массив объектов  меню
     , int* position //Массив текущей позиции x и y
     , int _menu_size  //Колличество элементов в массиве объектов меню
     , int _menu_buttons,//Количество кнопок меню  
-    abonent_t * _output_mas,
-    int _output_colcount,
-    _tabel_metadata * table,
-    abonent** root,
-    sort_struct* sort
+    abonent_t * _output_mas, //массив для вывода информации
+    int _output_colcount, // количество данных для вывода
+    _tabel_metadata * table, //структура хранящая информацию о полях таблицы
+    abonent** root, //указатель на указатель на корень дерева 
+    sort_struct* sort // структура, хранящая текущую сортировку
 )
 {
-    int  table_focus_flag = 0;
+    int  table_focus_flag = 0; // флаг работы с таблицей
     int _padding; //оступ 
     int _new_padding; //новый отступ
     int* _size_now = NULL; //текущий размер окна 
@@ -155,7 +138,7 @@ int _print_menu(_menu_item* _menu //Массив объектов  меню
                 if (_menu[i]._sub_menu_lenght[j] > _max_subm_lenght) {
                     _max_subm_lenght = _menu[i]._sub_menu_lenght[j];
                 }
-                _menu[i]._max_sub_lenght = _max_subm_lenght;
+                _menu[i]._max_sub_lenght = _max_subm_lenght; //получаем максимальный размер в сабменю, который будет использован для его вывода в дальнейшем
             }
         }
     }
@@ -210,109 +193,105 @@ int _print_menu(_menu_item* _menu //Массив объектов  меню
             positionCur.Y -= 1; positionCur.X = _new_padding + 1;
             _set_cur_to_pos(hConsole, positionCur);
         }
-        if (!table_focus_flag) 
-        print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Ввод \x1b[45mСТРЕЛКИ\x1b[0m: Переключение селектора меню \x1b[45mTAB\x1b[0m:Переключить фокус на таблицу ");
-        else  print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Редактировать \x1b[45mСТРЕЛКИ\x1b[0m:Навигация  \x1b[45mTAB\x1b[0m:Фокус на меню \x1b[45mDEL\x1b[0m: Удалить запись \x1b[45mHOME|END|PgUp|PgDown\x1b[0m:Сортировка");
-        _table_window(table,_output_mas,&_output_colcount,&page,&table_focus_flag,root,sort);    
-        char c = getch();
-        //char buf[100];
-       // sprintf(buf, "%d", c);
-       // _message_window(&buf);
-       // Sleep(500);
-        if (c == KEY_TAB) {  
+        if (!table_focus_flag)  //если у нас флаг не активен
+        print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Ввод \x1b[45mСТРЕЛКИ\x1b[0m: Переключение селектора меню \x1b[45mTAB\x1b[0m:Переключить фокус на таблицу "); //печатаем один хелп 
+        else  print_help("\x1b[45mESC\x1b[0m:Выход \x1b[45mENTER\x1b[0m:Редактировать \x1b[45mСТРЕЛКИ\x1b[0m:Навигация  \x1b[45mTAB\x1b[0m:Фокус на меню \x1b[45mDEL\x1b[0m: Удалить запись \x1b[45mHOME|END|PgUp|PgDown\x1b[0m:Сортировка");// иначе другой
+        _table_window(table,_output_mas,&_output_colcount,&page,&table_focus_flag,root,sort);// вызываем печать окна таблицы     
+        char c = getch(); // получаем селектор меню
+        if (c == KEY_TAB) {   // если таб то переход на таблицу с проверкой
             if (_output_mas && _output_colcount != 0)
                 table_focus_flag = 1; else {
                 print_help("\x1b[41mДанных для вывода нет. Невозможно переключиться на таблицу.\x1b[0m");
                 Sleep(1000);
             }
         } else 
-        if (c == KEY_ENTER) {
-            if (_menu[position[0] - 1]._menu_size > 0) {
-                position[1] = 1;
-                while (1) {
-                    positionCur.X = _menu[position[0] - 1]._menu_name_lenght + 2;
+        if (c == KEY_ENTER) { // если ввели enter 
+            if (_menu[position[0] - 1]._menu_size > 0) { //если в текущем пункте меню есть сабменю , то 
+                position[1] = 1; 
+                while (1) {//бесконечный цикл работы с сабменю 
+                    positionCur.X = _menu[position[0] - 1]._menu_name_lenght + 2;//устанавливаем текущие позиции для курсора 
                     positionCur.Y = _interval + 2;
-                    _set_cur_to_pos(hConsole, positionCur);
-                    for (int i = 0; i <= _menu[position[0] - 1]._menu_size; i++) {
-                        for (int j = 0; j <= _menu[position[0] - 1]._max_sub_lenght + 2; j++) {
-                            if (j == 0) {
-                                if (i == 0) {
-                                    printf("┌");
+                    _set_cur_to_pos(hConsole, positionCur); 
+                    for (int i = 0; i <= _menu[position[0] - 1]._menu_size; i++) { //цикл отрисовки каждого окошка меню
+                        for (int j = 0; j <= _menu[position[0] - 1]._max_sub_lenght + 2; j++) { //цикл отрисовки бордера
+                            if (j == 0) { 
+                                if (i == 0) {//если позиция 0 , то у нас верхние ограничитель
+                                    printf("┌"); 
                                 }
                                 else
                                     if (i == _menu[position[0] - 1]._menu_size) {
-                                        printf("└");
+                                        printf("└"); //если конечная позиция , то нижний
                                     }
-                                    else printf("├");
+                                    else printf("├"); // иначе соеденитель
                             }
                             else
-                                if (j == _menu[position[0] - 1]._max_sub_lenght + 2) {
+                                if (j == _menu[position[0] - 1]._max_sub_lenght + 2) { 
                                     if (i == 0) {
-                                        printf("┐");
+                                        printf("┐"); //печать верхнего ограничителя
                                     }
                                     else
                                         if (i == _menu[position[0] - 1]._menu_size) {
-                                            printf("┘");
+                                            printf("┘"); //печать нижнего ограничителя , если достигли конца
                                              _get_con_info(&info_x);
-                                            positionCur.X = info_x.dwCursorPosition.X;
+                                            positionCur.X = info_x.dwCursorPosition.X; 
                                             positionCur.Y = info_x.dwCursorPosition.Y;
                                             positionCur.Y--; positionCur.X--;
-                                            _set_cur_to_pos(hConsole, positionCur);
-                                            printf("│");
+                                            _set_cur_to_pos(hConsole, positionCur); // ставим курсор на один назад и на один вверх
+                                            printf("│"); //печать разделителя 
                                             positionCur.Y++;
-                                            _set_cur_to_pos(hConsole, positionCur);
+                                            _set_cur_to_pos(hConsole, positionCur);//возврат на текущую позциию
                                         }
                                         else {
-                                            printf("┤");
+                                            printf("┤"); //печать соеденителя
                                              _get_con_info(&info_x);
                                             positionCur.X = info_x.dwCursorPosition.X;
                                             positionCur.Y = info_x.dwCursorPosition.Y;
                                             positionCur.Y--; positionCur.X--;
-                                            _set_cur_to_pos(hConsole, positionCur);
-                                            printf("│");
-                                            positionCur.Y++;
-                                            _set_cur_to_pos(hConsole, positionCur);
+                                            _set_cur_to_pos(hConsole, positionCur);// ставим курсор на один назад и на один вверх
+                                            printf("│");// печать разделителя
+                                            positionCur.Y++; 
+                                            _set_cur_to_pos(hConsole, positionCur);//возврат на текущую позциию 
                                         }
                                 }
-                                else (printf("─"));
+                                else (printf("─")); //печать промежуточного разделителя
                         }
-                        positionCur.Y++; positionCur.X = _menu[position[0] - 1]._menu_name_lenght + 2;
-                        _set_cur_to_pos(hConsole, positionCur);
-                        if (i == _menu[position[0] - 1]._menu_size) break;
-                        int _margin = _menu[position[0] - 1]._max_sub_lenght + 2 - _menu[position[0] - 1]._sub_menu_lenght[i];
-                        _margin = _margin / 2;
-                        printf("│");
-                        for (int l = 0; l < _margin; l++) { printf(" "); }
+                        positionCur.Y++; positionCur.X = _menu[position[0] - 1]._menu_name_lenght + 2; //стартовые параметры для печати данных
+                        _set_cur_to_pos(hConsole, positionCur); // установим курсор на данную позицию
+                        if (i == _menu[position[0] - 1]._menu_size) break; //если текущий номер совпал с размером , то ничего не рисуем дальше
+                        int _margin = _menu[position[0] - 1]._max_sub_lenght + 2 - _menu[position[0] - 1]._sub_menu_lenght[i]; //высчитываем отступ
+                        _margin = _margin / 2; 
+                        printf("│");//печатаем разделитель
+                        for (int l = 0; l < _margin; l++) { printf(" "); } //делаем отступ слева
                         if (position[1] - 1 == i) {
-                            printf("\x1b[43m%s\x1b[0m", _menu[position[0] - 1]._sub_menu[i]);
+                            printf("\x1b[43m%s\x1b[0m", _menu[position[0] - 1]._sub_menu[i]); // если текущий выбор сабменю совпал , то выделяем его
                         }
-                        else { printf("%s ", _menu[position[0] - 1]._sub_menu[i]); }
-                        for (int l = 0; l < _margin; l++) { printf(" "); }
+                        else { printf("%s ", _menu[position[0] - 1]._sub_menu[i]); } // иначе печатаем обычно
+                        for (int l = 0; l < _margin; l++) { printf(" "); } // печать отступа справа 
                         positionCur.Y++;
-                        _set_cur_to_pos(hConsole, positionCur);
+                        _set_cur_to_pos(hConsole, positionCur); // увеличиваем y , и ставим курсор на след позицию
                     }
-                    c = getch();
+                    c = getch(); //получаем нажатую кнопку 
                     
-                    if (c == KEY_ENTER) {
-                        int result = 0;
+                    if (c == KEY_ENTER) { // если у нас нажат enter 
+                        int result = 0; //возвращаемое значение
                         for (int l = 0; l < position[0] - 1; l++) {
-                            result += _menu[l]._menu_size;
+                            result += _menu[l]._menu_size; //до текущей позиции высчитываем результат выбора 
                         }
-                        result += position[1];
-                                     return result;
+                        result += position[1]; // добавляем текущее смещение 
+                                     return result; // вернем результат
                                 }
-                    if (c == KEY_ESC) { clear(); break; }
-                    position = _get_curent_selection(c, position, _menu[position[0] - 1]._menu_size, _menu_buttons, 1);
+                    if (c == KEY_ESC) { clear(); break; } // если escape , то очистим экран меню , выйдем с цикла 
+                    position = _get_curent_selection(c, position, _menu[position[0] - 1]._menu_size, _menu_buttons, 1); //получение новой позиции курсора согласно c
                 }
             }
-            else return PROGRAM_EXIT;          
+            else return PROGRAM_EXIT;   //Вернте выход из программы если в текущем меню 0 сабменю        
             }
-        else {
+        else { //внутренний цикл работы будет получать новую позицию курсора 
             position = _get_curent_selection(c, position, 1, _menu_buttons, 0);    
         }         
     }
 
-    return EXIT_SUCCESS;
+    return EXIT_SUCCESS; //вернет успешный выход
 }
 /// <summary>
 /// Анимированная картинка в консоли
@@ -323,7 +302,7 @@ void animatedNeko() {
         for (int i = 0; i < 11; i++) {
             char url[256] = { 0 };
             sprintf(url, "bakemonogatari-monogatari/banner (%d).txt", i);
-            f = fopen(url, "r"); char a[210]; ;
+            f = fopen(url, "r"); char a[210]; 
             while (fgets(a,210,f) != NULL)
             {
                 printf("         %s", a);
@@ -608,7 +587,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
     int* _size_n = NULL; 
     _size_n = _get_window_size(_size_n);
      int _window_w = _size_n[0]; int _window_h = _size_n[1];
-    int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0; char buff[200];
+    int _padding, _new_padding; int _mn_size_flag = 0; int _size_temp = 0;
     int _size_delta = 0; static int last_sel = 0;
     for (int i = 0; i < table->_col_count; i++) {
         _size_delta += table->_cols[i].size;
@@ -967,7 +946,7 @@ int _table_window(_tabel_metadata * table, abonent_t * _output_mass, int * _info
 
 
 void _big_window(char* title) {
-    CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     int* _size_n = NULL;
     _size_n = _get_window_size(_size_n);
     int _window_w = _size_n[0]; int  _window_h = _size_n[1];
@@ -1014,7 +993,7 @@ void _big_window(char* title) {
     positionCur.X = _center_x - width / 2 + 1;
     positionCur.Y = _center_y - height / 2 + 1;
     _set_cur_to_pos(hConsole, positionCur);
-     int _temp_ots;
+     int _temp_ots = 0;
      if (title) _temp_ots = (width - 2 - u8_strlen(title)) / 2;
     for (int j = 0; j < _temp_ots; j++) {
         printf(" ");
@@ -1613,8 +1592,7 @@ start:
                 case 9: {
                     cur_step++;
                     step_compl++;
-                   // _get_con_info(&con_inf);
-                    scanf("%f", &_temp_info->cost);
+                    input_float(&_temp_info->cost);
                     break;
                 }
                 default:
@@ -1623,7 +1601,7 @@ start:
             }
             SetConsoleOutputCP(65001);
             _message_window("Запись успешно добавлена");
-            Sleep(3000);
+            Sleep(2000);
             structCursorInfo.bVisible = FALSE;
             SetConsoleCursorInfo(hConsole, &structCursorInfo);
             return _temp_info;
@@ -1638,7 +1616,6 @@ int print_help(char * help_message) {
     _size_now = _get_window_size(_size_now);
     CONSOLE_SCREEN_BUFFER_INFO info_x;  HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     _get_con_info(&info_x);
-    COORD last_cord = info_x.dwCursorPosition;
     COORD positionCur = { _otstup,_size_now[1] - _interval - 2 };
     _set_cur_to_pos(hConsole, positionCur);
     printf("├");
@@ -1652,7 +1629,7 @@ int print_help(char * help_message) {
         printf(" ");
     _set_cur_to_pos(hConsole, positionCur);
     printf("%s", help_message);
-
+    return 0;
 } 
 
 abonent_t* _sort_output(abonent_t* _output_mass, int* filds_count, sort_struct* sorts)
@@ -1877,7 +1854,7 @@ void dolgiWindow(abonent ** root) {
     table->_cols[0].size = u8_strlen(table->_cols[0].name);
     //-------------------------------------------------------------------------------------------//
     table->_cols[1].name = (char*)calloc(sizeof(char), 60);
-    strcpy(table->_cols[1].name, "Кол. книг");
+    strcpy(table->_cols[1].name, "Кол-во книг");
     table->_cols[1].resizebl = 0;
     table->_cols[1].size = u8_strlen(table->_cols[1].name);
     //-------------------------------------------------------------------------------------------//
@@ -2054,7 +2031,7 @@ void dolgiWindow(abonent ** root) {
                             printf("─");
                 }
                 if (_center_y + height / 2 - 2 - PosCur.Y > 1) {
-                    for (; _center_y + height / 2 - 2 - PosCur.Y > 2;) {
+                    for (; _center_y + height / 2 - 2 - PosCur.Y > 1;) {
                         PosCur.Y++; _set_cur_to_pos(hConsole, PosCur);
                         for (int i = PosCur.X; i < _center_x + width / 2 - 4; i++) {
                             printf(" ");
@@ -2111,14 +2088,3 @@ void dolgiWindow(abonent ** root) {
 }
 
 
-
-// 
-//puts("┌──────┬─────┬────────────────────┬────────────┬───────────────┬──────┬──────────┬───────────┬───────┐");
-//puts("│Индекс│Номер│ ФИО                │Год рождения│Год поступления│Физика│Математика│Информатика│История│");
-//
-//for (int i = 0; i < MaxIndex; i++)
-//{
-//    puts("├──────┼─────┼────────────────────┼────────────┼───────────────┼──────┼──────────┼───────────┼───────┤");
-//    printf("│%6d│%5d│%-20s│%-20s│%-10.2f│%-KEY_ENTERd│\n", st[i]._Index, st[i]._Number, st[i]._FIO, st[i]._God, st[i]._GodPos, st[i].marks.Fizika);
-//}
-//puts("└──────┴─────┴────────────────────┴────────────────────┴──────────┴─────────────┘");
